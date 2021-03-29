@@ -1,0 +1,7 @@
+Migrate information to documentation/pypi for first release. 
+
+Dependencies: 
+- lexrank
+- sentencepiece
+- torch
+- transformers
