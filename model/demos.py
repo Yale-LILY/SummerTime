@@ -14,6 +14,7 @@ def pegasus_demo():
     ]
 
     model = pegasus()
+    model.show_capability()
 
     summaries = model.summarize(src_text)
 
