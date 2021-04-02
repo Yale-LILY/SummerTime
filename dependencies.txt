@@ -5,3 +5,6 @@ Dependencies:
 - sentencepiece
 - torch
 - transformers
+
+# datasets
+- datasets
