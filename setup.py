@@ -5,15 +5,15 @@ with open("README.md", "r") as fh:
 
 
 setuptools.setup(
-     name='summertime',  
+     name='SummerTime',  
      version='0.1',
-     scripts=['summertime'] ,
-     author="LILY Lab",
-     author_email="mutethia",
-     description="A Docker and AWS utility package",
+     scripts=['summertime.py'] ,
+     author="Ansong Ni, Murori Mutuma, Zhangir Azerbayev",
+     author_email="murorimutuma@gmail.com",
+     description="A summarization mode",
      long_description=long_description,
    long_description_content_type="text/markdown",
-     url="https://github.com/javatechy/dokr",
+     url="https://github.com/LILYlab",
      packages=setuptools.find_packages(),
      classifiers=[
          "Programming Language :: Python :: 3",
