@@ -1,16 +1,19 @@
 from lexrank import STOPWORDS
 from lexrank import LexRank as LR
+import nltk
 
 from .Model import Model
 
 class lex_rank(Model):
     def __init__(self, data, summary_length=2, threshold=.1):
-        corpus = [example.split('.') for example in data]
+        nltk.download('punkt', quiet=True)
+        corpus = [nltk.sent_tokenize(example) for example in data]
         self.lxr = LR(corpus, stopwords=STOPWORDS['en'])
         self.summary_length = summary_length
         self.threshold = threshold
 
     def summarize(self, documents):
+        documents = [nltk.sent_tokenize(document) for document in documents]
         summaries = [self.lxr.get_summary(document, summary_size=self.summary_length, threshold=self.threshold) for document in documents]
 
         return summaries
