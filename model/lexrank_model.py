@@ -3,8 +3,9 @@ from lexrank import LexRank as LR
 
 from .Model import Model
 
-class lexrank(Model):
-    def __init__(self, corpus, summary_length=2, threshold=.1):
+class lex_rank(Model):
+    def __init__(self, data, summary_length=2, threshold=.1):
+        corpus = [example.split('.') for example in data]
         self.lxr = LR(corpus, stopwords=STOPWORDS['en'])
         self.summary_length = summary_length
         self.threshold = threshold
