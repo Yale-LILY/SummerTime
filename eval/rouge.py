@@ -1,18 +1,10 @@
 
 from summ_eval.rouge_metric import RougeMetric
-"""rouge = RougeMetric()
+from .Metric import Metric
 
-summaries = ["This is one summary", "This is another summary"]
-references = ["This is one reference", "This is another"]
-
-rouge_dict = rouge.evaluate_batch(summaries, references)
-print('hello')
-print(rouge_dict)
-"""
-
-class rouge():
+class rouge(Metric):
     def __init__(self):
-        self.score_dict = {}
+        super().__init__('rouge')
         self.se_rouge = RougeMetric()
 
     def evaluate(self, model, data):
@@ -20,5 +12,6 @@ class rouge():
         self.score_dict = self.se_rouge.evaluate_batch(predictions,
             data['highlights'])
 
-    def get(self, keys):
-        return {key: self.score_dict['rouge'][key] for key in keys}
+    def get_dict(self, keys):
+        return {key: self.score_dict[self.metric_name][key]
+            for key in keys}
