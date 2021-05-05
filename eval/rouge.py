@@ -7,7 +7,6 @@ class rouge(Metric):
         super().__init__('rouge')
         self.se_rouge = RougeMetric()
 
-
     def evaluate(self, model, data):
         predictions = model.summarize(data['article'])
         self.score_dict = self.se_rouge.evaluate_batch(predictions,
