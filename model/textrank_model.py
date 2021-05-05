@@ -64,4 +64,4 @@ class text_rank(Model):
         return summary_sentences
 
     def show_capability(self):
-        print("A graphbased ranking model for text processing. Extractive sentence summarization. \n Strengths: \n - Fast with low memory usage \n - Allows for control of summary length \n Weaknesses: \n - Not as accurate as neural methods. \nInitialization arguments: \n - `corpus`: Unlabelled corpus of documents. \n ")
+        print("A graphbased ranking model for text processing. Extractive sentence summarization. \n Strengths: \n - Fast with low memory usage \n - Allows for control of summary length \n Weaknesses: \n - Not as accurate as neural methods.")
