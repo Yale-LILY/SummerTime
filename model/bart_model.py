@@ -1,9 +1,11 @@
 from transformers import BartForConditionalGeneration, BartTokenizer
 import torch
-from .Model import Model
+from .model import SummModel
 
-class bart(Model):
+class BartModel(SummModel):
     def __init__(self, device='cpu'):
+        super(BartModel, self).__init__("BART", is_extractive=False, is_neural=True)
+        
         self.device = device
         model_name = 'facebook/bart-large-cnn'
         self.tokenizer = BartTokenizer.from_pretrained(model_name)

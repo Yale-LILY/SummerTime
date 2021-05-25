@@ -2,11 +2,13 @@ import spacy
 import pytextrank
 from math import sqrt
 from operator import itemgetter
-from .Model import Model
+from .model import SummModel
 
 
-class text_rank(Model):
+class TextRankModel(SummModel):
     def __init__(self, num_sentences=1):
+        super(TextRankModel, self).__init__("TextRank", is_extractive=True, is_neural=False)
+
         self.num_sentences = num_sentences
         # load a spaCy model, depending on language, scale, etc.
         self.nlp = spacy.load("en_core_web_sm")
@@ -64,4 +66,6 @@ class text_rank(Model):
         return summary_sentences
 
     def show_capability(self):
-        print("A graphbased ranking model for text processing. Extractive sentence summarization. \n Strengths: \n - Fast with low memory usage \n - Allows for control of summary length \n Weaknesses: \n - Not as accurate as neural methods.")
+        print("A graphbased ranking model for text processing. Extractive sentence summarization. \n "
+              "Strengths: \n - Fast with low memory usage \n - Allows for control of summary length \n "
+              "Weaknesses: \n - Not as accurate as neural methods.")

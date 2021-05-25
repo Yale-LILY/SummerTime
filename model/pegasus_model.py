@@ -1,9 +1,12 @@
 from transformers import PegasusForConditionalGeneration, PegasusTokenizer
 import torch
-from .Model import Model
+from .model import SummModel
 
-class pegasus(Model):
+
+class PegasusModel(SummModel):
     def __init__(self, device='cpu'):
+        super(PegasusModel, self).__init__("Pegasus", is_extractive=False, is_neural=True)
+        
         self.device=device
         model_name = 'google/pegasus-xsum'
         self.tokenizer = PegasusTokenizer.from_pretrained(model_name)
@@ -17,4 +20,9 @@ class pegasus(Model):
         return summaries
 
     def show_capability(self):
-        print("Introduced in 2019, a large neural abstractive summarization model trained on web crawl and news data.\n Strengths: \n - High accuracy \n - Performs well on almost all kinds of non-literary written text \n Weaknesses: \n - High memory usage \n Initialization arguments: \n - `device = 'cpu'` specifies the device the model is stored on and uses for computation. Use `device='gpu'` to run on an Nvidia GPU.")
+        print("Introduced in 2019, a large neural abstractive summarization model trained on web crawl and news data.\n"
+              "Strengths: \n - High accuracy \n - Performs well on almost all kinds of non-literary written text \n "
+              "Weaknesses: \n - High memory usage \n "
+              "Initialization arguments: \n "
+              "- `device = 'cpu'` specifies the device the model is stored on and uses for computation. "
+              "Use `device='gpu'` to run on an Nvidia GPU.")
