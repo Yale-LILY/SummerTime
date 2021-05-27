@@ -1,6 +1,7 @@
-from .pegasus_model import pegasus
+from .pegasus_model import PegasusModel
 
-class summarizer(pegasus):
+
+class summarizer(PegasusModel):
     def __init__(self, device='cpu'):
         super(summarizer, self).__init__(device)
 
