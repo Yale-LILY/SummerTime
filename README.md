@@ -13,7 +13,6 @@ conda activate st
 `pip` dependencies for local demo:
 ```bash
 pip install -r requirements.txt
-pip install jupyter
 ```
 
 Start demo Jupyter notebook from localhost:
