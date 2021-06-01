@@ -2,23 +2,22 @@
 
 A library to help users choose appropriate summarization tools based on their specific tasks or needs. Includes models, evaluation metrics, and datasets.
 
+
+
 ## Installation and setup
 
-Create and activate a new `conda` environment:
+#### Create and activate a new `conda` environment:
 ```bash
 conda create -n st python=3.7
 conda activate st
 ```
 
-`pip` dependencies for local demo:
+#### `pip` dependencies for local demo:
 ```bash
 pip install -r requirements.txt
 ```
 
-Start demo Jupyter notebook from localhost:
-```bash
-jupyter notebook demo.ipynb
-```
+
 
 ## Quick Start
 Imports model, initializes default model, and summarizes sample documents.
@@ -35,7 +34,13 @@ model.summarize(documents)
 
 # ["California's largest electricity provider has turned off power to hundreds of thousands of customers."]
 ```
-See `demo.ipynb` demo Jupyter notebook for more examples.
+
+Also, please run `demo.ipynb` demo Jupyter notebook for more examples. To start demo Jupyter notebook on localhost:
+```bash
+jupyter notebook demo.ipynb
+```
+
+
 
 ## Models
 Import and initialization:
@@ -68,6 +73,8 @@ def show_capability(cls) -> None:
 
 def generate_basic_description(cls) -> str:
 ```
+
+
 
 ## Evaluation
 Import and initialization:
