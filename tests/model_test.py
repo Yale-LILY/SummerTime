@@ -1,21 +1,23 @@
 import unittest
 from typing import Tuple, List
 
-import dataset.stdatasets as st_data
+from dataset.huggingface_datasets import CnndmDataset
 from model import SUPPORTED_SUMM_MODELS, list_all_models
 from model.lexrank_model import LexRankModel
 
 
 class TestModels(unittest.TestCase):
-    dataset = st_data.load_dataset('cnn_dailymail', '3.0.0')
+    dataset = CnndmDataset()
 
     def get_summarization_set(self, size: int = 1) -> Tuple[List[str], List[str]]:
         """
         return some dummy summarization examples, in the format of (a list of sources, a list of targets)
         """
+        subset = []
+        for i in range(size):
+            subset.append(next(self.dataset.train_set))
         
-        src = self.dataset['train']['article'][0:size]
-        tgt = self.dataset['train']['highlights'][0:size]
+        src, tgt = zip(*(list(map(lambda x: (x.source, x.summary), subset))))
         
         return src, tgt
     
