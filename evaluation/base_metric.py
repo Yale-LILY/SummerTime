@@ -5,7 +5,8 @@ class SummMetric():
         self.score_dict = {}
 
     def evaluate(self,
-                 model: SummerTime.Model.SummModel,
+                ## TODO zhangir: figure out how to import SummModel 
+                 model,
                  ## TODO zhangir: integrate with dataset api
                  data):
         """
