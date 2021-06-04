@@ -112,7 +112,13 @@ import dataset.stdatasets as st_data
 Create a pull request and name it `[your_gh_username]/[your_branch_name]`. If needed, resolve your own branch's merge conflicts with `main`. Do not push directly to `main`.
 
 ### Code formatting
-Before pushing and merging any commits, run the following commands from the project root:
+If you haven't already, install `black` and `flake8`:
+```bash
+pip install black
+pip install flake8
+```
+
+Before pushing commits or merging branches, run the following commands from the project root:
 ```bash
 black .
 flake8 .
