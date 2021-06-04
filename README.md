@@ -105,3 +105,26 @@ Import and initialization:
 ```python
 import dataset.stdatasets as st_data
 ```
+
+
+## For contributors
+### Pull requests
+Create a pull request and name it `[your_gh_username]/[your_branch_name]`. If needed, resolve your own branch's merge conflicts with `main`. Do not push directly to `main`.
+
+### Code formatting
+Before pushing and merging any commits, run the following commands from the project root:
+```bash
+black .
+flake8 .
+```
+Or if you would like to run lint only on specific files:
+```bash
+black path/to/specific/file.py
+flake8 path/to/specific/file.py
+```
+Ensure that `black` reformats all changed files and that `flake8` does not print any warnings. If you would like to override any of the preferences or practices enforced by `black` or `flake8`, please leave a comment in your PR for any lines of code that generate warning or error logs. Do not directly edit linting config files such as `setup.cfg`.
+
+See the [`black` docs](https://black.readthedocs.io/en/stable/index.html) and [`flake8` docs](https://flake8.pycqa.org/en/latest/user/index.html) for documentation on installation and advanced usage. In particular:
+- `black [file.py] --diff` to preview changes as diffs instead of directly making changes
+- `black [file.py] --check` to preview changes with status codes instead of directly making changes
+- `git diff -u | flake8 --diff` to only run `flake8` on working branch changes
