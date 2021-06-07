@@ -1,19 +1,18 @@
 from summ_eval.rouge_metric import RougeMetric
-from .base_metric import SummMetric
+from .summeval_metric import SummEvalMetric
 
-class Rouge(SummMetric):
+class Rouge(SummEvalMetric):
+    metric_name = 'rouge'
+    range = (0, 1)
+    higher_is_better = True
+    low_resource = True
+
     def __init__(self):
-        super(Rouge, self).__init__()
-        self.se_rouge = RougeMetric()
+        se_metric = RougeMetric()
+        super(Rouge, self).__init__(se_metric)
 
-    def evaluate(self, model, data):
-        # TODO zhangir: fix when dataset api is  merged.
-        predictions = model.summarize(data['article'])
-        self.score_dict = self.se_rouge.evaluate_batch(predictions,
-            data['highlights'])
-
-    def get_dict(self,
-                 keys = ['rouge_1_f_score', 'rouge_2_f_score', 'rouge_3_f_score']
-                 ):
-        return {key: self.score_dict['rouge'][key]
-            for key in keys}
+    def evaluate(self,
+                 inputs,
+                 targets,
+                 keys = ['rouge_3_f_score']):
+        return super(Rouge, self).evaluate(inputs, targets, keys)

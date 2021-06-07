@@ -1,19 +1,21 @@
 from summ_eval.rouge_we_metric import RougeWeMetric
-from .base_metric import SummMetric
+from .summeval_metric import SummEvalMetric
 import nltk
 
-class RougeWE(SummMetric):
+class RougeWe(SummEvalMetric):
+    metric_name = 'rougeWE'
+    range = (0, 1)
+    higher_is_better = True
+    low_resource = False
+
     def __init__(self):
         nltk.download('stopwords')
-        super(RougeWE, self).__init__()
-        self.se_rouge_we = RougeWeMetric()
+        se_metric = RougeWeMetric()
+        super(RougeWe, self).__init__(se_metric)
 
-
-    def evaluate(self, model, data):
+    def evaluate(self,
+                 inputs,
+                 targets,
+                 keys = ['rouge_we_3_f']):
         #TODO zhangir: update when dataset api is merged.
-        predictions = model.summarize(data['article'])
-        self.score_dict = self.se_rouge_we.evaluate_batch(
-            predictions, data['highlights'])
-
-    def get_dict(self, keys=['rouge_we_3_f']):
-        return super(RougeWE, self).get_dict(keys)
+        return super(RougeWe, self).evaluate(inputs, targets, keys)

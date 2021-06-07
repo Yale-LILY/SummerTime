@@ -1,16 +1,19 @@
 from summ_eval.bleu_metric import BleuMetric
-from .base_metric import SummMetric
+from .summeval_metric import SummEvalMetric
 
-class Bleu(SummMetric):
+class Bleu(SummEvalMetric):
+    metric_name = 'bleu'
+    range = (0, 1)
+    higher_is_better = True
+    low_resource = True
+
     def __init__(self):
-        super(Bleu, self).__init__()
-        self.se_bleu = BleuMetric()
+        se_metric = BleuMetric()
+        super(Bleu, self).__init__(se_metric)
 
-    def evaluate(self, model, data):
-        # TODO zhangir: update when dataset api is merged.
-        predictions = model.summarize(data['article'])
-        self.score_dict = self.se_bleu.evaluate_batch(
-            predictions, data['highlights'])
-
-    def get_dict(self, keys=['bleu']):
-        return super(Bleu, self).get_dict(keys)
+    def evaluate(self,
+                 inputs,
+                 targets,
+                 keys = ['bleu']):
+        # TODO zhangir: potentially update when dataset api is merged.
+        return super(Bleu, self).evaluate(inputs, targets, keys)

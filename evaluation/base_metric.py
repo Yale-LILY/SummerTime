@@ -1,19 +1,22 @@
-from typing import List
+from typing import List, Tuple
 
 class SummMetric():
-    def __init__(self):
-        self.score_dict = {}
+    metric_name: str = None
+    range: Tuple[float, float] = None
+    higher_is_better: bool = None
+    low_resource: bool = None
 
     def evaluate(self,
-                ## TODO zhangir: figure out how to import SummModel 
-                 model,
                  ## TODO zhangir: integrate with dataset api
-                 data):
+                 inputs: List[str],
+                 targets: List[str],
+                 keys: List[str]):
         """
-        All metrics should have this function
+        All metrics should have this function.
+        :input: A list of summaries.
+        :target: A list of target summaries corresponding to each entry of input.
+        :keys: Which metrics to return,
+        e.g, ['rouge_1_f_score', 'rouge_2_f_score']
+        :return: A dictionary with keys metrics and values scores.
         """
         raise NotImplementedError("the base class for metrics shouldn't be instantiated!")
-
-    def get_dict(self, keys: List[str]):
-        return {key: self.score_dict[key]
-            for key in keys}
