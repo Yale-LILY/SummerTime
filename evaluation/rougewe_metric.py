@@ -1,5 +1,5 @@
 from summ_eval.rouge_we_metric import RougeWeMetric
-from .summeval_metric import SummEvalMetric
+from SummerTime.evaluation.summeval_metric import SummEvalMetric
 import nltk
 
 class RougeWe(SummEvalMetric):

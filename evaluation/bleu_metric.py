@@ -1,5 +1,5 @@
 from summ_eval.bleu_metric import BleuMetric
-from .summeval_metric import SummEvalMetric
+from SummerTime.evaluation.summeval_metric import SummEvalMetric
 
 class Bleu(SummEvalMetric):
     metric_name = 'bleu'

@@ -1,5 +1,5 @@
 from summ_eval.bert_score_metric import BertScoreMetric
-from .summeval_metric import SummEvalMetric
+from SummerTime.evaluation.summeval_metric import SummEvalMetric
 
 class BertScore(SummEvalMetric):
     metric_name = 'bert score'
