@@ -3,8 +3,7 @@ from summ_eval.metric import Metric as SEMetric
 
 class SummEvalMetric(SummMetric):
     """
-    Generic class for a summarization metric
-    whose backend is SummEval.
+    Generic class for a summarization metric whose backend is SummEval.
     """
 
     def __init__(self,
