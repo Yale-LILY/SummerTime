@@ -1,5 +1,6 @@
 from summ_eval.rouge_metric import RougeMetric
 from SummerTime.evaluation.summeval_metric import SummEvalMetric
+from typing import List, Dict
 
 class Rouge(SummEvalMetric):
     metric_name = 'rouge'
@@ -12,7 +13,7 @@ class Rouge(SummEvalMetric):
         super(Rouge, self).__init__(se_metric)
 
     def evaluate(self,
-                 inputs,
-                 targets,
-                 keys = ['rouge_3_f_score']):
+                 inputs: List[str],
+                 targets: List[str],
+                 keys: List[str] = ['rouge_3_f_score']) -> Dict[str, float]:
         return super(Rouge, self).evaluate(inputs, targets, keys)

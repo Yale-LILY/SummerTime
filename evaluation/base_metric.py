@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 class SummMetric():
     metric_name: str = None
@@ -10,7 +10,7 @@ class SummMetric():
                  ## TODO zhangir: integrate with dataset api
                  inputs: List[str],
                  targets: List[str],
-                 keys: List[str]):
+                 keys: List[str]) -> Dict[str, float]:
         """
         All metrics should have this function.
         :input: A list of summaries.

@@ -12,9 +12,9 @@ class SummEvalMetric(SummMetric):
         self.se_metric = se_metric
 
     def evaluate(self,
-                 inputs,
-                 targets,
-                 keys):
+                 inputs: List[str],
+                 targets: List[str],
+                 keys: List[str]) -> Dict[str, float]:
         score_dict = self.se_metric.evaluate_batch(
             inputs, targets)
         return {key: score_dict[key] for key in keys}
