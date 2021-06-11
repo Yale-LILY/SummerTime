@@ -23,9 +23,9 @@ class LongformerModel(SummModel):
     @classmethod
     def show_capability(cls) -> None:
         basic_description = cls.generate_basic_description()
-        more_details = ("A Longformer2Roberta model finetuned on summarization. \n"
-                "Strengths: \n - Correctly handles longer (> 2000 tokens) corpus \n "
-                "Weaknesses: \n - Fine-tuned on CNN-DM dataset \n "
-                "Initialization arguments: \n "
-                "- `corpus`: Unlabelled corpus of documents. ` \n ")
+        more_details = ("A Longformer2Roberta model finetuned on CNN-DM dataset for summarization.\n\n"
+                "Strengths:\n - Correctly handles longer (> 2000 tokens) corpus.\n\n"
+                "Weaknesses:\n - Less accurate on contexts outside training domain.\n\n"
+                "Initialization arguments:\n "
+                " - `corpus`: Unlabelled corpus of documents.\n")
         print(f"{basic_description} \n {'#'*20} \n {more_details}")
