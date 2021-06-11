@@ -6,7 +6,7 @@ class LongformerModel(SummModel):
     # static variables
     model_name = "LONGFORMER"
     is_extractive = False
-    is_neural = False
+    is_neural = True
 
     def __init__(self):
         super(LongformerModel, self).__init__()
@@ -15,7 +15,11 @@ class LongformerModel(SummModel):
         self.tokenizer = LongformerTokenizer.from_pretrained("allenai/longformer-base-4096")
 
     def summarize(self, corpus, queries=None):
-        input_ids = self.tokenizer(corpus, return_tensors="pt").input_ids
+        # Tokenizes corpus and returns PyTorch torch.Tensor object with length attribute
+        tokenized_sequence = self.tokenizer(corpus, return_tensors="pt", return_length=True)
+        print(f"Longformer model: processing document of {tokenized_sequence.length} tokens")
+        input_ids = tokenized_sequence.input_ids
+        # output_ids is tensor with one layer: output_ids[0] extracts tensor layer for decoding
         output_ids = self.model.generate(input_ids)
 
         return self.tokenizer.decode(output_ids[0], skip_special_tokens=True)

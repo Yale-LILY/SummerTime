@@ -16,11 +16,11 @@ class TestModels(unittest.TestCase):
         subset = []
         for i in range(size):
             subset.append(next(self.dataset.train_set))
-        
+
         src, tgt = zip(*(list(map(lambda x: (x.source, x.summary), subset))))
-        
+
         return src, tgt
-    
+
     def test_list_models(self):
         print(f"{'#'*10} test_list_models STARTS {'#'*10}")
         all_models = list_all_models()
@@ -29,13 +29,13 @@ class TestModels(unittest.TestCase):
             self.assertTrue(True)
         self.assertEqual(len(all_models), len(SUPPORTED_SUMM_MODELS))
         print(f"{'#'*10} test_list_models {__name__} ENDS {'#'*10}")
-        
+
     def test_model_summarize(self):
         print(f"{'#'*10} test_model_summarize STARTS {'#'*10}")
         all_models = list_all_models()
         for model_class, _ in all_models:
             print(f"Test on {model_class}")
-            
+
             if model_class == LexRankModel:
                 # current LexRankModel requires a training set
                 training_src, training_tgt = self.get_summarization_set(100)
@@ -45,7 +45,8 @@ class TestModels(unittest.TestCase):
 
             test_src, test_tgt = self.get_summarization_set(1)
             prediction = model.summarize(test_src)
-            print(f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
+            print(
+                f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
         print(f"{'#'*10} test_model_summarize ENDS {'#'*10}")
 
 
