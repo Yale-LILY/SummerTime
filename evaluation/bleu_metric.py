@@ -1,10 +1,10 @@
 from summ_eval.bleu_metric import BleuMetric
 from SummerTime.evaluation.summeval_metric import SummEvalMetric
-from typing import List, Dict 
+from typing import List, Dict
 
 class Bleu(SummEvalMetric):
     metric_name = 'bleu'
-    range = (0, 1)
+    range = (0, 10)
     higher_is_better = True
     low_resource = True
 
