@@ -12,7 +12,7 @@ class TestDatasets(unittest.TestCase):
         if is_multi_document:
             self.assertTrue(isinstance(ins.source, list))
         else:
-            self.assertTrue(isinstance(ins.source, list)) or self.assertTrue(isinstance(ins.source, list))
+            self.assertTrue(isinstance(ins.source, list) or isinstance(ins.source, list))
         self.assertTrue(isinstance(ins.summary, str))
         if is_query:
             self.assertTrue(isinstance(ins.query, str))
