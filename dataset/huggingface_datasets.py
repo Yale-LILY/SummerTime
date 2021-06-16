@@ -93,7 +93,7 @@ class MultinewsDataset(HuggingfaceDataset):
                          huggingface_page=MultinewsDataset.huggingface_page,
                          is_query_based=False,
                          is_dialogue_based=False,
-                         is_multi_document=False,
+                         is_multi_document=True,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
@@ -101,7 +101,7 @@ class MultinewsDataset(HuggingfaceDataset):
     @staticmethod
     def process_multinews_data(data: Dataset) -> List[SummInstance]:
         for instance in tqdm(data):
-            document: str = instance['document']
+            document: list = [doc for doc in instance['document'].split('|||||') if doc]
             summary: str = instance['summary']
             summ_instance = SummInstance(document, summary)
             
