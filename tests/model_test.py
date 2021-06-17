@@ -4,6 +4,7 @@ from typing import Tuple, List
 from dataset.huggingface_datasets import CnndmDataset
 from model import SUPPORTED_SUMM_MODELS, list_all_models
 from model.lexrank_model import LexRankModel
+from model.longformer_model import LongformerModel
 
 
 class TestModels(unittest.TestCase):
@@ -28,7 +29,7 @@ class TestModels(unittest.TestCase):
             print(f"{model_class} : {model_description}")
             self.assertTrue(True)
         self.assertEqual(len(all_models), len(SUPPORTED_SUMM_MODELS))
-        print(f"{'#'*10} test_list_models {__name__} ENDS {'#'*10}")
+        print(f"{'#'*10} test_list_models {__name__} ENDS {'#'*10}\n\n")
 
     def test_model_summarize(self):
         print(f"{'#'*10} test_model_summarize STARTS {'#'*10}")
@@ -44,10 +45,10 @@ class TestModels(unittest.TestCase):
                 model = model_class()
 
             test_src, test_tgt = self.get_summarization_set(1)
-            prediction = model.summarize(test_src)
+            prediction = model.summarize(test_src[0] * 5 if model_class == LongformerModel else test_src)
             print(
                 f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
-        print(f"{'#'*10} test_model_summarize ENDS {'#'*10}")
+        print(f"{'#'*10} test_model_summarize ENDS {'#'*10}\n")
 
 
 if __name__ == '__main__':
