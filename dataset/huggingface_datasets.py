@@ -101,7 +101,10 @@ class MultinewsDataset(HuggingfaceDataset):
     @staticmethod
     def process_multinews_data(data: Dataset) -> List[SummInstance]:
         for instance in tqdm(data):
-            document: list = [doc for doc in instance['document'].split('|||||') if doc]
+            
+            document: list = [doc for doc in instance['document'].split('|||||') if doc]  # removes the empty string generated
+                                                                                          # since each doc ends with the delimiting token '|||||'
+                                                                                          # the final doc creates an empty string
             summary: str = instance['summary']
             summ_instance = SummInstance(document, summary)
             
