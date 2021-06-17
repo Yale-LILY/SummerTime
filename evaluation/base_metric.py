@@ -4,7 +4,7 @@ class SummMetric():
     metric_name: str = None
     range: Tuple[float, float] = None
     higher_is_better: bool = None
-    low_resource: bool = None
+    requires_heavy_compute: bool = None
 
     def evaluate(self,
                  ## TODO zhangir: integrate with dataset api

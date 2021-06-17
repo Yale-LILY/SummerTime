@@ -7,7 +7,7 @@ class RougeWe(SummEvalMetric):
     metric_name = 'rougeWE'
     range = (0, 1)
     higher_is_better = True
-    low_resource = False
+    requires_heavy_compute = True 
 
     def __init__(self):
         nltk.download('stopwords')

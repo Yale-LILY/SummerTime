@@ -1,12 +1,12 @@
 from summ_eval.bert_score_metric import BertScoreMetric
 from SummerTime.evaluation.summeval_metric import SummEvalMetric
-from typing import List, Dict 
+from typing import List, Dict
 
 class BertScore(SummEvalMetric):
     metric_name = 'bert score'
     range = (0, 1)
     higher_is_better = True
-    low_resource = False
+    requires_heavy_compute = True 
 
     def __init__(self):
         se_metric = BertScoreMetric()

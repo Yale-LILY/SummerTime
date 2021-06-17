@@ -6,7 +6,7 @@ class Rouge(SummEvalMetric):
     metric_name = 'rouge'
     range = (0, 1)
     higher_is_better = True
-    low_resource = True
+    requires_heavy_compute = False 
 
     def __init__(self):
         se_metric = RougeMetric()
