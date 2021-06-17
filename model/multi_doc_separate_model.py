@@ -1,20 +1,19 @@
 from model.base_model import SummModel
-from model.lexrank_model import LexRankModel
+from model.textrank_model import TextRankModel
 from typing import Union, List
 
 
 class MultiDocSeparateModel(SummModel):
 
-    def __init__(self, model_backend: SummModel = LexRankModel):
+    def __init__(self, model_backend: SummModel = TextRankModel()):
         super(MultiDocSeparateModel, self).__init__()
-        model = model_backend()
-        self.model = model
+        self.model = model_backend
     
     def summarize(self, corpus: Union[List[str], List[List[str]]]) -> str:
         list_of_summarization = [self.model.summarize([doc]) for doc in corpus]
 
         summaries = list(map(lambda x: "\n".join(x), list_of_summarization))
-        return " story_separator_special_tag ".join(summaries)
+        return "\n".join(summaries)
     
     @classmethod
     def show_capability(cls):

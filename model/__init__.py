@@ -2,6 +2,7 @@ from .bart_model import BartModel
 from .pegasus_model import PegasusModel
 from .lexrank_model import LexRankModel
 from .longformer_model import LongformerModel
+from .multi_doc_joint_model import MultiDocJointModel
 from .multi_doc_separate_model import MultiDocSeparateModel
 from .textrank_model import TextRankModel
 from .defaults import summarizer
