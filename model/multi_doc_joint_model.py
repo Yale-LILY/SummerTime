@@ -5,9 +5,10 @@ from typing import Union, List
 
 class MultiDocJointModel(SummModel):
 
-    def __init__(self, model_backend: SummModel = TextRankModel()):
+    def __init__(self, model_backend: SummModel = TextRankModel, **kwargs):
         super(MultiDocJointModel, self).__init__()
-        self.model = model_backend
+        model = model_backend(**kwargs)
+        self.model = model
 
     def summarize(self, corpus: Union[List[str], List[List[str]]]) -> str:
         flattened_corpus = ["\n".join(x) if type(x[0]) is list else x for x in corpus]
