@@ -37,5 +37,5 @@ class TestEvaluationMetrics(unittest.TestCase):
                 self.assertTrue(score_dict[key] <= self.range[1])
 
 
-if __name__ = '__main__':
+if __name__ == '__main__':
     unittest.main()
