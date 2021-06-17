@@ -7,7 +7,7 @@ from .multi_doc_separate_model import MultiDocSeparateModel
 from .textrank_model import TextRankModel
 from .defaults import summarizer
 
-SUPPORTED_SUMM_MODELS = [BartModel, LexRankModel, LongformerModel, MultiDocSeparateModel, PegasusModel, TextRankModel]
+SUPPORTED_SUMM_MODELS = [BartModel, LexRankModel, LongformerModel, MultiDocJointModel, MultiDocSeparateModel, PegasusModel, TextRankModel]
 
 
 def list_all_models():
