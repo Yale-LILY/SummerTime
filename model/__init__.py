@@ -2,10 +2,11 @@ from .bart_model import BartModel
 from .pegasus_model import PegasusModel
 from .lexrank_model import LexRankModel
 from .longformer_model import LongformerModel
+from .multi_doc_separate_model import MultiDocSeparateModel
 from .textrank_model import TextRankModel
 from .defaults import summarizer
 
-SUPPORTED_SUMM_MODELS = [BartModel, LexRankModel, LongformerModel, PegasusModel, TextRankModel]
+SUPPORTED_SUMM_MODELS = [BartModel, LexRankModel, LongformerModel, MultiDocSeparateModel, PegasusModel, TextRankModel]
 
 
 def list_all_models():
