@@ -70,3 +70,42 @@ class CnndmDataset(HuggingfaceDataset):
             summ_instance = SummInstance(article, highlights)
             
             yield summ_instance
+
+
+
+class MultinewsDataset(HuggingfaceDataset):
+    """
+    The Multi News dataset
+    """
+    
+    huggingface_page = "https://huggingface.co/datasets/multi_news"
+    
+    def __init__(self):
+        # load the train, dev and test set from the huggingface datasets
+        multinews_dataset = datasets.load_dataset("multi_news")
+        info_set = multinews_dataset['train']
+        
+        processed_train_set = MultinewsDataset.process_multinews_data(multinews_dataset['train'])
+        processed_dev_set = MultinewsDataset.process_multinews_data(multinews_dataset['validation'])
+        processed_test_set = MultinewsDataset.process_multinews_data(multinews_dataset['test'])
+        
+        super().__init__(info_set,
+                         huggingface_page=MultinewsDataset.huggingface_page,
+                         is_query_based=False,
+                         is_dialogue_based=False,
+                         is_multi_document=True,
+                         train_set=processed_train_set,
+                         dev_set=processed_dev_set,
+                         test_set=processed_test_set)
+        
+    @staticmethod
+    def process_multinews_data(data: Dataset) -> List[SummInstance]:
+        for instance in tqdm(data):
+            
+            document: list = [doc for doc in instance['document'].split('|||||') if doc]  # removes the empty string generated
+                                                                                          # since each doc ends with the delimiting token '|||||'
+                                                                                          # the final doc creates an empty string
+            summary: str = instance['summary']
+            summ_instance = SummInstance(document, summary)
+            
+            yield summ_instance
