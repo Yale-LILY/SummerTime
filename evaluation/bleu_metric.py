@@ -4,9 +4,9 @@ from typing import List, Dict
 
 class Bleu(SummEvalMetric):
     metric_name = 'bleu'
-    range = (0, 10)
+    range = (0, 100)
     higher_is_better = True
-    requires_heavy_compute = False 
+    requires_heavy_compute = False
 
     def __init__(self):
         se_metric = BleuMetric()
