@@ -1,12 +1,12 @@
 from summ_eval.rouge_metric import RougeMetric
-from SummerTime.evaluation.summeval_metric import SummEvalMetric
+from evaluation.summeval_metric import SummEvalMetric
 from typing import List, Dict
 
 class Rouge(SummEvalMetric):
     metric_name = 'rouge'
     range = (0, 1)
     higher_is_better = True
-    requires_heavy_compute = False 
+    requires_heavy_compute = False
 
     def __init__(self):
         se_metric = RougeMetric()

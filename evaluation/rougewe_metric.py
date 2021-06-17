@@ -1,5 +1,5 @@
 from summ_eval.rouge_we_metric import RougeWeMetric
-from SummerTime.evaluation.summeval_metric import SummEvalMetric
+from evaluation.summeval_metric import SummEvalMetric
 from typing import List, Dict
 import nltk
 
@@ -7,7 +7,7 @@ class RougeWe(SummEvalMetric):
     metric_name = 'rougeWE'
     range = (0, 1)
     higher_is_better = True
-    requires_heavy_compute = True 
+    requires_heavy_compute = True
 
     def __init__(self):
         nltk.download('stopwords')

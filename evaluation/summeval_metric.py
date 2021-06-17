@@ -1,5 +1,6 @@
 from .base_metric import SummMetric
 from summ_eval.metric import Metric as SEMetric
+from typing import List, Dict 
 
 class SummEvalMetric(SummMetric):
     """
