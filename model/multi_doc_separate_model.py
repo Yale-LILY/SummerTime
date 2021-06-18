@@ -10,11 +10,17 @@ class MultiDocSeparateModel(SummModel):
         model = model_backend(**kwargs)
         self.model = model
     
-    def summarize(self, corpus: Union[List[str], List[List[str]]]) -> str:
-        list_of_summarization = [self.model.summarize([doc]) for doc in corpus]
+    def summarize(self, corpus: Union[List[str], List[List[str]]]) -> List[str]:
+        summaries = []
+        for instance in corpus:
+            print(type(instance))
+            if not isinstance(instance, list):
+                raise TypeError("Multi-document summarization models summarize instances of multiple documents (`List[List[str]]`).")
 
-        summaries = list(map(lambda x: " ".join(x), list_of_summarization))
-        return " ".join(summaries)
+            instance_summaries = self.model.summarize(instance)
+            summaries.append(" ".join(instance_summaries))
+
+        return summaries
     
     @classmethod
     def show_capability(cls):

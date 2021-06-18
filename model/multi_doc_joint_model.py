@@ -10,12 +10,19 @@ class MultiDocJointModel(SummModel):
         model = model_backend(**kwargs)
         self.model = model
 
-    def summarize(self, corpus: Union[List[str], List[List[str]]]) -> str:
-        flattened_corpus = ["\n".join(x) if type(x[0]) is list else x for x in corpus]
-        joint_corpus = [" ".join(flattened_corpus)]
+    def summarize(self, corpus: Union[List[str], List[List[str]]]) -> List[str]:
+        joint_corpus = []
+        for instance in corpus:
+            if not isinstance(instance, list):
+                raise TypeError("Multi-document summarization models summarize instances of multiple documents (`List[List[str]]`).")
+            joint_corpus.append([" ".join(instance)])
 
-        summary = self.model.summarize(joint_corpus)
-        return summary[0]
+        summaries = []
+        for joint_multi_doc_instance in joint_corpus:
+            summary = self.model.summarize(joint_multi_doc_instance)
+            summaries.append(summary[0])
+
+        return summaries
 
     @classmethod
     def show_capability(cls):
