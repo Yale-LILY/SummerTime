@@ -20,12 +20,20 @@ class MultiDocSeparateModel(SummModel):
             summaries.append(" ".join(instance_summaries))
 
         return summaries
-    
+
+    @classmethod
+    def generate_basic_description(cls) -> str:
+        basic_description = ("MultiDocSeparateModel performs multi-document summarization by"
+                             " first performing single-document summarization on each document,"
+                             " and then concatenating the results.")
+        return basic_description
+
     @classmethod
     def show_capability(cls):
+        basic_description = cls.generate_basic_description()
         more_details = ("A multi-document summarization model."
                         " Allows for custom model backend selection at initialization."
                         " Performs single-document summarization on each document in corpus and returns concatenated result.\n"
                         "Strengths: \n - Allows for control of backend model.\n"
                         "Weaknesses: \n - Assumes all documents are equally weighted.\n - May produce redundant information for similar documents.\n")
-        print(more_details)
+        print(f"{basic_description}\n{'#' * 20}\n{more_details}")
