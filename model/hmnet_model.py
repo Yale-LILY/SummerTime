@@ -10,6 +10,7 @@ from .third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
 from .third_party.HMNet.Utils.Arguments import Arguments
 
 # TODO: test the dependencies that are needed to be installed
+# TODO: let them copy-past HMNet or help them move it here
 class HMNetModel(SummModel):
     # static variables
     model_name = "HMNET"
@@ -77,7 +78,25 @@ class HMNetModel(SummModel):
             # we only use test set path for evaluation
             self._preprocess(corpus, os.path.dirname(self.opt['test_file']))
 
-        return self.model.eval_return_results()
+        return self._evaluate()
+
+    def _evaluate(self):
+        if self.opt['rank'] == 0:
+            self.model.log('-----------------------------------------------')
+            self.model.log("Evaluating model ... ")
+
+        self.model.set_up_model()
+
+        eval_dataset = 'test'
+        batch_generator_eval = self.model.get_batch_generator(eval_dataset)
+        self.model.task.evaluator.reset_best_score(set_high=True)
+        result, score, got_better_score = self.model.task.evaluator.eval_batches(
+            self.model.module, batch_generator_eval, self.model.saveFolder, eval_dataset)
+
+        if self.opt['rank'] == 0:
+            self.model.log("{0} results breakdown\n{1}".format(
+                eval_dataset, result))
+        return result # TODO: this result is not what we want
 
     def _preprocess(self, corpus, test_path):
         # TODO: add role vector
