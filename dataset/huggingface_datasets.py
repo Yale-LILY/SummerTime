@@ -109,3 +109,39 @@ class MultinewsDataset(HuggingfaceDataset):
             summ_instance = SummInstance(document, summary)
             
             yield summ_instance
+
+
+class SamsumDataset(HuggingfaceDataset):
+    """
+    The SAMsum
+    """
+    
+    huggingface_page = "https://huggingface.co/datasets/samsum"
+    
+    def __init__(self):
+        # load the train, dev and test set from the huggingface datasets
+        samsum_dataset = datasets.load_dataset('samsum')
+        info_set = samsum_dataset['train']
+        
+        processed_train_set = SamsumDataset.process_samsum_data(samsum_dataset['train'])
+        processed_dev_set = SamsumDataset.process_samsum_data(samsum_dataset['validation'])
+        processed_test_set = SamsumDataset.process_samsum_data(samsum_dataset['test'])
+        
+        super().__init__(info_set,
+                         huggingface_page=SamsumDataset.huggingface_page,
+                         is_query_based=False,
+                         is_dialogue_based=True,
+                         is_multi_document=False,
+                         train_set=processed_train_set,
+                         dev_set=processed_dev_set,
+                         test_set=processed_test_set)
+        
+    @staticmethod
+    def process_samsum_data(data: Dataset) -> List[SummInstance]:
+        for instance in tqdm(data):
+            dialogue: str = instance['dialogue']
+            summary: str = instance['summary']
+            summ_instance = SummInstance(dialogue, summary)
+            
+            yield summ_instance
+
