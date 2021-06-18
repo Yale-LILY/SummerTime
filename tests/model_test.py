@@ -4,8 +4,7 @@ from typing import Tuple, List
 from dataset.huggingface_datasets import CnndmDataset
 from model import SUPPORTED_SUMM_MODELS, list_all_models
 from model.single_doc import LexRankModel, LongformerModel
-from model.multi_doc_joint_model import MultiDocJointModel
-from model.multi_doc_separate_model import MultiDocSeparateModel
+from model.multi_doc import MultiDocJointModel, MultiDocSeparateModel
 
 
 class TestModels(unittest.TestCase):

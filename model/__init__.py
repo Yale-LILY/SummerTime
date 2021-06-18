@@ -1,6 +1,5 @@
 from .single_doc import BartModel, LexRankModel, LongformerModel, PegasusModel, TextRankModel
-from .multi_doc_joint_model import MultiDocJointModel
-from .multi_doc_separate_model import MultiDocSeparateModel
+from .multi_doc import MultiDocJointModel, MultiDocSeparateModel
 from .defaults import summarizer
 
 SUPPORTED_SUMM_MODELS = [BartModel, LexRankModel, LongformerModel, MultiDocJointModel, MultiDocSeparateModel, PegasusModel, TextRankModel]

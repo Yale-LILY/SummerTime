@@ -1,9 +1,10 @@
+from .base_model import MultiDocSummModel
 from model.base_model import SummModel
 from model.single_doc import TextRankModel
 from typing import Union, List
 
 
-class MultiDocSeparateModel(SummModel):
+class MultiDocSeparateModel(MultiDocSummModel):
 
     def __init__(self, model_backend: SummModel = TextRankModel, **kwargs):
         super(MultiDocSeparateModel, self).__init__()
@@ -11,11 +12,9 @@ class MultiDocSeparateModel(SummModel):
         self.model = model
     
     def summarize(self, corpus: Union[List[str], List[List[str]]]) -> List[str]:
+        self.assert_summ_input_type(corpus, None)
         summaries = []
         for instance in corpus:
-            if not isinstance(instance, list):
-                raise TypeError("Multi-document summarization models summarize instances of multiple documents (`List[List[str]]`).")
-
             instance_summaries = self.model.summarize(instance)
             summaries.append(" ".join(instance_summaries))
 
