@@ -8,22 +8,28 @@ class PegasusModel(SummModel):
     model_name = "Pegasus"
     is_extractive = False
     is_neural = True
-    
+
     def __init__(self, device='cpu'):
         super(PegasusModel, self).__init__()
-        
+
         self.device = device
         model_name = 'google/pegasus-xsum'
         self.tokenizer = PegasusTokenizer.from_pretrained(model_name)
         self.model = PegasusForConditionalGeneration.from_pretrained(model_name).to(device)
-    
+
     def summarize(self, corpus, queries=None):
+        if not isinstance(corpus, list):
+            raise TypeError("Pegasus single-document summarization requires corpus of `List[str]`.")
+        for instance in corpus:
+            if not type(instance) == str:
+                raise TypeError("Pegasus single-document summarization requires corpus of `List[str]`.")
+
         batch = self.tokenizer(corpus, truncation=True, padding='longest', return_tensors="pt").to(self.device)
         encoded_summaries = self.model.generate(**batch)
         summaries = self.tokenizer.batch_decode(encoded_summaries, skip_special_tokens=True)
-        
+
         return summaries
-    
+
     @classmethod
     def show_capability(cls):
         basic_description = cls.generate_basic_description()

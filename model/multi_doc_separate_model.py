@@ -13,7 +13,6 @@ class MultiDocSeparateModel(SummModel):
     def summarize(self, corpus: Union[List[str], List[List[str]]]) -> List[str]:
         summaries = []
         for instance in corpus:
-            print(type(instance))
             if not isinstance(instance, list):
                 raise TypeError("Multi-document summarization models summarize instances of multiple documents (`List[List[str]]`).")
 

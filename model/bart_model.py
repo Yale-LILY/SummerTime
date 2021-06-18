@@ -2,8 +2,9 @@ from transformers import BartForConditionalGeneration, BartTokenizer
 import torch
 from .base_model import SummModel
 
+
 class BartModel(SummModel):
-    
+
     # static variables
     model_name = "BART"
     is_extractive = False
@@ -11,20 +12,26 @@ class BartModel(SummModel):
 
     def __init__(self, device='cpu'):
         super(BartModel, self).__init__()
-        
+
         self.device = device
         model_name = 'facebook/bart-large-cnn'
         self.tokenizer = BartTokenizer.from_pretrained(model_name)
         self.model = BartForConditionalGeneration.from_pretrained(model_name)
 
     def summarize(self, corpus, queries=None):
+        if not isinstance(corpus, list):
+            raise TypeError("BART single-document summarization requires corpus of `List[str]`.")
+        for instance in corpus:
+            if not type(instance) == str:
+                raise TypeError("BART single-document summarization requires corpus of `List[str]`.")
+
         batch = self.tokenizer(corpus, truncation=True,
             padding = 'longest', return_tensors="pt").to(self.device)
         encoded_summaries = self.model.generate(**batch)
         summaries = self.tokenizer.batch_decode(encoded_summaries, skip_special_tokens=True)
 
         return summaries
-    
+
     @classmethod
     def show_capability(cls) -> None:
         # TODO zhangir: add the show capability function for BART
