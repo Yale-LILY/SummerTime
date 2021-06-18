@@ -5,7 +5,7 @@ from .base_model import SingleDocSummModel
 class LongformerModel(SingleDocSummModel):
 
     # static variables
-    model_name = "LONGFORMER"
+    model_name = "Longformer"
     is_extractive = False
     is_neural = True
 
