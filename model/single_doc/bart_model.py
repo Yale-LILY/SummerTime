@@ -1,9 +1,9 @@
 from transformers import BartForConditionalGeneration, BartTokenizer
 import torch
-from .base_model import SummModel
+from .base_model import SingleDocSummModel
 
 
-class BartModel(SummModel):
+class BartModel(SingleDocSummModel):
 
     # static variables
     model_name = "BART"
@@ -19,11 +19,7 @@ class BartModel(SummModel):
         self.model = BartForConditionalGeneration.from_pretrained(model_name)
 
     def summarize(self, corpus, queries=None):
-        if not isinstance(corpus, list):
-            raise TypeError("BART single-document summarization requires corpus of `List[str]`.")
-        for instance in corpus:
-            if not type(instance) == str:
-                raise TypeError("BART single-document summarization requires corpus of `List[str]`.")
+        self.assert_summ_input_type(corpus, queries)
 
         batch = self.tokenizer(corpus, truncation=True,
             padding = 'longest', return_tensors="pt").to(self.device)

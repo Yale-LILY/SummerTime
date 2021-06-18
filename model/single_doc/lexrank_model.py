@@ -2,10 +2,10 @@ from lexrank import STOPWORDS
 from lexrank import LexRank as LR
 import nltk
 
-from .base_model import SummModel
+from .base_model import SingleDocSummModel
 
 
-class LexRankModel(SummModel):
+class LexRankModel(SingleDocSummModel):
     # static variables
     model_name = "LexRank"
     is_extractive = True
@@ -21,11 +21,7 @@ class LexRankModel(SummModel):
         self.threshold = threshold
 
     def summarize(self, corpus, queries=None):
-        if not isinstance(corpus, list):
-            raise TypeError("LexRank single-document summarization requires corpus of `List[str]`.")
-        for instance in corpus:
-            if not type(instance) == str:
-                raise TypeError("LexRank single-document summarization requires corpus of `List[str]`.")
+        self.assert_summ_input_type(corpus, queries)
 
         documents = [nltk.sent_tokenize(document) for document in corpus]
         summaries = [self.lxr.get_summary(document, summary_size=self.summary_length, threshold=self.threshold) for

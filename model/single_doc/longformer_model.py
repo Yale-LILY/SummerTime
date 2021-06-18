@@ -1,8 +1,8 @@
 from transformers import LongformerTokenizer, EncoderDecoderModel
-from .base_model import SummModel
+from .base_model import SingleDocSummModel
 
 
-class LongformerModel(SummModel):
+class LongformerModel(SingleDocSummModel):
 
     # static variables
     model_name = "LONGFORMER"
@@ -16,11 +16,7 @@ class LongformerModel(SummModel):
         self.tokenizer = LongformerTokenizer.from_pretrained("allenai/longformer-base-4096")
 
     def summarize(self, corpus, queries=None):
-        if not isinstance(corpus, list):
-            raise TypeError("Longformer single-document summarization requires corpus of `List[str]`.")
-        for instance in corpus:
-            if not type(instance) == str:
-                raise TypeError("Longformer single-document summarization requires corpus of `List[str]`.")
+        self.assert_summ_input_type(corpus, queries)
 
         # Tokenizes corpus and returns PyTorch torch.Tensor object with length attribute
         tokenized_sequence = self.tokenizer(corpus, return_tensors="pt", return_length=True)

@@ -1,4 +1,4 @@
-from .pegasus_model import PegasusModel
+from .single_doc import PegasusModel
 
 
 class summarizer(PegasusModel):

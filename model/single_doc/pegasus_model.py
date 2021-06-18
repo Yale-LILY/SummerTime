@@ -1,9 +1,9 @@
 from transformers import PegasusForConditionalGeneration, PegasusTokenizer
 import torch
-from .base_model import SummModel
+from .base_model import SingleDocSummModel
 
 
-class PegasusModel(SummModel):
+class PegasusModel(SingleDocSummModel):
     # static variables
     model_name = "Pegasus"
     is_extractive = False
@@ -18,11 +18,7 @@ class PegasusModel(SummModel):
         self.model = PegasusForConditionalGeneration.from_pretrained(model_name).to(device)
 
     def summarize(self, corpus, queries=None):
-        if not isinstance(corpus, list):
-            raise TypeError("Pegasus single-document summarization requires corpus of `List[str]`.")
-        for instance in corpus:
-            if not type(instance) == str:
-                raise TypeError("Pegasus single-document summarization requires corpus of `List[str]`.")
+        self.assert_summ_input_type(corpus, queries)
 
         batch = self.tokenizer(corpus, truncation=True, padding='longest', return_tensors="pt").to(self.device)
         encoded_summaries = self.model.generate(**batch)

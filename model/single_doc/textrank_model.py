@@ -2,11 +2,11 @@ import spacy
 import pytextrank
 from math import sqrt
 from operator import itemgetter
-from .base_model import SummModel
+from .base_model import SingleDocSummModel
 from typing import Union, List
 
 
-class TextRankModel(SummModel):
+class TextRankModel(SingleDocSummModel):
     # static variables
     model_name = "TextRank"
     is_extractive = True
@@ -23,11 +23,7 @@ class TextRankModel(SummModel):
     def summarize(self,
                   corpus: Union[List[str], List[List[str]]],
                   queries: List[str] = None) -> List[str]:
-        if not isinstance(corpus, list):
-            raise TypeError("TextRank single-document summarization requires corpus of `List[str]`.")
-        for instance in corpus:
-            if not type(instance) == str:
-                raise TypeError("TextRank single-document summarization requires corpus of `List[str]`.")
+        self.assert_summ_input_type(corpus, queries)
 
         return list(map(lambda x: " ".join(self.summarize_single(x)), corpus))
 

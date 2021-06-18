@@ -1,5 +1,5 @@
 from model.base_model import SummModel
-from model.textrank_model import TextRankModel
+from model.single_doc import TextRankModel
 from typing import Union, List
 
 
