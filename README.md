@@ -105,3 +105,6 @@ Import and initialization:
 ```python
 import dataset.stdatasets as st_data
 ```
+
+## Contributors
+This repository is built by the [LILY Lab](https://yale-lily.github.io/) at Yale University. The main contributors are [Ansong Ni](https://niansong1996.github.io), Zhangir Azerbayev, Troy Feng, Murori Mutuma and Yusen Zhang (Penn State). 
