@@ -15,12 +15,9 @@ class MultiDocJointModel(MultiDocSummModel):
         self.assert_summ_input_type(corpus, None)
         joint_corpus = []
         for instance in corpus:
-            joint_corpus.append([" ".join(instance)])
+            joint_corpus.append(" ".join(instance))
 
-        summaries = []
-        for joint_multi_doc_instance in joint_corpus:
-            summary = self.model.summarize(joint_multi_doc_instance)
-            summaries.append(summary[0])
+        summaries = self.model.summarize(joint_corpus)
 
         return summaries
 
