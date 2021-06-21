@@ -4,6 +4,7 @@ import os
 import torch
 import gzip
 import json
+import uuid
 from nltk import word_tokenize
 import sys
 from .third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
@@ -26,7 +27,7 @@ class HMNetModel(SummModel):
     def _parse_args(self):
         parser = argparse.ArgumentParser(description='HMNet: Pretrain or fine-tune models for HMNet model.')
         parser.add_argument('command', default='evaluate', help='Command: train/evaluate')
-        parser.add_argument('conf_file', default='./third_party/HMNet/ExampleConf/conf_eval_hmnet_AMI', help='Path to the BigLearn conf file.')
+        parser.add_argument('conf_file', default='./hmnet/config/dialogue_conf', help='Path to the BigLearn conf file.')
         parser.add_argument('--PYLEARN_MODEL', help='Overrides this option from the conf file.')
         parser.add_argument('--master_port', help='Overrides this option default', default=None)
         parser.add_argument('--cluster', help='local, philly or aml', default='local')
@@ -76,9 +77,39 @@ class HMNetModel(SummModel):
             print(f"HMNet model: processing document of {corpus.__len__()} samples")
             # transform the original dataset to "dialogue" input
             # we only use test set path for evaluation
-            self._preprocess(corpus, os.path.dirname(self.opt['test_file']))
+            self._set_path(self.opt)
+            self._preprocess(corpus, os.path.join(os.path.dirname(self.opt['test_file']), 'test'))
 
         return self._evaluate()
+
+    def _set_path(self, opt, name=None):
+        # generate an uuid for the dataset
+        if name is None:
+            name = uuid.uuid1()
+        dir_path = "./hmnet/preprocessed_datasets/{}".format(name)
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+
+        # TODO: set the role dict here
+        # TODO: download the pretraining model here
+        for split in ["TRAIN", "VALID", "TEST"]:
+            dataset_path = os.path.join(dir_path, split.lower())
+            if not os.path.exists(dataset_path):
+                os.makedirs(dataset_path)
+
+            meta_path = os.path.join(dir_path, "{}.json".format(split.lower()))
+            new_json = [{
+                "source":
+                {
+                    "dataset": dataset_path
+                },
+                "task": "meeting",
+                "name": name
+            }]
+
+            opt["{}_FILE".format(split)] = meta_path
+            with open(meta_path, 'w', encoding='utf-8') as file:
+                json.dump(meta_path, new_json)
 
     def _evaluate(self):
         if self.opt['rank'] == 0:
