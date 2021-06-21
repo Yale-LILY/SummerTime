@@ -4,6 +4,7 @@ from datasets import Dataset
 
 from typing import Optional, List, Tuple
 from dataset.st_dataset import SummInstance, SummDataset
+# from dataset.st_dataset import SummInstance, SummDataset
 
 
 class HuggingfaceDataset(SummDataset):
@@ -45,7 +46,7 @@ class CnndmDataset(HuggingfaceDataset):
     huggingface_page = "https://huggingface.co/datasets/cnn_dailymail"
     
     def __init__(self):
-        # load the train, dev and test set from the huggingface datasets
+        # Load the train, dev and test set from the huggingface datasets
         cnn_dataset = datasets.load_dataset('cnn_dailymail', '3.0.0')
         info_set = cnn_dataset['train']
         
@@ -81,7 +82,7 @@ class MultinewsDataset(HuggingfaceDataset):
     huggingface_page = "https://huggingface.co/datasets/multi_news"
     
     def __init__(self):
-        # load the train, dev and test set from the huggingface datasets
+        # Load the train, dev and test set from the huggingface datasets
         multinews_dataset = datasets.load_dataset("multi_news")
         info_set = multinews_dataset['train']
         
@@ -119,7 +120,7 @@ class SamsumDataset(HuggingfaceDataset):
     huggingface_page = "https://huggingface.co/datasets/samsum"
     
     def __init__(self):
-        # load the train, dev and test set from the huggingface datasets
+        # Load the train, dev and test set from the huggingface datasets
         samsum_dataset = datasets.load_dataset('samsum')
         info_set = samsum_dataset['train']
         
@@ -139,7 +140,8 @@ class SamsumDataset(HuggingfaceDataset):
     @staticmethod
     def process_samsum_data(data: Dataset) -> List[SummInstance]:
         for instance in tqdm(data):
-            dialogue: str = instance['dialogue']
+            dialogue: str = instance['dialogue'].split('\r\n')  # split each dialogue into a list of strings such as
+                                                                # ["speaker1 : utter..", "speaker2 : utter..."]
             summary: str = instance['summary']
             summ_instance = SummInstance(dialogue, summary)
             

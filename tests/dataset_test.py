@@ -8,8 +8,8 @@ from dataset.st_dataset import SummDataset, SummInstance
 
 class TestDatasets(unittest.TestCase):
     
-    def _test_instance(self, ins: SummInstance, is_query: bool = False, is_multi_document = False):
-        if is_multi_document:
+    def _test_instance(self, ins: SummInstance, is_query: bool=False, is_multi_document: bool=False, is_dialogue: bool=False):
+        if is_multi_document or is_dialogue:
             self.assertTrue(isinstance(ins.source, list))
         else:
             self.assertTrue(isinstance(ins.source, list) or isinstance(ins.source, list))
@@ -30,17 +30,17 @@ class TestDatasets(unittest.TestCase):
             if ds.train_set is not None:
                 train_set = list(ds.train_set)
                 print(f"{ds_cls} has a training set of {len(train_set)} examples")
-                self._test_instance(train_set[0], is_multi_document=ds.is_multi_document)
+                self._test_instance(train_set[0], is_multi_document=ds.is_multi_document, is_dialogue=ds.is_dialogue_based)
                 
             if ds.dev_set is not None:
                 dev_set = list(ds.dev_set)
                 print(f"{ds_cls} has a training set of {len(dev_set)} examples")
-                self._test_instance(dev_set[0], is_multi_document=ds.is_multi_document)
+                self._test_instance(dev_set[0], is_multi_document=ds.is_multi_document, is_dialogue=ds.is_dialogue_based)
                 
             if ds.test_set is not None:
                 test_set = list(ds.test_set)
                 print(f"{ds_cls} has a training set of {len(test_set)} examples")
-                self._test_instance(test_set[0], is_multi_document=ds.is_multi_document)
+                self._test_instance(test_set[0], is_multi_document=ds.is_multi_document, is_dialogue=ds.is_dialogue_based)
         print(f"{'#' * 10} test_all_models {__name__} ENDS {'#' * 10}")
 
 
