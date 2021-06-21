@@ -2,7 +2,7 @@ import spacy
 import pytextrank
 from math import sqrt
 from operator import itemgetter
-from .base_model import SingleDocSummModel
+from .base_single_doc_model import SingleDocSummModel
 from typing import Union, List
 
 

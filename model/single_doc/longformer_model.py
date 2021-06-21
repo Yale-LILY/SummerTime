@@ -1,5 +1,5 @@
 from transformers import LongformerTokenizer, EncoderDecoderModel
-from .base_model import SingleDocSummModel
+from .base_single_doc_model import SingleDocSummModel
 
 
 class LongformerModel(SingleDocSummModel):

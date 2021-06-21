@@ -1,6 +1,6 @@
 from transformers import BartForConditionalGeneration, BartTokenizer
 import torch
-from .base_model import SingleDocSummModel
+from .base_single_doc_model import SingleDocSummModel
 
 
 class BartModel(SingleDocSummModel):

@@ -1,4 +1,4 @@
-from .base_model import MultiDocSummModel
+from .base_multi_doc_model import MultiDocSummModel
 from model.base_model import SummModel
 from model.single_doc import TextRankModel
 from typing import Union, List

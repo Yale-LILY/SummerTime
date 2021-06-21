@@ -1,6 +1,6 @@
 from transformers import PegasusForConditionalGeneration, PegasusTokenizer
 import torch
-from .base_model import SingleDocSummModel
+from .base_single_doc_model import SingleDocSummModel
 
 
 class PegasusModel(SingleDocSummModel):

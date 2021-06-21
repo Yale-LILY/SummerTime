@@ -14,13 +14,11 @@ class SingleDocSummModel(SummModel):
     def assert_summ_input_type(cls, corpus, query):
         if not isinstance(corpus, list):
             raise TypeError("Single-document summarization requires corpus of `List[str]`.")
-        for instance in corpus:
-            if not type(instance) == str:
-                raise TypeError("Single-document summarization requires corpus of `List[str]`.")
+        if not all([isinstance(ins, str) for ins in corpus]):
+            raise TypeError("Single-document summarization requires corpus of `List[str]`.")
 
         if query is not None:
             if not isinstance(query, list):
                 raise TypeError("Query-based single-document summarization requires query of `List[str]`.")
-            for q in query:
-                if not type(q) == str:
-                    raise TypeError("Query-based single-document summarization requires query of `List[str]`.")
+            if not all([isinstance(q, str) for q in query]):
+                raise TypeError("Query-based single-document summarization requires query of `List[str]`.")

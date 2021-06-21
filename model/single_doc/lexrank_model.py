@@ -2,7 +2,7 @@ from lexrank import STOPWORDS
 from lexrank import LexRank as LR
 import nltk
 
-from .base_model import SingleDocSummModel
+from .base_single_doc_model import SingleDocSummModel
 
 
 class LexRankModel(SingleDocSummModel):
