@@ -18,8 +18,13 @@ class LongformerModel(SingleDocSummModel):
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)
 
-        # Tokenizes corpus and returns PyTorch torch.Tensor object with length attribute
-        tokenized_sequence = self.tokenizer(corpus, return_tensors="pt", return_length=True)
+        summaries = list(map(lambda doc: self.summarize_single(doc), corpus))
+
+        return summaries
+    
+    def summarize_single(self, document):
+        # Tokenizes document and returns PyTorch torch.Tensor object with length attribute
+        tokenized_sequence = self.tokenizer(document, return_tensors="pt", return_length=True)
         print(f"Longformer model: processing document of {tokenized_sequence.length} tokens")
         input_ids = tokenized_sequence.input_ids
         # output_ids is tensor with one layer: output_ids[0] extracts tensor layer for decoding
