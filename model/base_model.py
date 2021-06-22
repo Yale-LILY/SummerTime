@@ -35,6 +35,13 @@ class SummModel:
         :return: a list of generated summaries
         """
         raise NotImplementedError("The base class for models shouldn't be instantiated!")
+    
+    @classmethod
+    def assert_summ_input_type(cls, corpus: Union[List[str], List[List[str]]], queries: Union[List[str], None]):
+        """
+        Verifies that type of input corpus or queries for summarization align with the model type.
+        """
+        raise NotImplementedError("The base class for models shouldn't be instantiated!")
 
     @classmethod
     def show_capability(cls) -> None:
