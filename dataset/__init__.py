@@ -1,8 +1,8 @@
-from dataset.huggingface_datasets import CnndmDataset, MultinewsDataset
-from dataset.non_huggingface_datasets import Scisummnet
+from dataset.huggingface_datasets import CnndmDataset, MultinewsDataset, SamsumDataset
+from dataset.non_huggingface_datasets import ScisummnetDataset
 
-SUPPORTED_HF_DATASETS = [CnndmDataset, MultinewsDataset]
-SUPPORTED_NON_HF_DATASETS = [Scisummnet]
+SUPPORTED_HF_DATASETS = [CnndmDataset, MultinewsDataset, SamsumDataset]
+SUPPORTED_NON_HF_DATASETS = [ScisummnetDataset]
 SUPPORTED_SUMM_DATASETS = SUPPORTED_HF_DATASETS + SUPPORTED_NON_HF_DATASETS
 
 

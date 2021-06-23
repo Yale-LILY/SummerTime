@@ -4,6 +4,7 @@ from datasets import Dataset
 
 from typing import Optional, List, Tuple
 from dataset.st_dataset import SummInstance, SummDataset
+# from dataset.st_dataset import SummInstance, SummDataset
 
 
 class HuggingfaceDataset(SummDataset):
@@ -45,7 +46,7 @@ class CnndmDataset(HuggingfaceDataset):
     huggingface_page = "https://huggingface.co/datasets/cnn_dailymail"
     
     def __init__(self):
-        # load the train, dev and test set from the huggingface datasets
+        # Load the train, dev and test set from the huggingface datasets
         cnn_dataset = datasets.load_dataset('cnn_dailymail', '3.0.0')
         info_set = cnn_dataset['train']
         
@@ -81,7 +82,7 @@ class MultinewsDataset(HuggingfaceDataset):
     huggingface_page = "https://huggingface.co/datasets/multi_news"
     
     def __init__(self):
-        # load the train, dev and test set from the huggingface datasets
+        # Load the train, dev and test set from the huggingface datasets
         multinews_dataset = datasets.load_dataset("multi_news")
         info_set = multinews_dataset['train']
         
@@ -109,3 +110,40 @@ class MultinewsDataset(HuggingfaceDataset):
             summ_instance = SummInstance(document, summary)
             
             yield summ_instance
+
+
+class SamsumDataset(HuggingfaceDataset):
+    """
+    The SAMsum
+    """
+    
+    huggingface_page = "https://huggingface.co/datasets/samsum"
+    
+    def __init__(self):
+        # Load the train, dev and test set from the huggingface datasets
+        samsum_dataset = datasets.load_dataset('samsum')
+        info_set = samsum_dataset['train']
+        
+        processed_train_set = SamsumDataset.process_samsum_data(samsum_dataset['train'])
+        processed_dev_set = SamsumDataset.process_samsum_data(samsum_dataset['validation'])
+        processed_test_set = SamsumDataset.process_samsum_data(samsum_dataset['test'])
+        
+        super().__init__(info_set,
+                         huggingface_page=SamsumDataset.huggingface_page,
+                         is_query_based=False,
+                         is_dialogue_based=True,
+                         is_multi_document=False,
+                         train_set=processed_train_set,
+                         dev_set=processed_dev_set,
+                         test_set=processed_test_set)
+        
+    @staticmethod
+    def process_samsum_data(data: Dataset) -> List[SummInstance]:
+        for instance in tqdm(data):
+            dialogue: str = instance['dialogue'].split('\r\n')  # split each dialogue into a list of strings such as
+                                                                # ["speaker1 : utter..", "speaker2 : utter..."]
+            summary: str = instance['summary']
+            summ_instance = SummInstance(dialogue, summary)
+            
+            yield summ_instance
+

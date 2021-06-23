@@ -2,31 +2,33 @@ from lexrank import STOPWORDS
 from lexrank import LexRank as LR
 import nltk
 
-from .base_model import SummModel
+from .base_single_doc_model import SingleDocSummModel
 
 
-class LexRankModel(SummModel):
+class LexRankModel(SingleDocSummModel):
     # static variables
     model_name = "LexRank"
     is_extractive = True
     is_neural = False
-    
+
     def __init__(self, data, summary_length=2, threshold=.1):
         super(LexRankModel, self).__init__()
-        
+
         nltk.download('punkt', quiet=True)
         corpus = [nltk.sent_tokenize(example) for example in data]
         self.lxr = LR(corpus, stopwords=STOPWORDS['en'])
         self.summary_length = summary_length
         self.threshold = threshold
-    
-    def summarize(self, documents, queries=None):
-        documents = [nltk.sent_tokenize(document) for document in documents]
+
+    def summarize(self, corpus, queries=None):
+        self.assert_summ_input_type(corpus, queries)
+
+        documents = [nltk.sent_tokenize(document) for document in corpus]
         summaries = [self.lxr.get_summary(document, summary_size=self.summary_length, threshold=self.threshold) for
                      document in documents]
-        
+
         return summaries
-    
+
     @classmethod
     def show_capability(cls):
         basic_description = cls.generate_basic_description()
