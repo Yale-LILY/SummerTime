@@ -3,7 +3,9 @@ import zipfile
 import os
 import json
 import random
+import gdown
 from urllib.request import urlretrieve
+from typing import Optional, List, Tuple
 from dataset.st_dataset import SummInstance, SummDataset
 
 
@@ -17,13 +19,13 @@ class ScisummnetDataset(SummDataset):
     
     def __init__(self):
     
-        # download and unzip the dataset in the temp directory
+        # Download and unzip the dataset in the temp directory
         tmp_dir = tempfile.TemporaryDirectory()
         zip_path, _ = urlretrieve(ScisummnetDataset.download_link)
         with zipfile.ZipFile(zip_path, "r") as f:
             f.extractall(tmp_dir.name)
             
-        # TODO Murori: read from individual folders for the article and the summary
+        # Read from individual folders for the article and the summary
         extraction_path = os.path.join(tmp_dir.name, 'scisummnet_release1.1__20190413', 'top1000_complete')
 
         # Extract the dataset entries from folders and load into dataset
@@ -49,7 +51,7 @@ class ScisummnetDataset(SummDataset):
                                                summary = entry['summary'])
             scisumm_ds.append(summ_entry_instance)
 
-            # scisumm_ds.append(entry)    # add as individual items instead of a Summarization instance
+        tmp_dir.cleanup()
 
 
         # Randomize and split data into train, dev and test sets
@@ -79,5 +81,74 @@ class ScisummnetDataset(SummDataset):
                          )
         
 
-if __name__ == '__main__':
-    print(ScisummnetDataset().train_set[:20])
+class SummscreenDataset(SummDataset):
+    """
+    The SummScreen dataset. As a dataset not included by huggingface, we need to do manually download, set basic
+        information for the dataset
+    """
+    
+    download_link = 'https://drive.google.com/uc?id=1BvdIllGBo9d2-bzXQRzWuJXB04XPVmfF'
+    
+    def __init__(self):
+    
+        
+        # download and unzip the dataset in the temp directory
+        tmp_dir = tempfile.TemporaryDirectory()
+
+        zip_path = os.path.join(tmp_dir.name, 'sumscreen.zip')
+        gdown.download(SummscreenDataset.download_link, zip_path, quiet=False) 
+
+        with zipfile.ZipFile(zip_path, "r") as f:
+            f.extractall(tmp_dir.name)
+
+        # Read from individual folders for the article and the summary
+        extraction_path = os.path.join(tmp_dir.name, 'SummScreen')
+
+
+        # Extract the dataset entries from folders and load into dataset
+        processed_train_set = SummscreenDataset.process_summscreen_data(os.path.join(extraction_path, 'ForeverDreaming', 'fd_train.json')) 
+        processed_train_set += SummscreenDataset.process_summscreen_data(os.path.join(extraction_path, 'TVMegaSite', 'tms_train.json'))
+        processed_dev_set = SummscreenDataset.process_summscreen_data(os.path.join(extraction_path, 'ForeverDreaming', 'fd_dev.json')) 
+        processed_dev_set += SummscreenDataset.process_summscreen_data(os.path.join(extraction_path, 'TVMegaSite', 'tms_dev.json'))
+        processed_test_set = SummscreenDataset.process_summscreen_data(os.path.join(extraction_path, 'ForeverDreaming', 'fd_test.json')) 
+        processed_test_set += SummscreenDataset.process_summscreen_data(os.path.join(extraction_path, 'TVMegaSite', 'tms_test.json'))
+
+        tmp_dir.cleanup()
+
+        
+        #  Process the train, dev and test set and replace the last three args in __init__() below
+        dataset_name = "SummScreen_fd+tms_tokenized"
+        description = "A summarization dataset comprised of pairs of TV series transcripts and human written recaps. \
+                        The dataset provides a challenging testbed for abstractive summarization. \
+                        It contains transcripts from FoeverDreaming (fd) and TVMegaSite.\
+                        The current version being used is the one where the transcripts have already been tokenized."
+        super().__init__(dataset_name,
+                         description,
+                         is_dialogue_based=True,
+                         is_multi_document=False,
+                         is_query_based=False,
+                         train_set=processed_train_set,  
+                         dev_set=processed_dev_set, 
+                         test_set=processed_test_set, 
+                         )
+
+    @staticmethod
+    def process_summscreen_data(file_path: str) -> List[SummInstance]:
+
+        entries_set = []
+
+        infile = open(file_path, 'r')
+        for line in infile:
+            processed_line = line.replace("@@ ", "")
+            data = json.loads(processed_line)
+            entries_set.append(data)
+        infile.close()
+
+        processed_set = []
+        for instance in entries_set:
+            transcript: List = instance['Transcript']
+            recap: str = instance['Recap'][0]               # Recap is a single string in list
+            summ_instance = SummInstance(source=transcript, summary=recap)
+            processed_set.append(summ_instance)
+
+        return processed_set

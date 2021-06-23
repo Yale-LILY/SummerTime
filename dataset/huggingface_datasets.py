@@ -4,7 +4,6 @@ from datasets import Dataset
 
 from typing import Optional, List, Tuple
 from dataset.st_dataset import SummInstance, SummDataset
-# from dataset.st_dataset import SummInstance, SummDataset
 
 
 class HuggingfaceDataset(SummDataset):
@@ -140,7 +139,7 @@ class SamsumDataset(HuggingfaceDataset):
     @staticmethod
     def process_samsum_data(data: Dataset) -> List[SummInstance]:
         for instance in tqdm(data):
-            dialogue: str = instance['dialogue'].split('\r\n')  # split each dialogue into a list of strings such as
+            dialogue: List = instance['dialogue'].split('\r\n')  # split each dialogue into a list of strings such as
                                                                 # ["speaker1 : utter..", "speaker2 : utter..."]
             summary: str = instance['summary']
             summ_instance = SummInstance(dialogue, summary)
