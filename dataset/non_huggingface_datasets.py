@@ -4,7 +4,7 @@ import os
 import json
 import random
 import gdown
-from urllib.request import urlretrieve
+from urllib.request import urlretrieve, urlopen
 from typing import Optional, List, Tuple
 from dataset.st_dataset import SummInstance, SummDataset
 
@@ -81,6 +81,7 @@ class ScisummnetDataset(SummDataset):
                          )
         
 
+
 class SummscreenDataset(SummDataset):
     """
     The SummScreen dataset. As a dataset not included by huggingface, we need to do manually download, set basic
@@ -150,5 +151,60 @@ class SummscreenDataset(SummDataset):
             recap: str = instance['Recap'][0]               # Recap is a single string in list
             summ_instance = SummInstance(source=transcript, summary=recap)
             processed_set.append(summ_instance)
+
+        return processed_set
+
+
+
+
+class QMsumDataset(SummDataset):
+    """
+    QMSum is a new human-annotated benchmark for query-based multi-domain meeting summarization task, \
+        which consists of 1,808 query-summary pairs over 232 meetings in multiple domains.
+    """
+    
+    download_link = "https://raw.githubusercontent.com/Yale-LILY/QMSum/main/data/ALL/jsonl/"
+    
+    def __init__(self):
+
+        # Extract the dataset entries from folders and load into dataset
+        processed_train_set = QMsumDataset.process_qmsum_data("train")
+        processed_dev_set = QMsumDataset.process_qmsum_data("val")
+        processed_test_set = QMsumDataset.process_qmsum_data("test")
+
+        
+        #  Process the train, dev and test set and replace the last three args in __init__() below
+        dataset_name = "QMsum"
+        description = "QMSum is a new human-annotated benchmark for query-based multi-domain meeting summarization task, \
+                        which consists of 1,808 query-summary pairs over 232 meetings in multiple domains."
+        super().__init__(dataset_name,
+                         description,
+                         is_dialogue_based=True,
+                         is_multi_document=False,
+                         is_query_based=True,
+                         train_set=processed_train_set,  
+                         dev_set=processed_dev_set, 
+                         test_set=processed_test_set, 
+                         )
+        
+
+    @staticmethod
+    def process_qmsum_data(split: str) -> List[SummInstance]:
+
+        data_path, _ = urlretrieve(QMsumDataset.download_link + split + ".jsonl")
+        data = []
+        with open(data_path) as f:
+            for line in f:
+                data.append(json.loads(line))
+
+        processed_set = []
+        for instance in data:
+            for query_set in instance['general_query_list'] + instance['specific_query_list']:
+                meeting: List = [utterance['speaker'] + " : " + utterance['content']\
+                                for utterance in instance['meeting_transcripts']]
+                query: str = query_set['query']
+                summary: str = query_set['answer']    
+                summ_instance = SummInstance(source=meeting, summary=summary, query=query)
+                processed_set.append(summ_instance)
 
         return processed_set
