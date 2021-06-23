@@ -7,7 +7,7 @@ from urllib.request import urlretrieve
 from dataset.st_dataset import SummInstance, SummDataset
 
 
-class Scisummnet(SummDataset):
+class ScisummnetDataset(SummDataset):
     """
     The SciSummNet dataset. As a dataset not included by huggingface, we need to do manually download, set basic
         information for the dataset
@@ -19,7 +19,7 @@ class Scisummnet(SummDataset):
     
         # download and unzip the dataset in the temp directory
         tmp_dir = tempfile.TemporaryDirectory()
-        zip_path, _ = urlretrieve(Scisummnet.download_link)
+        zip_path, _ = urlretrieve(ScisummnetDataset.download_link)
         with zipfile.ZipFile(zip_path, "r") as f:
             f.extractall(tmp_dir.name)
             
@@ -62,7 +62,7 @@ class Scisummnet(SummDataset):
         processed_test_set = scisumm_ds[split_2:]
 
         
-        # TODO Murori: process the train, dev and test set and replace the last three args in __init__() below
+        #  Process the train, dev and test set and replace the last three args in __init__() below
         dataset_name = "ScisummNet_v1.1"
         description = "A summary of scientific papers should ideally incorporate the impact of the papers on the " \
                       "research community reflected by citations. To facilitate research in citation-aware scientific " \
@@ -73,11 +73,11 @@ class Scisummnet(SummDataset):
                          is_dialogue_based=False,
                          is_multi_document=False,
                          is_query_based=False,
-                         train_set=processed_train_set,  # TODO
-                         dev_set=processed_dev_set,  # TODO
-                         test_set=processed_test_set,  # TODO
+                         train_set=processed_train_set,  
+                         dev_set=processed_dev_set, 
+                         test_set=processed_test_set, 
                          )
         
 
 if __name__ == '__main__':
-    print(Scisummnet().train_set[:20])
+    print(ScisummnetDataset().train_set[:20])
