@@ -1,4 +1,4 @@
-from .base_model import SummModel
+from ..base_model import SummModel
 import argparse
 import os
 import torch
@@ -7,11 +7,15 @@ import json
 import uuid
 from nltk import word_tokenize
 import sys
-from .third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
-from .third_party.HMNet.Utils.Arguments import Arguments
+from ..third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
+from ..third_party.HMNet.Utils.Arguments import Arguments
+from ..third_party.HMNet.Models.Networks.MeetingNet_Transformer import MeetingNet_Transformer
+from ..third_party.HMNet.Models.Criteria.MLECriterion import MLECriterion
 
 # TODO: test the dependencies that are needed to be installed
-# TODO: let them copy-past HMNet or help them move it here
+# TODO: tell the users to git clone HMNet before use
+
+
 class HMNetModel(SummModel):
     # static variables
     model_name = "HMNET"
@@ -20,14 +24,16 @@ class HMNetModel(SummModel):
 
     def __init__(self):
         super(HMNetModel, self).__init__()
-
+        self.root_path = '/home/yfz5488/summertime/model/dialogue' # TODO: set this path to the correct version
         self.opt = self._parse_args()
         self.model = HMNetTrainer(self.opt)
 
     def _parse_args(self):
         parser = argparse.ArgumentParser(description='HMNet: Pretrain or fine-tune models for HMNet model.')
-        parser.add_argument('command', default='evaluate', help='Command: train/evaluate')
-        parser.add_argument('conf_file', default='./hmnet/config/dialogue_conf', help='Path to the BigLearn conf file.')
+        parser.add_argument('--command', default='evaluate', help='Command: train/evaluate')
+        parser.add_argument('--conf_file',
+                            default=os.path.join(self.root_path, 'hmnet/config/dialogue_conf'),
+                            help='Path to the BigLearn conf file.')
         parser.add_argument('--PYLEARN_MODEL', help='Overrides this option from the conf file.')
         parser.add_argument('--master_port', help='Overrides this option default', default=None)
         parser.add_argument('--cluster', help='local, philly or aml', default='local')
@@ -70,46 +76,17 @@ class HMNetModel(SummModel):
         return opt
 
     def summarize(self, corpus, queries=None):
-        if corpus is None:
-            print("Corpus not found, using default AMI dataset.")
-            # TODO: where do we save checkpoints
-        else:
-            print(f"HMNet model: processing document of {corpus.__len__()} samples")
-            # transform the original dataset to "dialogue" input
-            # we only use test set path for evaluation
-            self._set_path(self.opt)
-            self._preprocess(corpus, os.path.join(os.path.dirname(self.opt['test_file']), 'test'))
+        print(f"HMNet model: processing document of {corpus.__len__()} samples")
+        # transform the original dataset to "dialogue" input
+        # we only use test set path for evaluation
+        self._preprocess(corpus, os.path.join(os.path.dirname(self.opt['datadir']),
+                                              'ExampleRawData/meeting_summarization/AMI_proprec/test'))
 
+        # return self.model.eval()
         return self._evaluate()
 
-    def _set_path(self, opt, name=None):
-        # generate an uuid for the dataset
-        if name is None:
-            name = uuid.uuid1()
-        dir_path = "./hmnet/preprocessed_datasets/{}".format(name)
-        if not os.path.exists(dir_path):
-            os.makedirs(dir_path)
-
-        # TODO: set the role dict here
-        # TODO: download the pretraining model here
-        for split in ["TRAIN", "VALID", "TEST"]:
-            dataset_path = os.path.join(dir_path, split.lower())
-            if not os.path.exists(dataset_path):
-                os.makedirs(dataset_path)
-
-            meta_path = os.path.join(dir_path, "{}.json".format(split.lower()))
-            new_json = [{
-                "source":
-                {
-                    "dataset": dataset_path
-                },
-                "task": "meeting",
-                "name": name
-            }]
-
-            opt["{}_FILE".format(split)] = meta_path
-            with open(meta_path, 'w', encoding='utf-8') as file:
-                json.dump(meta_path, new_json)
+    # TODO: set the role dict here
+    # TODO: readme -- download the pretraining model here
 
     def _evaluate(self):
         if self.opt['rank'] == 0:
@@ -120,54 +97,84 @@ class HMNetModel(SummModel):
 
         eval_dataset = 'test'
         batch_generator_eval = self.model.get_batch_generator(eval_dataset)
-        self.model.task.evaluator.reset_best_score(set_high=True)
-        result, score, got_better_score = self.model.task.evaluator.eval_batches(
+        predictions = self._eval_batches(
             self.model.module, batch_generator_eval, self.model.saveFolder, eval_dataset)
 
-        if self.opt['rank'] == 0:
-            self.model.log("{0} results breakdown\n{1}".format(
-                eval_dataset, result))
-        return result # TODO: this result is not what we want
+        return predictions
+    # TODO: raise an issue about spacy version
+
+    def _eval_batches(self, module, dev_batches, save_folder, label=''):
+        max_sent_len = int(self.opt['MAX_GEN_LENGTH'])
+
+        print('Decoding current model ... \nSaving folder is {}'.format(save_folder))
+
+        predictions = []  # prediction of tokens from model
+        if not isinstance(module.tokenizer, list):
+            decoder_tokenizer = module.tokenizer
+        elif len(module.tokenizer) == 1:
+            decoder_tokenizer = module.tokenizer[0]
+        elif len(module.tokenizer) == 2:
+            decoder_tokenizer = module.tokenizer[1]
+        else:
+            assert False, f"len(module.tokenizer) > 2"
+
+        with torch.no_grad():
+            for j, dev_batch in enumerate(dev_batches):
+                for b in dev_batch:
+                    if torch.is_tensor(dev_batch[b]):
+                        dev_batch[b] = dev_batch[b].to(self.opt['device'])
+
+                beam_search_res = module(dev_batch, beam_search=True, max_sent_len=max_sent_len)
+                pred = [[t[0] for t in x] if len(x) > 0 else [[]] for x in beam_search_res]
+                predictions.extend([[self._convert_tokens_to_string(decoder_tokenizer, tt) for tt in t] for t in pred])
+
+                if ("DEBUG" in self.opt and j >= 10) or j >= self.model.task.evaluator.eval_batches_num:
+                    # in debug mode (decode first 10 batches) ortherwise decode first self.eval_batches_num bathes
+                    break
+
+        top1_predictions = [x[0] for x in predictions]
+        return top1_predictions
+
+    def _convert_tokens_to_string(self, tokenizer, tokens):
+        if 'EVAL_TOKENIZED' in self.opt:
+            tokens = [t for t in tokens if t not in tokenizer.all_special_tokens]
+        if 'EVAL_LOWERCASE' in self.opt:
+            tokens = [t.lower() for t in tokens]
+        if 'EVAL_TOKENIZED' in self.opt:
+            return ' '.join(tokens)
+        else:
+            return tokenizer.decode(tokenizer.convert_tokens_to_ids(tokens), skip_special_tokens=True)
 
     def _preprocess(self, corpus, test_path):
         # TODO: add role vector
+        samples = []
         for i, sample in enumerate(corpus):
             new_sample = {'id': i, 'meeting': [], 'summary': []}
-            if isinstance(sample.source, str):
+            if isinstance(sample, str):
                 raise RuntimeError("Error: the input of HMNet should be dialogues, rather than documents.")
 
-            # add query to the top of the turns
-            if sample.query is not None:
-                tokenized_turn = word_tokenize(sample.query)
-                new_sample['meeting'].append({
-                    'speaker': 'query',
-                    'role': 'query',  # TODO: refine this role
-                    'utt': {
-                        'word': tokenized_turn,
-                        'pos_id': [0] * len(tokenized_turn),  # TODO: add Scipy pos tag
-                        'ent_id': [73] * len(tokenized_turn)
-                    }
-                })
-
             # add all the turns one by one
-            for turn in sample.source:
+            for turn in sample:
                 turn = [x.strip() for x in turn.split(':')]
                 tokenized_turn = word_tokenize(turn[1])
                 new_sample['meeting'].append({
                     'speaker': turn[0],
-                    'role': turn[0], # TODO: refine this role
+                    'role': '', # TODO: refine this role
                     'utt': {
                         'word': tokenized_turn,
                         'pos_id': [0]*len(tokenized_turn), # TODO: add Scipy pos tag
                         'ent_id': [73]*len(tokenized_turn)
                     }
                 })
-            new_sample['summary'].append(corpus.summary)
-
+            # new_sample['summary'].append(corpus.summary)
+            samples.append(new_sample)
             #save to the gzip
             file_path = os.path.join(test_path, "split_{}.jsonl.gz".format(i))
-            with gzip.open(file_path, 'w', encoding='utf-8') as file:
-                file.write(json.dumps(new_sample)+'\n')
+            with gzip.open(file_path, 'wt') as file:
+                file.write(json.dumps(new_sample))
+        # with open(os.path.join(test_path,"split.jsonl"), 'w') as file:
+        #     for sample in samples:
+        #         file.write(json.dumps(sample) + '\n')
 
 
     @classmethod

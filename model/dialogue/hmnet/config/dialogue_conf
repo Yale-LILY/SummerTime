@@ -32,10 +32,10 @@ GRAD_CLIPPING    2
 
 # This is the relative path to the directory where this conf file locates
 USE_REL_DATA_PATH
-TRAIN_FILE	./third_party/HMNet/ExampleRawData/meeting_summarization/AMI_proprec/train_ami.json
-DEV_FILE	./third_party/HMNet/ExampleRawData/meeting_summarization/AMI_proprec/valid_ami.json
-TEST_FILE	./third_party/HMNet/ExampleRawData/meeting_summarization/AMI_proprec/test_ami.json
-ROLE_DICT_FILE  ./third_party/HMNet/ExampleRawData/meeting_summarization/role_dict_ext.json
+TRAIN_FILE	../ExampleRawData/meeting_summarization/AMI_proprec/train_ami.json
+DEV_FILE	../ExampleRawData/meeting_summarization/AMI_proprec/valid_ami.json
+TEST_FILE	../ExampleRawData/meeting_summarization/AMI_proprec/test_ami.json
+ROLE_DICT_FILE  ../ExampleRawData/meeting_summarization/role_dict_ext.json
 
 MINI_BATCH	1
 MAX_PADDING_RATIO	1
@@ -73,10 +73,10 @@ TRANSFORMER_HEAD	8
 TRANSFORMER_POS_DISCOUNT	80
 
 PRE_TOKENIZER	TransfoXLTokenizer
-PRE_TOKENIZER_PATH  ./third_party/HMNet/ExampleInitModel/transfo-xl-wt103
-PYLEARN_MODEL ./third_party/HMNet/ExampleInitModel/AMI-finetuned
+PRE_TOKENIZER_PATH  ../../../third_party/HMNet/ExampleInitModel/transfo-xl-wt103
+PYLEARN_MODEL ../../../third_party/HMNet/ExampleInitModel/AMI-finetuned
 # e.g. PYLEARN_MODEL conf_hmnet_AMI_conf~/run_1/11600
-# PYLEARN_MODEL ./third_party/HMNet/ExampleInitModel/AMI-finetuned
+# PYLEARN_MODEL /home/yfz5488/summertime/model/third_party/HMNet/ExampleInitModel/AMI-finetuned
 
 ##################
 # Tokenizer settings
@@ -91,6 +91,6 @@ EXTRA_IDS	1000
 BEAM_WIDTH      6
 EVAL_TOKENIZED
 EVAL_LOWERCASE
-MAX_GEN_LENGTH  512
-MIN_GEN_LENGTH  400
+MAX_GEN_LENGTH  256
+MIN_GEN_LENGTH  40
 NO_REPEAT_NGRAM_SIZE 3
