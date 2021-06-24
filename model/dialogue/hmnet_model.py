@@ -12,8 +12,10 @@ from ..third_party.HMNet.Utils.Arguments import Arguments
 from ..third_party.HMNet.Models.Networks.MeetingNet_Transformer import MeetingNet_Transformer
 from ..third_party.HMNet.Models.Criteria.MLECriterion import MLECriterion
 
-# TODO: test the dependencies that are needed to be installed
-# TODO: tell the users to git clone HMNet before use
+# TODO: readme -- download the pretraining model,
+#       git clone HMNet before use,
+#       the dependencies that are needed to be installed.
+# TODO: set the role dict, spacy.
 
 
 class HMNetModel(SummModel):
@@ -24,9 +26,16 @@ class HMNetModel(SummModel):
 
     def __init__(self):
         super(HMNetModel, self).__init__()
-        self.root_path = '/home/yfz5488/summertime/model/dialogue' # TODO: set this path to the correct version
+        self.root_path = self._get_root()
         self.opt = self._parse_args()
         self.model = HMNetTrainer(self.opt)
+
+    def _get_root(self):
+        root_path = os.getcwd()
+        while 'model' not in os.listdir(root_path):
+            root_path = os.path.dirname(root_path)
+        root_path = os.path.join(root_path, 'model/dialogue')
+        return root_path
 
     def _parse_args(self):
         parser = argparse.ArgumentParser(description='HMNet: Pretrain or fine-tune models for HMNet model.')
@@ -79,14 +88,15 @@ class HMNetModel(SummModel):
         print(f"HMNet model: processing document of {corpus.__len__()} samples")
         # transform the original dataset to "dialogue" input
         # we only use test set path for evaluation
-        self._preprocess(corpus, os.path.join(os.path.dirname(self.opt['datadir']),
-                                              'ExampleRawData/meeting_summarization/AMI_proprec/test'))
+        data_folder = os.path.join(os.path.dirname(self.opt['datadir']),
+                                   'ExampleRawData/meeting_summarization/AMI_proprec/test')
+        self._clean_datafolder(data_folder)
+        self._preprocess(corpus, data_folder)
 
         # return self.model.eval()
-        return self._evaluate()
+        results = self._evaluate()
 
-    # TODO: set the role dict here
-    # TODO: readme -- download the pretraining model here
+        return results
 
     def _evaluate(self):
         if self.opt['rank'] == 0:
@@ -101,12 +111,12 @@ class HMNetModel(SummModel):
             self.model.module, batch_generator_eval, self.model.saveFolder, eval_dataset)
 
         return predictions
-    # TODO: raise an issue about spacy version
 
     def _eval_batches(self, module, dev_batches, save_folder, label=''):
         max_sent_len = int(self.opt['MAX_GEN_LENGTH'])
 
         print('Decoding current model ... \nSaving folder is {}'.format(save_folder))
+        print('Each sample will cost about 10 second.')
 
         predictions = []  # prediction of tokens from model
         if not isinstance(module.tokenizer, list):
@@ -146,7 +156,6 @@ class HMNetModel(SummModel):
             return tokenizer.decode(tokenizer.convert_tokens_to_ids(tokens), skip_special_tokens=True)
 
     def _preprocess(self, corpus, test_path):
-        # TODO: add role vector
         samples = []
         for i, sample in enumerate(corpus):
             new_sample = {'id': i, 'meeting': [], 'summary': []}
@@ -159,23 +168,25 @@ class HMNetModel(SummModel):
                 tokenized_turn = word_tokenize(turn[1])
                 new_sample['meeting'].append({
                     'speaker': turn[0],
-                    'role': '', # TODO: refine this role
+                    'role': '',
                     'utt': {
                         'word': tokenized_turn,
-                        'pos_id': [0]*len(tokenized_turn), # TODO: add Scipy pos tag
+                        'pos_id': [0]*len(tokenized_turn),
                         'ent_id': [73]*len(tokenized_turn)
                     }
                 })
-            # new_sample['summary'].append(corpus.summary)
+            new_sample['summary'].append("This is a dummy summary. HMNet will filter out the sample w/o summary!")
             samples.append(new_sample)
-            #save to the gzip
+            # save to the gzip
             file_path = os.path.join(test_path, "split_{}.jsonl.gz".format(i))
-            with gzip.open(file_path, 'wt') as file:
+            with gzip.open(file_path, 'wt', encoding='utf-8') as file:
                 file.write(json.dumps(new_sample))
-        # with open(os.path.join(test_path,"split.jsonl"), 'w') as file:
-        #     for sample in samples:
-        #         file.write(json.dumps(sample) + '\n')
 
+    def _clean_datafolder(self, data_folder):
+        for name in os.listdir(data_folder):
+            name = os.path.join(data_folder, name)
+            if 'gz' in name:
+                os.remove(name)
 
     @classmethod
     def show_capability(cls) -> None:
