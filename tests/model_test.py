@@ -30,6 +30,12 @@ class TestModels(unittest.TestCase):
             self.assertTrue(True)
         self.assertEqual(len(all_models), len(SUPPORTED_SUMM_MODELS))
         print(f"{'#'*10} test_list_models {__name__} ENDS {'#'*10}\n\n")
+    
+    def validate_prediction(self, prediction: List[str], src: List):
+        self.assertTrue(isinstance(prediction, list))
+        self.assertTrue(all([isinstance(ins, str) for ins in prediction]))
+        self.assertTrue(len(prediction) == len(src))
+        print("Prediction typing and length matches source instances!")
 
     def test_model_summarize(self):
         print(f"{'#'*10} test_model_summarize STARTS {'#'*10}")
@@ -48,10 +54,12 @@ class TestModels(unittest.TestCase):
                 test_src, test_tgt = self.get_summarization_set(3)
                 prediction = model.summarize([test_src])
                 print(f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
+                self.validate_prediction(prediction, [test_src])
             else:
                 test_src, test_tgt = self.get_summarization_set(1)
                 prediction = model.summarize([test_src[0] * 5] if model_class == LongformerModel else test_src)
                 print(f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
+                self.validate_prediction(prediction, [test_src[0] * 50] if model_class == LongformerModel else test_src)
 
         print(f"{'#'*10} test_model_summarize ENDS {'#'*10}\n\n")
 

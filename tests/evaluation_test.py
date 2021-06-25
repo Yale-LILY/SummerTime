@@ -4,7 +4,7 @@ from typing import Tuple, List, Dict
 from evaluation import SUPPORTED_EVALUATION_METRICS
 
 class TestEvaluationMetrics(unittest.TestCase):
-    def get_summary_pair(self, size: int=1) -> Tuple[List[str]]:
+    def get_summary_pairs(self, size: int=1) -> Tuple[List[str]]:
         test_output = [ """
         Glowing letters that had been hanging above
         the Yankee stadium from 1976 to 2008 were placed for auction at
@@ -30,11 +30,12 @@ class TestEvaluationMetrics(unittest.TestCase):
             score_dict = metric.evaluate(test_output, test_target)
             print(f"{metric_class} output dictionary")
             print(score_dict)
-            self.assertIs(score_dict, Dict[str, float])
+            self.assertTrue(isinstance(score_dict, Dict))
             self.assertNotEqual(score_dict, {})
-            for key in score_dict:
-                self.assertTrue(self.range[0] <= score_dict[key])
-                self.assertTrue(score_dict[key] <= self.range[1])
+            for k, v in score_dict.items():
+                self.assertTrue(isinstance(k, str) and isinstance(v, float))
+                self.assertTrue(self.range[0] <= score_dict[k])
+                self.assertTrue(score_dict[k] <= self.range[1])
 
 
 if __name__ == '__main__':
