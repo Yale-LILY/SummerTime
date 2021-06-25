@@ -12,10 +12,21 @@ from ..third_party.HMNet.Utils.Arguments import Arguments
 from ..third_party.HMNet.Models.Networks.MeetingNet_Transformer import MeetingNet_Transformer
 from ..third_party.HMNet.Models.Criteria.MLECriterion import MLECriterion
 
+
 # TODO: readme -- download the pretraining model,
 #       git clone HMNet before use,
 #       the dependencies that are needed to be installed.
-# TODO: set the role dict, spacy.
+# TODO: set the role dict.
+
+import spacy
+nlp = spacy.load('en_core_web_sm', disable=['parser'])
+# tagger = nlp.get_pipe('tagger')
+# ner = nlp.get_pipe('ner')
+# POS = {w: i for i, w in enumerate([''] + list(tagger.labels))}
+# ENT = {w: i for i, w in enumerate([''] + list(ner.move_names))}
+# These two dicts are adapted from SpaCy 2.3.1, since HMNet's embedding for POS and ENT is fixed
+POS = {'': 0, '$': 1, "''": 2, ',': 3, '-LRB-': 4, '-RRB-': 5, '.': 6, ':': 7, 'ADD': 8, 'AFX': 9, 'CC': 10, 'CD': 11, 'DT': 12, 'EX': 13, 'FW': 14, 'HYPH': 15, 'IN': 16, 'JJ': 17, 'JJR': 18, 'JJS': 19, 'LS': 20, 'MD': 21, 'NFP': 22, 'NN': 23, 'NNP': 24, 'NNPS': 25, 'NNS': 26, 'PDT': 27, 'POS': 28, 'PRP': 29, 'PRP$': 30, 'RB': 31, 'RBR': 32, 'RBS': 33, 'RP': 34, 'SYM': 35, 'TO': 36, 'UH': 37, 'VB': 38, 'VBD': 39, 'VBG': 40, 'VBN': 41, 'VBP': 42, 'VBZ': 43, 'WDT': 44, 'WP': 45, 'WP$': 46, 'WRB': 47, 'XX': 48, '_SP': 49, '``': 50}
+ENT = {'': 0, 'B-ORG': 1, 'B-DATE': 2, 'B-PERSON': 3, 'B-GPE': 4, 'B-MONEY': 5, 'B-CARDINAL': 6, 'B-NORP': 7, 'B-PERCENT': 8, 'B-WORK_OF_ART': 9, 'B-LOC': 10, 'B-TIME': 11, 'B-QUANTITY': 12, 'B-FAC': 13, 'B-EVENT': 14, 'B-ORDINAL': 15, 'B-PRODUCT': 16, 'B-LAW': 17, 'B-LANGUAGE': 18, 'I-ORG': 19, 'I-DATE': 20, 'I-PERSON': 21, 'I-GPE': 22, 'I-MONEY': 23, 'I-CARDINAL': 24, 'I-NORP': 25, 'I-PERCENT': 26, 'I-WORK_OF_ART': 27, 'I-LOC': 28, 'I-TIME': 29, 'I-QUANTITY': 30, 'I-FAC': 31, 'I-EVENT': 32, 'I-ORDINAL': 33, 'I-PRODUCT': 34, 'I-LAW': 35, 'I-LANGUAGE': 36, 'L-ORG': 37, 'L-DATE': 38, 'L-PERSON': 39, 'L-GPE': 40, 'L-MONEY': 41, 'L-CARDINAL': 42, 'L-NORP': 43, 'L-PERCENT': 44, 'L-WORK_OF_ART': 45, 'L-LOC': 46, 'L-TIME': 47, 'L-QUANTITY': 48, 'L-FAC': 49, 'L-EVENT': 50, 'L-ORDINAL': 51, 'L-PRODUCT': 52, 'L-LAW': 53, 'L-LANGUAGE': 54, 'U-ORG': 55, 'U-DATE': 56, 'U-PERSON': 57, 'U-GPE': 58, 'U-MONEY': 59, 'U-CARDINAL': 60, 'U-NORP': 61, 'U-PERCENT': 62, 'U-WORK_OF_ART': 63, 'U-LOC': 64, 'U-TIME': 65, 'U-QUANTITY': 66, 'U-FAC': 67, 'U-EVENT': 68, 'U-ORDINAL': 69, 'U-PRODUCT': 70, 'U-LAW': 71, 'U-LANGUAGE': 72, 'O': 73}
 
 
 class HMNetModel(SummModel):
@@ -165,14 +176,24 @@ class HMNetModel(SummModel):
             # add all the turns one by one
             for turn in sample:
                 turn = [x.strip() for x in turn.split(':')]
-                tokenized_turn = word_tokenize(turn[1])
+                tokenized_turn = nlp(turn[1])
+                # In case we can't find proper entity in move_names
+                ent_id = []
+                pos_id = []
+                for token in tokenized_turn:
+                    ent = token.ent_iob_+'-'+token.ent_type_ if token.ent_iob_ != 'O' else 'O'
+                    ent_id.append(ENT[ent] if ent in ENT else ENT[''])
+
+                    pos = token.tag_
+                    pos_id.append(POS[pos] if pos in POS else POS[''])
+
                 new_sample['meeting'].append({
                     'speaker': turn[0],
                     'role': '',
                     'utt': {
-                        'word': tokenized_turn,
-                        'pos_id': [0]*len(tokenized_turn),
-                        'ent_id': [73]*len(tokenized_turn)
+                        'word': [str(token) for token in tokenized_turn],
+                        'pos_id': pos_id,
+                        'ent_id': ent_id
                     }
                 })
             new_sample['summary'].append("This is a dummy summary. HMNet will filter out the sample w/o summary!")
@@ -185,7 +206,7 @@ class HMNetModel(SummModel):
     def _clean_datafolder(self, data_folder):
         for name in os.listdir(data_folder):
             name = os.path.join(data_folder, name)
-            if 'gz' in name:
+            if '.gz' in name:
                 os.remove(name)
 
     @classmethod
