@@ -24,7 +24,7 @@ class LexRankModel(SingleDocSummModel):
         self.assert_summ_input_type(corpus, queries)
 
         documents = [nltk.sent_tokenize(document) for document in corpus]
-        summaries = [self.lxr.get_summary(document, summary_size=self.summary_length, threshold=self.threshold) for
+        summaries = [self.lxr.get_summary(document, summary_size=self.summary_length, threshold=self.threshold)[0] for
                      document in documents]
 
         return summaries
