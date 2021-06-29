@@ -282,6 +282,3 @@ class ArxivDataset(SummDataset):
             processed_set.append(summ_instance)
 
         return processed_set
-
-
-ArxivDataset()
