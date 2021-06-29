@@ -208,3 +208,80 @@ class QMsumDataset(SummDataset):
                 processed_set.append(summ_instance)
 
         return processed_set
+
+
+
+
+class ArxivDataset(SummDataset):
+    """
+    The Arxiv Dataset
+    """
+    
+    download_link = 'https://archive.org/download/armancohan-long-summarization-paper-code/arxiv-dataset.zip'
+    
+    def __init__(self):
+    
+        print("*****************\n",\
+              "***Attention***\n",\
+              "This dataset is quite large (approx 5Gb and will need about 15 Gb for the extraction process\n",\
+              "Cancel/interrupt the download if size and time constraints will not be met\n",\
+              "*****************")
+        
+        # download and unzip the dataset in the temp directory
+        tmp_dir = tempfile.TemporaryDirectory()
+
+        zip_path = os.path.join(tmp_dir.name, 'arxiv.zip')
+        gdown.download(ArxivDataset.download_link, zip_path, quiet=False) 
+
+        with zipfile.ZipFile(zip_path, "r") as f:
+            f.extractall(tmp_dir.name)
+
+        # Read from individual folders for the article and the summary
+        extraction_path = os.path.join(tmp_dir.name, 'Arxiv')
+
+
+        # Extract the dataset entries from folders and load into dataset
+        processed_train_set = ArxivDataset.process_arxiv_data(os.path.join(extraction_path, 'train.txt')) 
+        processed_dev_set = ArxivDataset.process_arxiv_data(os.path.join(extraction_path, 'val.txt')) 
+        processed_test_set = ArxivDataset.process_arxiv_data(os.path.join(extraction_path, 'test.txt')) 
+
+        tmp_dir.cleanup()
+
+        
+        #  Process the train, dev and test set and replace the last three args in __init__() below
+        dataset_name = "Arxiv_longsummarization_dataset"
+        description = "A summarization dataset comprised of pairs of scientific papers. \
+                        The dataset provides a challenging testbed for abstractive summarization. \
+                        It contains papers and their abstracts. "
+        super().__init__(dataset_name,
+                         description,
+                         is_dialogue_based=False,
+                         is_multi_document=False,
+                         is_query_based=False,
+                         train_set=processed_train_set,  
+                         dev_set=processed_dev_set, 
+                         test_set=processed_test_set, 
+                         )
+
+    @staticmethod
+    def process_arxiv_data(file_path: str) -> List[SummInstance]:
+
+        entries_set = []
+
+        infile = open(file_path, 'r')
+        for line in infile:
+            data = json.loads(line)
+            entries_set.append(data)
+        infile.close()
+
+        processed_set = []
+        for instance in entries_set:
+            article: List = instance['article_text']
+            abstract: str = instance['abstract_text']
+            summ_instance = SummInstance(source=article, summary=abstract)
+            processed_set.append(summ_instance)
+
+        return processed_set
+
+
+ArxivDataset()

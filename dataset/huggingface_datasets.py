@@ -113,7 +113,7 @@ class MultinewsDataset(HuggingfaceDataset):
 
 class SamsumDataset(HuggingfaceDataset):
     """
-    The SAMsum
+    The SAMsum Dataset
     """
     
     huggingface_page = "https://huggingface.co/datasets/samsum"
@@ -146,3 +146,37 @@ class SamsumDataset(HuggingfaceDataset):
             
             yield summ_instance
 
+
+class XsumDataset(HuggingfaceDataset):
+    """
+    The Xsum Dataset
+    """
+    
+    huggingface_page = "https://huggingface.co/datasets/xsum"
+    
+    def __init__(self):
+        # Load the train, dev and test set from the huggingface datasets
+        xsum_dataset = datasets.load_dataset("xsum")
+        info_set = xsum_dataset['train']
+        
+        processed_train_set = XsumDataset.process_xsum_data(xsum_dataset['train'])
+        processed_dev_set = XsumDataset.process_xsum_data(xsum_dataset['validation'])
+        processed_test_set = XsumDataset.process_xsum_data(xsum_dataset['test'])
+        
+        super().__init__(info_set,
+                         huggingface_page=XsumDataset.huggingface_page,
+                         is_query_based=False,
+                         is_dialogue_based=False,
+                         is_multi_document=False,
+                         train_set=processed_train_set,
+                         dev_set=processed_dev_set,
+                         test_set=processed_test_set)
+        
+    @staticmethod
+    def process_xsum_data(data: Dataset) -> List[SummInstance]:
+        for instance in tqdm(data):
+            document: List = instance['document']
+            summary: str = instance['summary']
+            summ_instance = SummInstance(document, summary)
+            
+            yield summ_instance
