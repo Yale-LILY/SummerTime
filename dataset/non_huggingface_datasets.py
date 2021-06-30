@@ -221,11 +221,11 @@ class ArxivDataset(SummDataset):
     
     def __init__(self):
     
-        print("*****************\n",\
+        print("\*****************\n",\
               "***Attention***\n",\
               "This dataset is quite large (approx 5Gb and will need about 15 Gb for the extraction process\n",\
               "Cancel/interrupt the download if size and time constraints will not be met\n",\
-              "*****************")
+              "*****************", sep="")
         
         # download and unzip the dataset in the temp directory
         tmp_dir = tempfile.TemporaryDirectory()
