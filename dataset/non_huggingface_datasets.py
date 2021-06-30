@@ -237,7 +237,7 @@ class ArxivDataset(SummDataset):
             f.extractall(tmp_dir.name)
 
         # Read from individual folders for the article and the summary
-        extraction_path = os.path.join(tmp_dir.name, 'Arxiv')
+        extraction_path = os.path.join(tmp_dir.name)
 
 
         # Extract the dataset entries from folders and load into dataset
