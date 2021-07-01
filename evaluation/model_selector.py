@@ -1,6 +1,8 @@
 import pandas as pd
 import itertools
 import sys
+from .plotutils.radar import make_radar_plot
+
 def model_selector(models,
                    generator,
                    evaluation_metrics,
@@ -95,3 +97,16 @@ def _remove_bad_model(models, df):
         #return models
     else:
         return models
+
+def visualize_model_selector(output: pd.DataFrame):
+    # Preprocesses data.
+    data = []
+    data.append(list(output.keys()))
+    rows = []
+    row_names = []
+    for i, row in output.iterrows():
+        rows.append(list(row))
+        row_names.append(i)
+    data.append(rows)
+
+    return make_radar_plot(data, row_names)
