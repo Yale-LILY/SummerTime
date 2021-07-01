@@ -61,9 +61,8 @@ class IntegrationTests(unittest.TestCase):
         IntegrationTests.print_with_color("Initializing all evaluation metrics...", "35")
         evaluation_metrics = []
         for eval_cls in SUPPORTED_EVALUATION_METRICS:
-            if eval_cls != Rouge and eval_cls != RougeWe:
-                print(eval_cls)
-                evaluation_metrics.append(eval_cls())
+            print(eval_cls)
+            evaluation_metrics.append(eval_cls())
 
         print('\n\n')
         IntegrationTests.print_with_color("Beginning integration tests...", "32")
