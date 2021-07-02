@@ -14,8 +14,6 @@ from typing import Dict, List, Union
 from evaluation.rouge_metric import Rouge
 from evaluation.rougewe_metric import RougeWe
 from model.single_doc import LexRankModel
-from model.multi_doc import MultiDocJointModel
-from model.multi_doc import MultiDocSeparateModel
 from dataset.non_huggingface_datasets import ScisummnetDataset
 from dataset.huggingface_datasets import CnndmDataset
 
@@ -36,13 +34,15 @@ class IntegrationTests(unittest.TestCase):
 
     def _test_single_integration(self, dataset: SummDataset, test_instances: List[SummInstance], model: SummModel, metric: SummMetric):
         IntegrationTests.print_with_color(f"{'#' * 20} Testing: {dataset.dataset_name} dataset, {model.model_name} model, {metric.metric_name} evaluation metric {'#' * 20}", "35")
-
+        # if dataset.is_multi_document != model.is_multi_document or dataset.is_dialogue_based != model.is_dialogue_based or dataset.is_query_based != dataset.is_query_based:
+        #     print("Skipping because summarization tasks of dataset and model don't match\n")
+        #     return
         src = [ins.source[0] for ins in test_instances] if isinstance(dataset, ScisummnetDataset) else [IntegrationTests.flatten_list_to_str(ins.source) for ins in test_instances]
         tgt = [ins.summary for ins in test_instances]
-        prediction = model.summarize([src] if isinstance(model, (MultiDocJointModel, MultiDocSeparateModel)) else src)
+        prediction = model.summarize([src] if model.is_multi_document else src)
         print(prediction)
         print(tgt)
-        score_dict = metric.evaluate(prediction, [" ".join(tgt)] if isinstance(model, (MultiDocJointModel, MultiDocSeparateModel)) else tgt)
+        score_dict = metric.evaluate(prediction, [" ".join(tgt)] if model.is_multi_document else tgt)
         print(score_dict)
 
     def test_all(self):
