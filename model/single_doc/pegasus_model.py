@@ -14,14 +14,19 @@ class PegasusModel(SingleDocSummModel):
 
         self.device = device
         model_name = 'google/pegasus-xsum'
+        print("init load pretrained tokenizer")
         self.tokenizer = PegasusTokenizer.from_pretrained(model_name)
+        print("init load pretrained model with tokenizer on " + device)
         self.model = PegasusForConditionalGeneration.from_pretrained(model_name).to(device)
 
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)
 
+        print("batching")
         batch = self.tokenizer(corpus, truncation=True, padding='longest', return_tensors="pt").to(self.device)
+        print("encoding batches")
         encoded_summaries = self.model.generate(**batch)
+        print("decoding batches")
         summaries = self.tokenizer.batch_decode(encoded_summaries, skip_special_tokens=True)
 
         return summaries
