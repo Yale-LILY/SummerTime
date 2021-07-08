@@ -7,8 +7,8 @@ python:
 # Install dependencies
 install:
   - pip install -r requirements.txt
-script:
   - python setup.py develop
+script:
   - python tests/model_test.py
   - python tests/dataset_test.py
   - python tests/evaluation_test.py
