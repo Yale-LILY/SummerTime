@@ -49,19 +49,6 @@ class QueryBasedSummModel(SummModel):
         summaries = self.model.summarize(retrieval_output) # List[str] or List[List[str]]
         return summaries
 
-    def generate_specific_description(self):
-        is_neural = self.model.is_neural & self.is_neural
-        is_extractive = self.model.is_extractive | self.is_extractive
-        model_name = "Pipeline with retriever: {}, summarizer: {}".format(self.model_name, self.model.model_name)
-
-        extractive_abstractive = "extractive" if is_extractive else "abstractive"
-        neural = "neural" if is_neural else "non-neural"
-
-        basic_description = f"{model_name} is a " \
-            f"{'query-based' if self.is_query_based else ''} " \
-            f"{extractive_abstractive}, {neural} model for summarization."
-
-        return basic_description
 
     @classmethod
     def assert_summ_input_type(cls, corpus, query):

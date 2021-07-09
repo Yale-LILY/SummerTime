@@ -1,2 +1,2 @@
-from .bm25_model import BM25SummModel
-from .tf_idf_model import TFIDFSummModel
+from .bm25_model import BM25Model
+from .tf_idf_model import TFIDFModel
