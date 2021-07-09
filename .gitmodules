@@ -1,0 +1,3 @@
+[submodule "model/third_party/HMNet"]
+	path = model/third_party/HMNet
+	url = https://github.com/microsoft/HMNet.git
