@@ -2,6 +2,7 @@ import datasets
 from tqdm import tqdm
 from datasets import Dataset
 
+import random
 from typing import Optional, List, Tuple
 from dataset.st_dataset import SummInstance, SummDataset
 
@@ -67,7 +68,7 @@ class CnndmDataset(HuggingfaceDataset):
         for instance in tqdm(data):
             article: str = instance['article']
             highlights: str = instance['highlights']
-            summ_instance = SummInstance(article, highlights)
+            summ_instance = SummInstance(source=article, summary=highlights)
             
             yield summ_instance
 
@@ -106,7 +107,7 @@ class MultinewsDataset(HuggingfaceDataset):
                                                                                           # since each doc ends with the delimiting token '|||||'
                                                                                           # the final doc creates an empty string
             summary: str = instance['summary']
-            summ_instance = SummInstance(document, summary)
+            summ_instance = SummInstance(source=document, summary=summary)
             
             yield summ_instance
 
@@ -140,9 +141,9 @@ class SamsumDataset(HuggingfaceDataset):
     def process_samsum_data(data: Dataset) -> List[SummInstance]:
         for instance in tqdm(data):
             dialogue: List = instance['dialogue'].split('\r\n')  # split each dialogue into a list of strings such as
-                                                                # ["speaker1 : utter..", "speaker2 : utter..."]
+                                                                 # ["speaker1 : utter..", "speaker2 : utter..."]
             summary: str = instance['summary']
-            summ_instance = SummInstance(dialogue, summary)
+            summ_instance = SummInstance(source=dialogue, summary=summary)
             
             yield summ_instance
 
@@ -177,6 +178,51 @@ class XsumDataset(HuggingfaceDataset):
         for instance in tqdm(data):
             document: List = instance['document']
             summary: str = instance['summary']
-            summ_instance = SummInstance(document, summary)
+            summ_instance = SummInstance(source=document, summary=summary)
             
             yield summ_instance
+
+
+
+class PubmedqaDataset(HuggingfaceDataset):
+    """
+    The Pubmed QA dataset
+    """
+    
+    huggingface_page = "https://huggingface.co/datasets/pubmed_qa"
+    
+    def __init__(self):
+        # Load the train, dev and test set from the huggingface datasets
+        pubmedqa_dataset = datasets.load_dataset("pubmed_qa", "pqa_artificial")
+        info_set = pubmedqa_dataset['train']
+
+        # No dev and test splits provided; hence creating these splits from the train set
+        # First split train into: train and test splits
+        # Further split train set int: train and dev sets
+        pubmedqa_traintest_split = pubmedqa_dataset['train'].train_test_split(test_size=0.1)
+        pubmedqa_traindev_split = pubmedqa_traintest_split['train'].train_test_split(test_size=0.1)
+
+        processed_train_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_traindev_split['train'])
+        processed_dev_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_traindev_split['test'])
+        processed_test_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_traintest_split['test'])
+        
+        super().__init__(info_set,
+                         huggingface_page=PubmedqaDataset.huggingface_page,
+                         is_query_based=True,
+                         is_dialogue_based=False,
+                         is_multi_document=False,
+                         train_set=processed_train_set,
+                         dev_set=processed_dev_set,
+                         test_set=processed_test_set)
+        
+        
+    @staticmethod
+    def process_pubmedqa_data(data: Dataset) -> List[SummInstance]:
+        for instance in tqdm(data):
+            context: str = instance["context"]["contexts"]
+            answer: str = instance["long_answer"]
+            query: str = instance["question"]
+            summ_instance = SummInstance(source=context, summary=answer, query=query)
+            
+            yield summ_instance
+
