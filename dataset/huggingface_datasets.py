@@ -2,7 +2,6 @@ import datasets
 from tqdm import tqdm
 from datasets import Dataset
 
-import random
 from typing import Optional, List, Tuple
 from dataset.st_dataset import SummInstance, SummDataset
 
