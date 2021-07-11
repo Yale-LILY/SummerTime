@@ -25,7 +25,7 @@ class PegasusModel(SingleDocSummModel):
         print("batching")
         batch = self.tokenizer(corpus, truncation=True, padding='longest', return_tensors="pt").to(self.device)
         print("encoding batches")
-        encoded_summaries = self.model.generate(**batch, max_length=40)
+        encoded_summaries = self.model.generate(**batch, max_length=40, max_time=120)
         print("decoding batches")
         summaries = self.tokenizer.batch_decode(encoded_summaries, skip_special_tokens=True)
 
