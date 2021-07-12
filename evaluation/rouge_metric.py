@@ -15,5 +15,6 @@ class Rouge(SummEvalMetric):
     def evaluate(self,
                  inputs: List[str],
                  targets: List[str],
-                 keys: List[str] = ['rouge_3_f_score']) -> Dict[str, float]:
-        return super(Rouge, self).evaluate(inputs, targets, keys)
+                 keys: List[str] = ['rouge_1_f_score', 'rouge_2_f_score', 'rouge_l_f_score']) -> Dict[str, float]:
+        score_dict = self.se_metric.evaluate_batch(inputs, targets)
+        return {key: score_dict['rouge'][key] for key in keys}
