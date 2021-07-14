@@ -22,6 +22,8 @@ def radar_factory(num_vars, frame='circle'):
     frame : {'circle', 'polygon'}
         Shape of frame surrounding axes.
 
+    Adapted from https://matplotlib.org/stable/gallery/specialty_plots/radar_chart.html
+
     """
     # calculate evenly-spaced axis angles
     theta = np.linspace(0, 2*np.pi, num_vars, endpoint=False)
