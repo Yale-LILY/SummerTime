@@ -31,7 +31,7 @@ class PegasusModel(SingleDocSummModel):
         encoded_summaries = self.model.generate(batch['input_ids'], max_time=1024)
         print("decoding batches")
         #summaries = self.tokenizer.batch_decode(encoded_summaries, skip_special_tokens=True)
-        summaries = [self.tokenizer.decode(g, skip_special_tokens=True, clean_up_tokenization_spaces=False) for g in encoded_summaries]
+        summaries = [self.tokenizer.decode(encoded_summaries[0])]
 
         return summaries
 
