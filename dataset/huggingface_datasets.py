@@ -225,3 +225,99 @@ class PubmedqaDataset(HuggingfaceDataset):
             
             yield summ_instance
 
+
+
+
+
+class MlsumDataset(HuggingfaceDataset):
+    """
+    The MLsum Dataset - A multi-lingual dataset featuring 5 languages
+    Includes 1.5 million news articles and their corresponding summaries
+
+    "de" - German
+    "es" - Spanish
+    "fr" - French
+    "ru" - Russian
+    "tu" - Turkish
+    """
+    
+    huggingface_page = "https://huggingface.co/datasets/mlsum"
+    languages_supported = ["de", "es", "fr", "ru", "tu"]
+
+    mlsum_instantiatiion_guide = '''The languages supported are: 
+                de - German
+                es - Spanish
+                fr - French
+                ru - Russian
+                tu - Turkish
+                    
+                Examples to instantiate the dataset:
+                1. Dataset with only one language
+                   dataset = MlsumDataset(\{language_token\})
+                   dataset = MlsumDataset("es")
+                   dataset = MlsumDataset("tu")...
+
+                2. Dataset with a multiple languages
+                   dataset = MlsumDataset(\{list of language_token\})
+                   dataset = MlsumDataset(["es","de"])
+                   dataset = MlsumDataset(["es","de", "tu"])...
+
+                3. Dataset with all supported languages (default)
+                   dataset = MlsumDataset(all)
+                   dataset = MlsumDataset() 
+                   
+                '''
+    
+    def __init__(self, languages="all"):
+        # Choose languages to download articles
+        if languages == "all":
+            download_languages = MlsumDataset.languages_supported
+        elif isinstance(languages, list):
+            for language in languaes:
+                assert(MlsumDataset.is_supported(language))
+            download_languages = languages
+        else:
+            assert(MlsumDataset.is_supported(languages))
+            download_languages = [languages]
+            
+        # Load the train, dev and test set from the huggingface datasets
+        mlsum_dataset = None
+        for language in download_languages:
+            if mlsum_dataset:
+                mlsum_dataset = datasets.concatenate_datasets([mlsum_dataset, \
+                                                            Dataset.load_dataset("mlsum", language)])
+            else:
+                mlsum_dataset = datasets.load_dataset("mlsum", language)
+
+        info_set = xsum_dataset['train']
+        
+        processed_train_set = MlsumDataset.process_mlsum_data(mlsum_dataset['train'])
+        processed_dev_set = MlsumDataset.process_mlsum_data(mlsum_dataset['validation'])
+        processed_test_set = MlsumDataset.process_mlsum_data(mlsum_dataset['test'])
+        
+        super().__init__(info_set,
+                         huggingface_page=MlsumDataset.huggingface_page,
+                         is_query_based=False,
+                         is_dialogue_based=False,
+                         is_multi_document=False,
+                         train_set=processed_train_set,
+                         dev_set=processed_dev_set,
+                         test_set=processed_test_set)
+        
+    @staticmethod
+    def process_mlsum_data(data: Dataset) -> List[SummInstance]:
+        for instance in tqdm(data):
+            article: List = instance['text']
+            summary: str = instance['summary']
+            summ_instance = SummInstance(source=article, summary=summary)
+            
+            yield summ_instance   
+
+    @staticmethod
+    def is_supported(language: str):
+        if language not in MlsumDataset.languages_supported:
+                print("The language: {", language, "} entered is not supported\n")
+                print(MlsumDataset.ml_instantiation_guide)
+                exit(1)
+        else:
+            return True
