@@ -244,7 +244,7 @@ class MlsumDataset(HuggingfaceDataset):
     huggingface_page = "https://huggingface.co/datasets/mlsum"
     languages_supported = ["de", "es", "fr", "ru", "tu"]
 
-    mlsum_instantiatiion_guide = '''The languages supported are: 
+    mlsum_instantiation_guide = '''The languages supported for the Mlsum Dataset are: 
                 de - German
                 es - Spanish
                 fr - French
@@ -253,12 +253,12 @@ class MlsumDataset(HuggingfaceDataset):
                     
                 Examples to instantiate the dataset:
                 1. Dataset with only one language
-                   dataset = MlsumDataset(\{language_token\})
+                   dataset = MlsumDataset({language_token})
                    dataset = MlsumDataset("es")
                    dataset = MlsumDataset("tu")...
 
                 2. Dataset with a multiple languages
-                   dataset = MlsumDataset(\{list of language_token\})
+                   dataset = MlsumDataset({list of language_token})
                    dataset = MlsumDataset(["es","de"])
                    dataset = MlsumDataset(["es","de", "tu"])...
 
@@ -269,6 +269,9 @@ class MlsumDataset(HuggingfaceDataset):
                 '''
     
     def __init__(self, languages="all"):
+        
+        print(MlsumDataset.mlsum_instantiation_guide)
+
         # Choose languages to download articles
         if languages == "all":
             download_languages = MlsumDataset.languages_supported
@@ -284,12 +287,14 @@ class MlsumDataset(HuggingfaceDataset):
         mlsum_dataset = None
         for language in download_languages:
             if mlsum_dataset:
-                mlsum_dataset = datasets.concatenate_datasets([mlsum_dataset, \
-                                                            Dataset.load_dataset("mlsum", language)])
+                temp_dataset = datasets.load_dataset("mlsum", language)
+                mlsum_dataset['train'] = datasets.concatenate_datasets([mlsum_dataset['train'], temp_dataset['train']])
+                mlsum_dataset['validation'] = datasets.concatenate_datasets([mlsum_dataset['validation'], temp_dataset['validation']])
+                mlsum_dataset['test'] = datasets.concatenate_datasets([mlsum_dataset['test'], temp_dataset['test']])
             else:
                 mlsum_dataset = datasets.load_dataset("mlsum", language)
 
-        info_set = xsum_dataset['train']
+        info_set = mlsum_dataset['train']
         
         processed_train_set = MlsumDataset.process_mlsum_data(mlsum_dataset['train'])
         processed_dev_set = MlsumDataset.process_mlsum_data(mlsum_dataset['validation'])
@@ -317,7 +322,7 @@ class MlsumDataset(HuggingfaceDataset):
     def is_supported(language: str):
         if language not in MlsumDataset.languages_supported:
                 print("The language: {", language, "} entered is not supported\n")
-                print(MlsumDataset.ml_instantiation_guide)
+                print(MlsumDataset.mlsum_instantiation_guide)
                 exit(1)
         else:
             return True
