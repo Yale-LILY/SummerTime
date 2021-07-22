@@ -3,11 +3,6 @@ language: python
 python:
   - "3.8"
 
-# Cache pip dependencies
-cache:
-  - pip
-  - /home/travis/.cache/huggingface
-
 # Install dependencies
 install:
   - pip install -r requirements.txt
