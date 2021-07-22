@@ -3,10 +3,8 @@ language: python
 python:
   - "3.8"
 
-# Branch safelist
-branches:
-  only:
-    - master
+# Only build if pushing to master or on pull requests without /no-ci/ specified
+if: (type = push AND branch = master) OR (type = pull_request AND NOT branch =~ /no-ci/)
 
 # Install dependencies
 install:
