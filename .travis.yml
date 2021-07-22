@@ -13,7 +13,7 @@ cache:
 install:
   - pip install -r requirements.txt
   - python setup.py develop
-  - python3 -m nltk.downloader stopwords
+  - python download.py
 
 # Scripts: tests
 script:
