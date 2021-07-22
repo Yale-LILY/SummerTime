@@ -106,5 +106,10 @@ Import and initialization:
 import dataset.stdatasets as st_data
 ```
 
+
+## Tests
+Our continuous integration system is provided through [Travis CI](https://travis-ci.org/). When any pull request is created or updated, the repository's unit tests will be run as build jobs on a Travis server for that pull request. Build jobs will either pass or fail within 5-20 minutes, and build statuses are visible on the Github UI and on Travis CI. Please ensure that pull requests pass all checks (i.e. all Travis builds run to completion) before merging, or request a review. To skip a Travis build on any particular commit, append `[skip travis]` to the commit message (see [here](https://docs.travis-ci.com/user/customizing-the-build/#skipping-a-build)).
+
+
 ## Contributors
 This repository is built by the [LILY Lab](https://yale-lily.github.io/) at Yale University, led by Prof. [Dragomir Radev](https://cpsc.yale.edu/people/dragomir-radev). The main contributors are [Ansong Ni](https://niansong1996.github.io), Zhangir Azerbayev, Troy Feng, Murori Mutuma and Yusen Zhang (Penn State). For comments and question, please open an issue.
