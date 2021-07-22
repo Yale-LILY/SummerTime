@@ -3,6 +3,7 @@ from typing import Tuple, List, Dict
 
 from evaluation import SUPPORTED_EVALUATION_METRICS
 from evaluation.rouge_metric import Rouge
+from evaluation.rougewe_metric import RougeWe
 
 
 class TestEvaluationMetrics(unittest.TestCase):
@@ -25,7 +26,7 @@ class TestEvaluationMetrics(unittest.TestCase):
         print(f"{'#'*10} test_evaluate STARTS {'#'*10}")
 
         for metric_class in SUPPORTED_EVALUATION_METRICS:
-            if metric_class == Rouge:
+            if metric_class == Rouge or metric_class == RougeWe:
                 # Temporarily skip summ_eval backend metrics
                 continue
             print(f"Test on {metric_class}")

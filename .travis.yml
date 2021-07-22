@@ -6,7 +6,6 @@ python:
 # Cache pip dependencies
 cache:
   - pip
-  - /home/travis/nltk_data
   - /home/travis/.cache/huggingface
 
 # Install dependencies
