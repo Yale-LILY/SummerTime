@@ -4,7 +4,9 @@ python:
   - "3.8"
 
 # Cache pip dependencies
-cache: pip
+cache:
+  - pip
+  - /home/travis/nltk_data
 
 # Install dependencies
 install:
