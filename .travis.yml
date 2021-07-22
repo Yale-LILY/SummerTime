@@ -3,6 +3,7 @@ language: python
 python:
   - "3.8"
 
+# Cache pip dependencies
 cache: pip
 
 # Install dependencies
