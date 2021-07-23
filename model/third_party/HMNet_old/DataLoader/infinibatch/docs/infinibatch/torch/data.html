@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.5" />
+<title>infinibatch.torch.data API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>infinibatch.torch.data</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import torch
+from infinibatch.iterators import CheckpointableIterator
+from infinibatch.datasets  import chunked_dataset_iterator
+from typing import Union, Iterable, Any
+
+
+# @TODO: This has been tested once, but we have no regression test presently. I am worried tests will fail if Torch is not installed.
+class IterableCheckpointedDataset(torch.utils.data.IterableDataset):
+    &#34;&#34;&#34;
+    Wraps a CheckpointableIterator into a PyTorch IterableDataset, which is recognized by its type by
+    PyTorch&#39;s DataLoader class.
+    &#34;&#34;&#34;
+    def __init__(self, source: CheckpointableIterator):
+        super().__init__()
+        self._source = source
+
+    def __iter__(self):  # this is called in the forked clone
+        worker_info = torch.utils.data.get_worker_info()
+        assert worker_info is None or worker_info.num_workers == 1  # not supported since we can&#39;t get at the checkpoint for each worker
+        return iter(self._source)
+
+
+# @TODO: This is currently untested, and may not work presently.
+class IterableChunkedDataset(torch.utils.data.IterableDataset):
+    def __init__(self, paths: Union[str, Iterable[str]], shuffle: bool=True, buffer_size: int=2**20, transform=None, seed: int=None, world_size: int=1, rank: int=0, num_workers_per_rank: int=1):
+        super().__init__()
+        self.rank = rank
+        self.num_workers_per_rank = num_workers_per_rank
+        # instance_rank is set assuming that num_workers_per_rank = 1 and adapted dynamically in __iter__
+        self.dataset = chunked_dataset_iterator(paths, shuffle=shuffle, buffer_size=buffer_size, transform=transform, seed=seed, num_instances=world_size*num_workers_per_rank, instance_rank=rank)
+
+    def __iter__(self):
+        worker_info = torch.utils.data.get_worker_info()
+        if worker_info is None:  # single-process data loading
+            self.dataset._instance_rank = self.rank
+        else:
+            assert worker_info.num_workers == self.num_workers_per_rank
+            self.dataset._instance_rank = self.rank * self.num_workers_per_rank + worker_info.id
+        return iter(self.dataset)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="infinibatch.torch.data.IterableCheckpointedDataset"><code class="flex name class">
+<span>class <span class="ident">IterableCheckpointedDataset</span></span>
+<span>(</span><span>source: <a title="infinibatch.iterators.CheckpointableIterator" href="../iterators.html#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a>)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Wraps a CheckpointableIterator into a PyTorch IterableDataset, which is recognized by its type by
+PyTorch's DataLoader class.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class IterableCheckpointedDataset(torch.utils.data.IterableDataset):
+    &#34;&#34;&#34;
+    Wraps a CheckpointableIterator into a PyTorch IterableDataset, which is recognized by its type by
+    PyTorch&#39;s DataLoader class.
+    &#34;&#34;&#34;
+    def __init__(self, source: CheckpointableIterator):
+        super().__init__()
+        self._source = source
+
+    def __iter__(self):  # this is called in the forked clone
+        worker_info = torch.utils.data.get_worker_info()
+        assert worker_info is None or worker_info.num_workers == 1  # not supported since we can&#39;t get at the checkpoint for each worker
+        return iter(self._source)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.utils.data.dataset.IterableDataset</li>
+<li>torch.utils.data.dataset.Dataset</li>
+</ul>
+</dd>
+<dt id="infinibatch.torch.data.IterableChunkedDataset"><code class="flex name class">
+<span>class <span class="ident">IterableChunkedDataset</span></span>
+<span>(</span><span>paths: Union[str, Iterable[str]], shuffle: bool = True, buffer_size: int = 1048576, transform=None, seed: int = None, world_size: int = 1, rank: int = 0, num_workers_per_rank: int = 1)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>An iterable Dataset.</p>
+<p>All datasets that represent an iterable of data samples should subclass it.
+Such form of datasets is particularly useful when data come from a stream.</p>
+<p>All subclasses should overwrite :meth:<code>__iter__</code>, which would return an
+iterator of samples in this dataset.</p>
+<p>When a subclass is used with :class:<code>~torch.utils.data.DataLoader</code>, each
+item in the dataset will be yielded from the :class:<code>~torch.utils.data.DataLoader</code>
+iterator. When :attr:<code>num_workers &gt; 0</code>, each worker process will have a
+different copy of the dataset object, so it is often desired to configure
+each copy independently to avoid having duplicate data returned from the
+workers. :func:<code>~torch.utils.data.get_worker_info</code>, when called in a worker
+process, returns information about the worker. It can be used in either the
+dataset's :meth:<code>__iter__</code> method or the :class:<code>~torch.utils.data.DataLoader</code> 's
+:attr:<code>worker_init_fn</code> option to modify each copy's behavior.</p>
+<p>Example 1: splitting workload across all workers in :meth:<code>__iter__</code>::</p>
+<pre><code>&gt;&gt;&gt; class MyIterableDataset(torch.utils.data.IterableDataset):
+...     def __init__(self, start, end):
+...         super(MyIterableDataset).__init__()
+...         assert end &gt; start, "this example code only works with end &gt;= start"
+...         self.start = start
+...         self.end = end
+...
+...     def __iter__(self):
+...         worker_info = torch.utils.data.get_worker_info()
+...         if worker_info is None:  # single-process data loading, return the full iterator
+...             iter_start = self.start
+...             iter_end = self.end
+...         else:  # in a worker process
+...             # split workload
+...             per_worker = int(math.ceil((self.end - self.start) / float(worker_info.num_workers)))
+...             worker_id = worker_info.id
+...             iter_start = self.start + worker_id * per_worker
+...             iter_end = min(iter_start + per_worker, self.end)
+...         return iter(range(iter_start, iter_end))
+...
+&gt;&gt;&gt; # should give same set of data as range(3, 7), i.e., [3, 4, 5, 6].
+&gt;&gt;&gt; ds = MyIterableDataset(start=3, end=7)
+
+&gt;&gt;&gt; # Single-process loading
+&gt;&gt;&gt; print(list(torch.utils.data.DataLoader(ds, num_workers=0)))
+[3, 4, 5, 6]
+
+&gt;&gt;&gt; # Mult-process loading with two worker processes
+&gt;&gt;&gt; # Worker 0 fetched [3, 4].  Worker 1 fetched [5, 6].
+&gt;&gt;&gt; print(list(torch.utils.data.DataLoader(ds, num_workers=2)))
+[3, 5, 4, 6]
+
+&gt;&gt;&gt; # With even more workers
+&gt;&gt;&gt; print(list(torch.utils.data.DataLoader(ds, num_workers=20)))
+[3, 4, 5, 6]
+</code></pre>
+<p>Example 2: splitting workload across all workers using :attr:<code>worker_init_fn</code>::</p>
+<pre><code>&gt;&gt;&gt; class MyIterableDataset(torch.utils.data.IterableDataset):
+...     def __init__(self, start, end):
+...         super(MyIterableDataset).__init__()
+...         assert end &gt; start, "this example code only works with end &gt;= start"
+...         self.start = start
+...         self.end = end
+...
+...     def __iter__(self):
+...         return iter(range(self.start, self.end))
+...
+&gt;&gt;&gt; # should give same set of data as range(3, 7), i.e., [3, 4, 5, 6].
+&gt;&gt;&gt; ds = MyIterableDataset(start=3, end=7)
+
+&gt;&gt;&gt; # Single-process loading
+&gt;&gt;&gt; print(list(torch.utils.data.DataLoader(ds, num_workers=0)))
+[3, 4, 5, 6]
+&gt;&gt;&gt;
+&gt;&gt;&gt; # Directly doing multi-process loading yields duplicate data
+&gt;&gt;&gt; print(list(torch.utils.data.DataLoader(ds, num_workers=2)))
+[3, 3, 4, 4, 5, 5, 6, 6]
+
+&gt;&gt;&gt; # Define a `worker_init_fn` that configures each dataset copy differently
+&gt;&gt;&gt; def worker_init_fn(worker_id):
+...     worker_info = torch.utils.data.get_worker_info()
+...     dataset = worker_info.dataset  # the dataset copy in this worker process
+...     overall_start = dataset.start
+...     overall_end = dataset.end
+...     # configure the dataset to only process the split workload
+...     per_worker = int(math.ceil((overall_end - overall_start) / float(worker_info.num_workers)))
+...     worker_id = worker_info.id
+...     dataset.start = overall_start + worker_id * per_worker
+...     dataset.end = min(dataset.start + per_worker, overall_end)
+...
+
+&gt;&gt;&gt; # Mult-process loading with the custom `worker_init_fn`
+&gt;&gt;&gt; # Worker 0 fetched [3, 4].  Worker 1 fetched [5, 6].
+&gt;&gt;&gt; print(list(torch.utils.data.DataLoader(ds, num_workers=2, worker_init_fn=worker_init_fn)))
+[3, 5, 4, 6]
+
+&gt;&gt;&gt; # With even more workers
+&gt;&gt;&gt; print(list(torch.utils.data.DataLoader(ds, num_workers=20, worker_init_fn=worker_init_fn)))
+[3, 4, 5, 6]
+</code></pre></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class IterableChunkedDataset(torch.utils.data.IterableDataset):
+    def __init__(self, paths: Union[str, Iterable[str]], shuffle: bool=True, buffer_size: int=2**20, transform=None, seed: int=None, world_size: int=1, rank: int=0, num_workers_per_rank: int=1):
+        super().__init__()
+        self.rank = rank
+        self.num_workers_per_rank = num_workers_per_rank
+        # instance_rank is set assuming that num_workers_per_rank = 1 and adapted dynamically in __iter__
+        self.dataset = chunked_dataset_iterator(paths, shuffle=shuffle, buffer_size=buffer_size, transform=transform, seed=seed, num_instances=world_size*num_workers_per_rank, instance_rank=rank)
+
+    def __iter__(self):
+        worker_info = torch.utils.data.get_worker_info()
+        if worker_info is None:  # single-process data loading
+            self.dataset._instance_rank = self.rank
+        else:
+            assert worker_info.num_workers == self.num_workers_per_rank
+            self.dataset._instance_rank = self.rank * self.num_workers_per_rank + worker_info.id
+        return iter(self.dataset)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.utils.data.dataset.IterableDataset</li>
+<li>torch.utils.data.dataset.Dataset</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="infinibatch.torch" href="index.html">infinibatch.torch</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="infinibatch.torch.data.IterableCheckpointedDataset" href="#infinibatch.torch.data.IterableCheckpointedDataset">IterableCheckpointedDataset</a></code></h4>
+</li>
+<li>
+<h4><code><a title="infinibatch.torch.data.IterableChunkedDataset" href="#infinibatch.torch.data.IterableChunkedDataset">IterableChunkedDataset</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.5</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
