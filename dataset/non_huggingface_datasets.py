@@ -12,7 +12,10 @@ class ScisummnetDataset(SummDataset):
     The SciSummNet dataset. As a dataset not included by huggingface, we need to do manually download, set basic
         information for the dataset
     """
-    
+
+    is_dialogue_based = False
+    is_multi_document = False
+    is_query_based = False
     download_link = "https://cs.stanford.edu/~myasu/projects/scisumm_net/scisummnet_release1.1__20190413.zip"
     
     def __init__(self):
@@ -70,9 +73,6 @@ class ScisummnetDataset(SummDataset):
                       "papers in the computational linguistics and NLP domain."
         super().__init__(dataset_name,
                          description,
-                         is_dialogue_based=False,
-                         is_multi_document=False,
-                         is_query_based=False,
                          train_set=processed_train_set,  
                          dev_set=processed_dev_set, 
                          test_set=processed_test_set, 

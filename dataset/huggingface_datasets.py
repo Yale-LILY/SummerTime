@@ -14,9 +14,6 @@ class HuggingfaceDataset(SummDataset):
     def __init__(self,
                  info_set: Dataset,
                  huggingface_page: str,
-                 is_query_based: bool,
-                 is_dialogue_based: bool,
-                 is_multi_document: bool,
                  train_set: Optional[List[SummInstance]] = None,
                  dev_set: Optional[List[SummInstance]] = None,
                  test_set: Optional[List[SummInstance]] = None
@@ -29,9 +26,6 @@ class HuggingfaceDataset(SummDataset):
             citation=info_set.citation,
             homepage=info_set.homepage,
             huggingface_page=huggingface_page,
-            is_query_based=is_query_based,
-            is_dialogue_based=is_dialogue_based,
-            is_multi_document=is_multi_document,
             train_set=train_set,
             dev_set=dev_set,
             test_set=test_set
@@ -42,7 +36,10 @@ class CnndmDataset(HuggingfaceDataset):
     """
     The CNN/DM dataset
     """
-    
+
+    is_query_based = False
+    is_dialogue_based = False
+    is_multi_document = False
     huggingface_page = "https://huggingface.co/datasets/cnn_dailymail"
     
     def __init__(self):
@@ -56,9 +53,6 @@ class CnndmDataset(HuggingfaceDataset):
         
         super().__init__(info_set,
                          huggingface_page=CnndmDataset.huggingface_page,
-                         is_query_based=False,
-                         is_dialogue_based=False,
-                         is_multi_document=False,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
@@ -78,7 +72,10 @@ class MultinewsDataset(HuggingfaceDataset):
     """
     The Multi News dataset
     """
-    
+
+    is_query_based = False
+    is_dialogue_based = False
+    is_multi_document = True
     huggingface_page = "https://huggingface.co/datasets/multi_news"
     
     def __init__(self):
@@ -92,9 +89,6 @@ class MultinewsDataset(HuggingfaceDataset):
         
         super().__init__(info_set,
                          huggingface_page=MultinewsDataset.huggingface_page,
-                         is_query_based=False,
-                         is_dialogue_based=False,
-                         is_multi_document=True,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
@@ -116,7 +110,10 @@ class SamsumDataset(HuggingfaceDataset):
     """
     The SAMsum
     """
-    
+
+    is_query_based = False
+    is_dialogue_based = True
+    is_multi_document = False
     huggingface_page = "https://huggingface.co/datasets/samsum"
     
     def __init__(self):
@@ -130,9 +127,6 @@ class SamsumDataset(HuggingfaceDataset):
         
         super().__init__(info_set,
                          huggingface_page=SamsumDataset.huggingface_page,
-                         is_query_based=False,
-                         is_dialogue_based=True,
-                         is_multi_document=False,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
