@@ -1,21 +1,22 @@
 import unittest
 
-from model import SUPPORTED_SUMM_MODELS
 from model.base_model import SummModel
-from evaluation import SUPPORTED_EVALUATION_METRICS
+from model import SUPPORTED_SUMM_MODELS, LexRankModel
+
 from evaluation.base_metric import SummMetric
-from dataset import SUPPORTED_SUMM_DATASETS
+from evaluation import SUPPORTED_EVALUATION_METRICS, Rouge, RougeWe
+
 from dataset.st_dataset import SummInstance, SummDataset
+from dataset import SUPPORTED_SUMM_DATASETS
+from dataset.non_huggingface_datasets import ScisummnetDataset
+from dataset.huggingface_datasets import CnndmDataset
 
 import random
 import time
 from typing import Dict, List, Union
+import sys
+import re
 
-from evaluation.rouge_metric import Rouge
-from evaluation.rougewe_metric import RougeWe
-from model.single_doc import LexRankModel
-from dataset.non_huggingface_datasets import ScisummnetDataset
-from dataset.huggingface_datasets import CnndmDataset
 
 class IntegrationTests(unittest.TestCase):
     @staticmethod
@@ -46,37 +47,43 @@ class IntegrationTests(unittest.TestCase):
         print(score_dict)
 
     def test_all(self):
-        IntegrationTests.print_with_color("Initializing all datasets...", "35")
+        IntegrationTests.print_with_color("\nInitializing all datasets...", "35")
         # datasets = []
         # for dataset_cls in SUPPORTED_SUMM_DATASETS:
         #     print(dataset_cls)
         #     ds = dataset_cls()
         #     datasets.append(ds)
         lxr_dataset = CnndmDataset()
-        IntegrationTests.print_with_color("Initializing all models...", "35")
+        IntegrationTests.print_with_color("\nInitializing all models...", "35")
         models = []
         for model_cls in SUPPORTED_SUMM_MODELS:
             print(model_cls)
             models.append(model_cls([x.source for x in list(lxr_dataset.train_set)[0:100]]) if model_cls == LexRankModel else model_cls())
-        IntegrationTests.print_with_color("Initializing all evaluation metrics...", "35")
+        IntegrationTests.print_with_color("\nInitializing all evaluation metrics...", "35")
         evaluation_metrics = []
         for eval_cls in SUPPORTED_EVALUATION_METRICS:
             print(eval_cls)
             evaluation_metrics.append(eval_cls())
 
-        print('\n\n')
-        IntegrationTests.print_with_color("Beginning integration tests...", "32")
+        IntegrationTests.print_with_color("\n\nBeginning integration tests...", "32")
         for dataset_cls in SUPPORTED_SUMM_DATASETS:
             dataset = dataset_cls()
             if dataset.train_set is not None:
                 dataset_instances = list(dataset.train_set)
-                print(f"{dataset.dataset_name} has a training set of {len(dataset_instances)} examples")
+                print(f"\n{dataset.dataset_name} has a training set of {len(dataset_instances)} examples")
                 test_instances = self.retrieve_test_instances(dataset_instances)
                 for model in models:
                     for metric in evaluation_metrics:
                         print('\n')
-                        self._test_single_integration(dataset = dataset, test_instances = test_instances, model = model, metric = metric)
+                        self._test_single_integration(dataset=dataset, test_instances=test_instances, model=model, metric=metric)
+
 
 if __name__ == '__main__':
-    random.seed(time.time())
+    if len(sys.argv) > 2 or (len(sys.argv) == 2 and not re.match("^\d+$", sys.argv[1])):
+        print("Usage: python tests/integration_test.py [seed]", file=sys.stderr)
+        sys.exit(1)
+
+    seed = int(time.time()) if len(sys.argv) == 1 else int(sys.argv.pop())
+    random.seed(seed)
+    IntegrationTests.print_with_color(f"(to reproduce) random seeded with {seed}\n", "32")
     unittest.main()
