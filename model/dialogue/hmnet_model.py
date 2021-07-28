@@ -4,19 +4,8 @@ import os
 import torch
 import gzip
 import json
-import uuid
-from nltk import word_tokenize
-import sys
 from ..third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
 from ..third_party.HMNet.Utils.Arguments import Arguments
-from ..third_party.HMNet.Models.Networks.MeetingNet_Transformer import MeetingNet_Transformer
-from ..third_party.HMNet.Models.Criteria.MLECriterion import MLECriterion
-
-
-# TODO: readme -- download the pretraining model,
-#       git clone HMNet before use,
-#       the dependencies that are needed to be installed.
-# TODO: set the role dict.
 
 import spacy
 nlp = spacy.load('en_core_web_sm', disable=['parser'])
@@ -52,7 +41,7 @@ class HMNetModel(SummModel):
         parser = argparse.ArgumentParser(description='HMNet: Pretrain or fine-tune models for HMNet model.')
         parser.add_argument('--command', default='evaluate', help='Command: train/evaluate')
         parser.add_argument('--conf_file',
-                            default=os.path.join(self.root_path, 'hmnet/config/dialogue_conf'),
+                            default=os.path.join(self.root_path, 'hmnet/config/dialogue.conf'),
                             help='Path to the BigLearn conf file.')
         parser.add_argument('--PYLEARN_MODEL', help='Overrides this option from the conf file.')
         parser.add_argument('--master_port', help='Overrides this option default', default=None)
@@ -101,7 +90,8 @@ class HMNetModel(SummModel):
         # we only use test set path for evaluation
         data_folder = os.path.join(os.path.dirname(self.opt['datadir']),
                                    'ExampleRawData/meeting_summarization/AMI_proprec/test')
-        self._clean_datafolder(data_folder)
+
+        self._create_datafolder(data_folder)
         self._preprocess(corpus, data_folder)
 
         # return self.model.eval()
@@ -208,6 +198,26 @@ class HMNetModel(SummModel):
             name = os.path.join(data_folder, name)
             if '.gz' in name:
                 os.remove(name)
+
+    def _create_datafolder(self, data_folder):
+        if os.path.exists(data_folder):
+            self._clean_datafolder(data_folder)
+        else:
+            os.makedirs(data_folder)
+        with open(os.path.join(os.path.dirname(data_folder), 'test_ami.json'), 'w', encoding='utf-8') as file:
+            json.dump([
+                        {
+                            "source":
+                            {
+                                "dataset": "../ExampleRawData/meeting_summarization/AMI_proprec/test/"
+                            },
+                            "task": "meeting",
+                            "name": "ami"
+                        }
+                      ], file)
+
+        with open(os.path.join(os.path.dirname(os.path.dirname(data_folder)), 'role_dict_ext.json'), 'w') as file:
+            json.dump({}, file)
 
     @classmethod
     def show_capability(cls) -> None:
