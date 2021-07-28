@@ -1,0 +1,1 @@
+This dataloader is adapted from Microsoft's [infinibatch](https://github.com/microsoft/infinibatch) implementation, which is a library of checkpointable iterators for randomized data loading of massive data sets in deep neural network training.
