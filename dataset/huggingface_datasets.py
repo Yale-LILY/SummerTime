@@ -276,7 +276,7 @@ class MlsumDataset(HuggingfaceDataset):
         if languages == "all":
             download_languages = MlsumDataset.languages_supported
         elif isinstance(languages, list):
-            for language in languaes:
+            for language in languages:
                 assert(MlsumDataset.is_supported(language))
             download_languages = languages
         else:
