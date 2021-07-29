@@ -44,7 +44,7 @@ class SummertimeQmsum(datasets.GeneratorBasedBuilder):
     def _info(self):
         features = datasets.Features(
             {   
-                "entry_number": datasets.Value("int64"),
+                "entry_number": datasets.Value("string"),
                 'meeting_transcripts' :
                     [{
                         'speaker' : datasets.Value("string"),
@@ -105,15 +105,13 @@ class SummertimeQmsum(datasets.GeneratorBasedBuilder):
 
         extraction_path = os.path.join(filepath)
 
-        counter = 0
         with open(extraction_path) as f:
-            for line in f:
+            for i, line in enumerate(f):
+    
                 instance = json.loads(line)
 
                 entry = {}
-                entry['entry_number'] = counter
-                counter+=1
-
+                entry['entry_number'] = split + "_" +str(i)
                 entry['meeting_transcripts'] = instance['meeting_transcripts']
                 entry['general_query_list'] = instance['general_query_list']
                 entry['specific_query_list'] = instance['specific_query_list']

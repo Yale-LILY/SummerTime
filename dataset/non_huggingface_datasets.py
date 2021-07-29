@@ -1,18 +1,10 @@
-import tempfile
-import zipfile
 import os
-import json
 import random
-import gdown
-from urllib.request import urlretrieve, urlopen
-from typing import Optional, List, Tuple
-# from st_dataset import SummInstance, SummDataset
-from dataset.st_dataset import SummInstance, SummDataset
-
-import ast
 import datasets
 from datasets import Dataset
 from tqdm import tqdm
+from typing import Optional, List, Tuple
+from dataset.st_dataset import SummInstance, SummDataset
 
 
 BASE_NONHUGGINGFACE_DATASETS_PATH = os.path.join(os.getcwd(), "dataset", "non_huggingface_datasets_builders")
@@ -136,7 +128,6 @@ class QMsumDataset(SummDataset):
     QMSum is a new human-annotated benchmark for query-based multi-domain meeting summarization task,
     which consists of 1,808 query-summary pairs over 232 meetings in multiple domains.
     '''
-    version = "1.0.0"
 
     builder_script_path = os.path.join(BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py")
     
@@ -185,46 +176,37 @@ class QMsumDataset(SummDataset):
 class ArxivDataset(SummDataset):
     """
     The Arxiv Dataset
-    """
-    
-    download_link = 'https://archive.org/download/armancohan-long-summarization-paper-code/arxiv-dataset.zip'
+    """    
+    dataset_name = "Arxiv_longsummarization"
+    description = '''
+    A summarization dataset comprised of pairs of scientific papers. 
+    The dataset provides a challenging testbed for abstractive summarization. 
+    It contains papers and their abstracts.
+    '''
+
+    builder_script_path = os.path.join(BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py")
     
     def __init__(self):
     
-        print("*****************\n",\
-              "***Attention***\n",\
-              "This dataset is quite large (approx 5Gb and will need about 15 Gb for the extraction process\n",\
-              "Cancel/interrupt the download if size and time constraints will not be met\n",\
-              "*****************", sep="")
+        print("*****************",\
+              "***Attention***",\
+              "This dataset is quite large (approx 5Gb and will need about 15 Gb for the extraction process",\
+              "Cancel/interrupt the download if size and time constraints will not be met",\
+              "*****************", sep="\n")
         
-        # download and unzip the dataset in the temp directory
-        tmp_dir = tempfile.TemporaryDirectory()
-
-        zip_path = os.path.join(tmp_dir.name, 'arxiv.zip')
-        gdown.download(ArxivDataset.download_link, zip_path, quiet=False) 
-
-        with zipfile.ZipFile(zip_path, "r") as f:
-            f.extractall(tmp_dir.name)
-
-        # Read from individual folders for the article and the summary
-        extraction_path = os.path.join(tmp_dir.name)
-
+        # Load dataset
+        arxiv_dataset = datasets.load_dataset(path=ArxivDataset.builder_script_path)
+        info_set = arxiv_dataset["train"]
 
         # Extract the dataset entries from folders and load into dataset
-        processed_train_set = ArxivDataset.process_arxiv_data(os.path.join(extraction_path, 'train.txt')) 
-        processed_dev_set = ArxivDataset.process_arxiv_data(os.path.join(extraction_path, 'val.txt')) 
-        processed_test_set = ArxivDataset.process_arxiv_data(os.path.join(extraction_path, 'test.txt')) 
+        processed_train_set = ArxivDataset.process_arxiv_data(arxiv_dataset["train"])
+        processed_dev_set = ArxivDataset.process_arxiv_data(arxiv_dataset["validation"])
+        processed_test_set = ArxivDataset.process_arxiv_data(arxiv_dataset["test"])
 
-        tmp_dir.cleanup()
 
-        
         #  Process the train, dev and test set and replace the last three args in __init__() below
-        dataset_name = "Arxiv_longsummarization_dataset"
-        description = "A summarization dataset comprised of pairs of scientific papers. \
-                        The dataset provides a challenging testbed for abstractive summarization. \
-                        It contains papers and their abstracts. "
-        super().__init__(dataset_name,
-                         description,
+        super().__init__(ArxivDataset.dataset_name,
+                         ArxivDataset.description,
                          is_dialogue_based=False,
                          is_multi_document=False,
                          is_query_based=False,
@@ -234,20 +216,11 @@ class ArxivDataset(SummDataset):
                          )
 
     @staticmethod
-    def process_arxiv_data(file_path: str) -> List[SummInstance]:
-
-        entries_set = []
-
-        infile = open(file_path, 'r')
-        for line in infile:
-            data = json.loads(line)
-            entries_set.append(data)
-        infile.close()
-
+    def process_arxiv_data(data: Dataset) -> List[SummInstance]:
         processed_set = []
-        for instance in entries_set:
+        for instance in tqdm(data):
             article: List = instance['article_text']
-            abstract: str = instance['abstract_text']
+            abstract: str = " ".join(instance['abstract_text'])
             summ_instance = SummInstance(source=article, summary=abstract)
             processed_set.append(summ_instance)
 

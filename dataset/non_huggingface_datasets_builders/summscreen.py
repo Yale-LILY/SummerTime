@@ -40,8 +40,8 @@ _URLs = 'https://drive.google.com/uc?id=1BvdIllGBo9d2-bzXQRzWuJXB04XPVmfF'
 
 
 
-class SummertimeScisummnet(datasets.GeneratorBasedBuilder):
-    """Scisummnet dataset."""
+class SummertimeSummscreen(datasets.GeneratorBasedBuilder):
+    """Summscreen dataset."""
 
     VERSION = datasets.Version("1.1.0")
 
@@ -52,7 +52,7 @@ class SummertimeScisummnet(datasets.GeneratorBasedBuilder):
     def _info(self):
         features = datasets.Features(
             {
-                'entry_number': datasets.Value("int64"),
+                'entry_number': datasets.Value("string"),
                 'transcript': datasets.features.Sequence(datasets.Value("string")),
                 'recap': datasets.Value("string")
             }
@@ -118,9 +118,7 @@ class SummertimeScisummnet(datasets.GeneratorBasedBuilder):
                     instance = json.loads(processed_line)
 
                     entry = {}
-                    entry['entry_number'] = counter
-                    counter+=1
-
+                    entry['entry_number'] = instance['filename']
                     entry['transcript'] = instance['Transcript']
                     entry['recap'] = instance['Recap'][0]    # Recap is a single string in list
 

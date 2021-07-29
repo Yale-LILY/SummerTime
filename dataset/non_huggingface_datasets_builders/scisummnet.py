@@ -45,7 +45,7 @@ class SummertimeScisummnet(datasets.GeneratorBasedBuilder):
     def _info(self):
         features = datasets.Features(
             {
-                "entry_number": datasets.Value("int64"),
+                "entry_number": datasets.Value("string"),
                 "document_xml": datasets.Value("string"),
                 "citing_sentences_annotated.json": datasets.Value("string"),
                 "summary": datasets.Value("string"),
@@ -76,11 +76,11 @@ class SummertimeScisummnet(datasets.GeneratorBasedBuilder):
     def _generate_examples(self,  extraction_path, split):
         """Yields examples."""
 
-        counter = 0
         for folder in os.listdir(extraction_path):
+
             entry = {}
-            entry['entry_number'] = counter
-            counter+=1
+            
+            entry['entry_number'] = folder
 
             doc_xml_path = os.path.join(extraction_path, folder, 'Documents_xml', folder + ".xml")
             with open (doc_xml_path, "r", encoding='utf-8') as f:
