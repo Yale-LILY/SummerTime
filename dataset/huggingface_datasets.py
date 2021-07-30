@@ -1,6 +1,6 @@
 from tqdm import tqdm
 from typing import Optional, List, Tuple, Generator
-from datasets import Dataset, load_dataset
+from datasets import Dataset, load_dataset, concatenate_datasets
 from dataset.st_dataset import SummInstance, SummDataset
 
 
@@ -286,9 +286,9 @@ class MlsumDataset(HuggingfaceDataset):
         for language in download_languages:
             if mlsum_dataset:
                 temp_dataset = load_dataset("mlsum", language)
-                mlsum_dataset['train'] = datasets.concatenate_datasets([mlsum_dataset['train'], temp_dataset['train']])
-                mlsum_dataset['validation'] = datasets.concatenate_datasets([mlsum_dataset['validation'], temp_dataset['validation']])
-                mlsum_dataset['test'] = datasets.concatenate_datasets([mlsum_dataset['test'], temp_dataset['test']])
+                mlsum_dataset['train'] = concatenate_datasets([mlsum_dataset['train'], temp_dataset['train']])
+                mlsum_dataset['validation'] = concatenate_datasets([mlsum_dataset['validation'], temp_dataset['validation']])
+                mlsum_dataset['test'] = concatenate_datasets([mlsum_dataset['test'], temp_dataset['test']])
             else:
                 mlsum_dataset = load_dataset("mlsum", language)
 
