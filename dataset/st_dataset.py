@@ -1,5 +1,5 @@
 from datasets import *
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Generator
 
 
 class SummInstance:
