@@ -3,7 +3,7 @@ import random
 import datasets
 from datasets import Dataset
 from tqdm import tqdm
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Generator
 from dataset.st_dataset import SummInstance, SummDataset
 
 
@@ -57,7 +57,7 @@ class ScisummnetDataset(SummDataset):
                          )
 
     @staticmethod
-    def process_scisummnet_data(data: Dataset) -> List[SummInstance]:
+    def process_scisummnet_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
             docs: List = [instance['document_xml'], instance['citing_sentences_annotated.json']]
             summary: str = instance['summary']
@@ -105,15 +105,13 @@ class SummscreenDataset(SummDataset):
                          )
     
     @staticmethod
-    def process_summscreen_data(data: Dataset) -> List[SummInstance]:
-        processed_set = []
+    def process_summscreen_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
             transcript: List = instance['transcript']   #convert string into a list of string dialogues
             recap: str = instance['recap']
             summ_instance = SummInstance(source=transcript, summary=recap)
-            processed_set.append(summ_instance)
-            
-        return processed_set
+
+            yield summ_instance
 
 
 
@@ -156,8 +154,7 @@ class QMsumDataset(SummDataset):
         
 
     @staticmethod
-    def process_qmsum_data(data: Dataset) -> List[SummInstance]:
-        processed_set = []
+    def process_qmsum_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
             for query_set in instance['general_query_list'] + instance['specific_query_list']:
                 meeting: List = [utterance['speaker'] + " : " + utterance['content']\
@@ -165,10 +162,8 @@ class QMsumDataset(SummDataset):
                 query: str = query_set['query']
                 summary: str = query_set['answer']    
                 summ_instance = SummInstance(source=meeting, summary=summary, query=query)
-                processed_set.append(summ_instance)
 
-
-        return processed_set
+            yield summ_instance
 
 
 
@@ -216,12 +211,10 @@ class ArxivDataset(SummDataset):
                          )
 
     @staticmethod
-    def process_arxiv_data(data: Dataset) -> List[SummInstance]:
-        processed_set = []
+    def process_arxiv_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
             article: List = instance['article_text']
             abstract: str = " ".join(instance['abstract_text'])
             summ_instance = SummInstance(source=article, summary=abstract)
-            processed_set.append(summ_instance)
 
-        return processed_set
+            yield summ_instance
