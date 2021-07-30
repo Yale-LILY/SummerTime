@@ -50,9 +50,9 @@ class SummDataset:
                  is_query_based: bool = False,
                  is_dialogue_based: bool = False,
                  is_multi_document: bool = False,
-                 train_set: Optional[List[SummInstance]] = None,
-                 dev_set: Optional[List[SummInstance]] = None,
-                 test_set: Optional[List[SummInstance]] = None):
+                 train_set: Optional[Generator[SummInstance, None, None]] = None,
+                 dev_set: Optional[Generator[SummInstance, None, None]] = None,
+                 test_set: Optional[Generator[SummInstance, None, None]] = None):
         """
         Following huggingface, the dataset contains train, dev and test set.
         :param train_set:
@@ -84,25 +84,25 @@ class SummDataset:
         self._test_set = test_set
         
     @property
-    def train_set(self) -> List[SummInstance]:
+    def train_set(self) -> Generator[SummInstance, None, None]:
         if self._train_set is not None:
             return self._train_set
         else:
-            print(f"{self.dataset_name} does not contain a train set, empty list returned")
-            return list()
+            print(f"{self.dataset_name} does not contain a train set, empty generator returned")
+            yield from ()
 
     @property
-    def dev_set(self) -> List[SummInstance]:
+    def dev_set(self) -> Generator[SummInstance, None, None]:
         if self._dev_set is not None:
             return self._dev_set
         else:
-            print(f"{self.dataset_name} does not contain a dev set, empty list returned")
-            return list()
+            print(f"{self.dataset_name} does not contain a dev set, empty generator returned")
+            yield from ()
     
     @property
-    def test_set(self) -> List[SummInstance]:
+    def test_set(self) -> Generator[SummInstance, None, None]:
         if self._test_set is not None:
             return self._test_set
         else:
-            print(f"{self.dataset_name} does not contain a test set, empty list returned")
-            return list()
+            print(f"{self.dataset_name} does not contain a test set, empty generator returned")
+            yield from ()

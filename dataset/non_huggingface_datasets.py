@@ -1,9 +1,8 @@
 import os
 import random
-import datasets
-from datasets import Dataset
 from tqdm import tqdm
 from typing import Optional, List, Tuple, Generator
+from datasets import Dataset, load_dataset
 from dataset.st_dataset import SummInstance, SummDataset
 
 
@@ -30,7 +29,7 @@ class ScisummnetDataset(SummDataset):
 
 
         # Load dataset
-        scisummnet_dataset = datasets.load_dataset(path=ScisummnetDataset.builder_script_path)
+        scisummnet_dataset = load_dataset(path=ScisummnetDataset.builder_script_path)
         info_set = scisummnet_dataset["train"]
         
         #  Process the train, dev and test se
@@ -80,7 +79,7 @@ class SummscreenDataset(SummDataset):
     def __init__(self):
         
         # Load dataset
-        summscreen_dataset = datasets.load_dataset(path=SummscreenDataset.builder_script_path)
+        summscreen_dataset = load_dataset(path=SummscreenDataset.builder_script_path)
         info_set = summscreen_dataset["train"]
         
         #  Process the train, dev and test se
@@ -132,7 +131,7 @@ class QMsumDataset(SummDataset):
     def __init__(self):
         
         # Load dataset
-        qmsum_dataset = datasets.load_dataset(path=QMsumDataset.builder_script_path)
+        qmsum_dataset = load_dataset(path=QMsumDataset.builder_script_path)
         info_set = qmsum_dataset["train"]
 
         # Extract the dataset entries from folders and load into dataset
@@ -190,7 +189,7 @@ class ArxivDataset(SummDataset):
               "*****************", sep="\n")
         
         # Load dataset
-        arxiv_dataset = datasets.load_dataset(path=ArxivDataset.builder_script_path)
+        arxiv_dataset = load_dataset(path=ArxivDataset.builder_script_path)
         info_set = arxiv_dataset["train"]
 
         # Extract the dataset entries from folders and load into dataset
