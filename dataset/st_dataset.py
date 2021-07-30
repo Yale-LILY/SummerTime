@@ -1,5 +1,7 @@
-from datasets import *
+
 from typing import Dict, List, Optional, Union, Generator
+
+from datasets import *
 
 
 class SummInstance:
@@ -127,3 +129,24 @@ def generate_train_dev_test_splits(dataset: Dataset, seed: int) -> DatasetDict['
     temp_dict['test'] = dataset_traintest_split['test']
 
     return DatasetDict(temp_dict)
+
+    
+
+# Concatenate two dataset dicts with similar splits and columns tinto one
+# Param: A list of DatasetDicts
+# rtype: DatasetDict containing the combined data
+def concatenate_dataset_dicts(dataset_dicts: List[DatasetDict]) -> DatasetDict['train', 'dev', 'test']:
+    
+    temp_dict = None
+    for dataset in dataset_dicts:
+
+        # Create a temporary dict from the first dataset and concatenate the rest of the datasets to it
+        if not temp_dict:
+            temp_dict = dataset
+
+        else:        
+            temp_dict['train'] = concatenate_datasets([temp_dict['train'], dataset['train']])
+            temp_dict['validation'] = concatenate_datasets([temp_dict['validation'], dataset['validation']])
+            temp_dict['test'] = concatenate_datasets([temp_dict['test'], dataset['test']])
+
+    return temp_dict
