@@ -3,7 +3,7 @@ import random
 from tqdm import tqdm
 from typing import Optional, List, Tuple, Generator
 from datasets import Dataset, load_dataset
-from dataset.st_dataset import SummInstance, SummDataset
+from dataset.st_dataset import SummInstance, SummDataset, generate_train_dev_test_splits
 
 
 BASE_NONHUGGINGFACE_DATASETS_PATH = os.path.join(os.getcwd(), "dataset", "non_huggingface_datasets_builders")
@@ -25,25 +25,18 @@ class ScisummnetDataset(SummDataset):
                     
     builder_script_path = os.path.join(BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py")
     
-    def __init__(self):   
-
+    def __init__(self, seed=None):   
 
         # Load dataset
         scisummnet_dataset = load_dataset(path=ScisummnetDataset.builder_script_path)
         info_set = scisummnet_dataset["train"]
         
-        #  Process the train, dev and test se
-        processed_dataset = ScisummnetDataset.process_scisummnet_data(scisummnet_dataset["train"])
-        
-        # Randomize and split data into train, dev and test sets
-        processed_dataset = list(processed_dataset)
-        random.shuffle(processed_dataset)
-        split_1 = int(0.8 * len(processed_dataset))
-        split_2 = int(0.9 * len(processed_dataset))
+        # No dev and test splits provided; hence creating these splits from the train set 
+        scisummnet_split_dataset = generate_train_dev_test_splits(scisummnet_dataset['train'], seed=seed)
 
-        processed_train_set = processed_dataset[:split_1]
-        processed_dev_set = processed_dataset[split_1:split_2]
-        processed_test_set = processed_dataset[split_2:]
+        processed_train_set = ScisummnetDataset.process_scisummnet_data(scisummnet_split_dataset['train'])
+        processed_dev_set = ScisummnetDataset.process_scisummnet_data(scisummnet_split_dataset['dev'])
+        processed_test_set = ScisummnetDataset.process_scisummnet_data(scisummnet_split_dataset['test'])
 
         super().__init__(ScisummnetDataset.dataset_name,
                          ScisummnetDataset.description,

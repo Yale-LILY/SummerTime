@@ -106,3 +106,24 @@ class SummDataset:
         else:
             print(f"{self.dataset_name} does not contain a test set, empty list returned")
             return list()
+
+
+# Creating the train, dev and test splits from a dataset
+# the generated sets are 'train: ~.80', 'dev: ~.10', and 'test: ~10' in size
+# the splits are randomized for each object unless a seed is provided for the random generator
+# Param: Arrow Dataset, seed for the random generator to shuffle the dataset
+# rtype: Arrow DatasetDict containing the three splits
+def generate_train_dev_test_splits(dataset: Dataset, seed: int) -> DatasetDict['train', 'dev', 'test']:
+    
+    # Creating the train, dev and test splits from a dataset
+    # First split train into: train and test splits
+    # Further split the remaining train set into: train and dev sets
+    dataset_traintest_split = dataset.train_test_split(test_size=0.1, seed=seed)
+    dataset_traindev_split = dataset_traintest_split['train'].train_test_split(test_size=0.11, seed=seed) 
+
+    temp_dict = {}
+    temp_dict['train'] = dataset_traindev_split['train']
+    temp_dict['dev'] = dataset_traindev_split['test']
+    temp_dict['test'] = dataset_traintest_split['test']
+
+    return DatasetDict(temp_dict)

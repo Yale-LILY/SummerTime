@@ -1,7 +1,7 @@
 from tqdm import tqdm
 from typing import Optional, List, Tuple, Generator
 from datasets import Dataset, load_dataset, concatenate_datasets
-from dataset.st_dataset import SummInstance, SummDataset
+from dataset.st_dataset import SummInstance, SummDataset, generate_train_dev_test_splits
 
 
 class HuggingfaceDataset(SummDataset):
@@ -188,20 +188,17 @@ class PubmedqaDataset(HuggingfaceDataset):
     
     huggingface_page = "https://huggingface.co/datasets/pubmed_qa"
     
-    def __init__(self):
+    def __init__(self, seed=None):
         # Load the train, dev and test set from the huggingface datasets
         pubmedqa_dataset = load_dataset("pubmed_qa", "pqa_artificial")
         info_set = pubmedqa_dataset['train']
 
-        # No dev and test splits provided; hence creating these splits from the train set
-        # First split train into: train and test splits
-        # Further split the remaining train set into: train and dev sets
-        pubmedqa_traintest_split = pubmedqa_dataset['train'].train_test_split(test_size=0.1)
-        pubmedqa_traindev_split = pubmedqa_traintest_split['train'].train_test_split(test_size=0.1)
+        # No dev and test splits provided; hence creating these splits from the train set 
+        pubmedqa_split_dataset = generate_train_dev_test_splits(pubmedqa_dataset['train'], seed=seed)
 
-        processed_train_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_traindev_split['train'])
-        processed_dev_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_traindev_split['test'])
-        processed_test_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_traintest_split['test'])
+        processed_train_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_split_dataset['train'])
+        processed_dev_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_split_dataset['dev'])
+        processed_test_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_split_dataset['test'])
         
         super().__init__(info_set,
                          huggingface_page=PubmedqaDataset.huggingface_page,
