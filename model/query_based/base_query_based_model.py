@@ -14,7 +14,7 @@ class QueryBasedSummModel(SummModel):
                  max_output_length: int = None,
                  model_backend: SummModel = TextRankModel,
                  retrieval_ratio: float = 0.5,
-                 preprocess=True,
+                 preprocess: bool = True,
                  **kwargs
                  ):
         super(QueryBasedSummModel, self).__init__(trained_domain = trained_domain, max_input_length = max_input_length, max_output_length = max_output_length)
