@@ -13,3 +13,5 @@ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0
 jupyter
 gensim==3.8.3
 sklearn
+gdown
+py7zr==0.16.1
