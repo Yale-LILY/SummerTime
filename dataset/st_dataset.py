@@ -88,21 +88,21 @@ class SummDataset:
         if self._train_set is not None:
             return self._train_set
         else:
-            print(f"{self.dataset_name} does not contain a train set, empty generator returned")
-            yield from ()
+            print(f"{self.dataset_name} does not contain a train set, empty list returned")
+            return list()
 
     @property
     def dev_set(self) -> Generator[SummInstance, None, None]:
         if self._dev_set is not None:
             return self._dev_set
         else:
-            print(f"{self.dataset_name} does not contain a dev set, empty generator returned")
-            yield from ()
+            print(f"{self.dataset_name} does not contain a dev set, empty list returned")
+            return list()
     
     @property
     def test_set(self) -> Generator[SummInstance, None, None]:
         if self._test_set is not None:
             return self._test_set
         else:
-            print(f"{self.dataset_name} does not contain a test set, empty generator returned")
-            yield from ()
+            print(f"{self.dataset_name} does not contain a test set, empty list returned")
+            return list()
