@@ -12,16 +12,23 @@ class QueryBasedSummModel(SummModel):
                  trained_domain: str = None,
                  max_input_length: int = None,
                  max_output_length: int = None,
-                 model_backend: SummModel = TextRankModel, **kwargs
+                 model_backend: SummModel = TextRankModel,
+                 retrieval_ratio: float = 0.5,
+                 preprocess=True,
+                 **kwargs
                  ):
         super(QueryBasedSummModel, self).__init__(trained_domain = trained_domain, max_input_length = max_input_length, max_output_length = max_output_length)
         self.model = model_backend(**kwargs)
+        self.retrieval_ratio = retrieval_ratio
+        self.preprocess = preprocess
 
     def _retrieve(self, instance: List[str], query: List[str], n_best) -> List[str]:
         raise NotImplementedError()
 
-    def summarize(self, corpus: Union[List[str], List[List[str]]], queries: List[str] = None,
-                  retrieval_ratio: float = 0.5, preprocess=True) -> List[str]:
+    def summarize(self,
+                  corpus: Union[List[str], List[List[str]]],
+                  queries: List[str] = None,
+                  ) -> List[str]:
         self.assert_summ_input_type(corpus, queries)
 
         retrieval_output = [] # List[str]
@@ -34,12 +41,12 @@ class QueryBasedSummModel(SummModel):
             query = [query]
 
             # instance & query now are List[str] for sure
-            if preprocess:
+            if self.preprocess:
                 preprocessor = Preprocessor()
                 instance = preprocessor.preprocess(instance)
                 query = preprocessor.preprocess(query)
 
-            n_best = max(int(len(instance) * retrieval_ratio), 1)
+            n_best = max(int(len(instance) * self.retrieval_ratio), 1)
             top_n_sent = self._retrieve(instance, query, n_best)
 
             if not is_dialogue:
