@@ -1,7 +1,6 @@
 import unittest
 from typing import Tuple, List, Optional
 
-from dataset.huggingface_datasets import CnndmDataset, MultinewsDataset
 from dataset import SUPPORTED_SUMM_DATASETS, list_all_datasets
 from dataset.st_dataset import SummDataset, SummInstance
 
