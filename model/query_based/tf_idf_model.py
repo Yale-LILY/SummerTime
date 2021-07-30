@@ -5,15 +5,16 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-class TFIDFModel(QueryBasedSummModel):
+class TFIDFSummModel(QueryBasedSummModel):
 
     # static variables
     model_name = "TF-IDF"
     is_extractive = True
-    is_neural = True  # TODO not sure about this value
+    is_neural = False
+    is_query_based = True
 
     def __init__(self):
-        super(TFIDFModel, self).__init__()
+        super(TFIDFSummModel, self).__init__()
         self.vectorizer = TfidfVectorizer()
 
     def _retrieve(self, instance: List[str], query: List[str], n_best):
