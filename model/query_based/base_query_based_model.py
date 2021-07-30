@@ -99,17 +99,20 @@ class QueryBasedSummModel(SummModel):
 
 
 class Preprocessor:
-    def __init__(self):
+    def __init__(self, remove_stopwords=True, lower_case=True, stem=False):
         self.sw = stopwords.words('english')
         self.stemmer = PorterStemmer()
+        self.remove_stopwords = remove_stopwords
+        self.lower_case = lower_case
+        self.stem = stem
 
-    def preprocess(self, corpus: List[str], remove_stopwords=True, lower_case=True, stem=False) -> List[str]:
-        if lower_case:
+    def preprocess(self, corpus: List[str]) -> List[str]:
+        if self.lower_case:
             corpus = [sent.lower() for sent in corpus]
         tokenized_corpus = [word_tokenize(sent) for sent in corpus]
-        if remove_stopwords:
+        if self.remove_stopwords:
             tokenized_corpus = [[word for word in sent if word not in self.sw] for sent in tokenized_corpus]
-        if stem:
+        if self.stem:
             tokenized_corpus = [[self.stemmer.stem(word) for word in sent] for sent in tokenized_corpus]
         return [' '.join(sent) for sent in tokenized_corpus]
 
