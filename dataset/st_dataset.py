@@ -139,7 +139,8 @@ def concatenate_dataset_dicts(dataset_dicts: List[DatasetDict]) -> DatasetDict:
 
     # Ensure all dataset dicts have the same splits
     setsofsplits = set(tuple(dataset_dict.keys()) for dataset_dict in dataset_dicts)
-    assert(len(setsofsplits) == 1)
+    if (len(setsofsplits) != 1):
+        raise ValueError("Splits must match for all datasets")
 
     # Concatenate all datasets into one according to the splits
     temp_dict = {}

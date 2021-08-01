@@ -316,8 +316,7 @@ class MlsumDataset(HuggingfaceDataset):
     @staticmethod
     def is_supported(language: str):
         if language not in MlsumDataset.supported_languages:
-                print("The language(s): {", language, "} entered is not supported\n")
                 print(MlsumDataset.mlsum_instantiation_guide)
-                exit(56)
+                raise ValueError(f"The language(s): '{language}' entered is not supported. See above message for usage info")
         else:
             return True
