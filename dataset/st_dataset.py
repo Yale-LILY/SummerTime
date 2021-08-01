@@ -1,7 +1,7 @@
 
 from typing import Dict, List, Optional, Union, Generator
 
-from datasets import *
+from datasets import DatasetDict, concatenate_datasets
 
 
 class SummInstance:

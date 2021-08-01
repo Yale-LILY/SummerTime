@@ -1,5 +1,4 @@
 import os
-import random
 from tqdm import tqdm
 from typing import Optional, List, Tuple, Generator
 
@@ -31,7 +30,6 @@ class ScisummnetDataset(SummDataset):
 
         # Load dataset
         scisummnet_dataset = load_dataset(path=ScisummnetDataset.builder_script_path)
-        info_set = scisummnet_dataset["train"]
         
         # No dev and test splits provided; hence creating these splits from the train set 
         scisummnet_split_dataset = generate_train_dev_test_splits(scisummnet_dataset['train'], seed=seed)
@@ -75,7 +73,6 @@ class SummscreenDataset(SummDataset):
         
         # Load dataset
         summscreen_dataset = load_dataset(path=SummscreenDataset.builder_script_path)
-        info_set = summscreen_dataset["train"]
         
         #  Process the train, dev and test se
         processed_train_set = SummscreenDataset.process_summscreen_data(summscreen_dataset["train"])
@@ -127,7 +124,6 @@ class QMsumDataset(SummDataset):
         
         # Load dataset
         qmsum_dataset = load_dataset(path=QMsumDataset.builder_script_path)
-        info_set = qmsum_dataset["train"]
 
         # Extract the dataset entries from folders and load into dataset
         processed_train_set = QMsumDataset.process_qmsum_data(qmsum_dataset["train"])
@@ -185,7 +181,6 @@ class ArxivDataset(SummDataset):
         
         # Load dataset
         arxiv_dataset = load_dataset(path=ArxivDataset.builder_script_path)
-        info_set = arxiv_dataset["train"]
 
         # Extract the dataset entries from folders and load into dataset
         processed_train_set = ArxivDataset.process_arxiv_data(arxiv_dataset["train"])

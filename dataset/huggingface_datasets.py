@@ -318,6 +318,6 @@ class MlsumDataset(HuggingfaceDataset):
         if language not in MlsumDataset.supported_languages:
                 print("The language: {", language, "} entered is not supported\n")
                 print(MlsumDataset.mlsum_instantiation_guide)
-                exit(1)
+                exit(56)
         else:
             return True
