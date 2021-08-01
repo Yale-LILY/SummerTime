@@ -1,7 +1,7 @@
 
 from typing import Dict, List, Optional, Union, Generator
 
-from datasets import DatasetDict, concatenate_datasets
+from datasets import Dataset, DatasetDict, DatasetInfo, concatenate_datasets
 
 
 class SummInstance:
@@ -86,7 +86,7 @@ class SummDataset:
         self._test_set = test_set
         
     @property
-    def train_set(self) -> Generator[SummInstance, None, None]:
+    def train_set(self) -> Union[Generator[SummInstance, None, None], List]:
         if self._train_set is not None:
             return self._train_set
         else:
@@ -94,7 +94,7 @@ class SummDataset:
             return list()
 
     @property
-    def dev_set(self) -> Generator[SummInstance, None, None]:
+    def dev_set(self) -> Union[Generator[SummInstance, None, None], List]:
         if self._dev_set is not None:
             return self._dev_set
         else:
@@ -102,7 +102,7 @@ class SummDataset:
             return list()
     
     @property
-    def test_set(self) -> Generator[SummInstance, None, None]:
+    def test_set(self) -> Union[Generator[SummInstance, None, None], List]:
         if self._test_set is not None:
             return self._test_set
         else:
@@ -117,9 +117,9 @@ class SummDataset:
 # rtype: Arrow DatasetDict containing the three splits
 def generate_train_dev_test_splits(dataset: Dataset, seed: int) -> DatasetDict['train', 'dev', 'test']:
     
-    # Creating the train, dev and test splits from a dataset
     # First split train into: train and test splits
     # Further split the remaining train set into: train and dev sets
+    # The dev set split has a higher ratio than the test set (0.11 vs 0.1) due to the smaller train set used
     dataset_traintest_split = dataset.train_test_split(test_size=0.1, seed=seed)
     dataset_traindev_split = dataset_traintest_split['train'].train_test_split(test_size=0.11, seed=seed) 
 
@@ -135,18 +135,25 @@ def generate_train_dev_test_splits(dataset: Dataset, seed: int) -> DatasetDict['
 # Concatenate two dataset dicts with similar splits and columns tinto one
 # Param: A list of DatasetDicts
 # rtype: DatasetDict containing the combined data
-def concatenate_dataset_dicts(dataset_dicts: List[DatasetDict]) -> DatasetDict['train', 'dev', 'test']:
+def concatenate_dataset_dicts(dataset_dicts: List[DatasetDict]) -> DatasetDict:    
+
+    # Ensure all dataset dicts have the same splits
+    setsofsplits = set(tuple(dataset_dict.keys()) for dataset_dict in dataset_dicts)
+    assert(len(setsofsplits) == 1)
+
+    # Concatenate all datasets into one according to the splits
+    temp_dict = {}
+    for split in setsofsplits.pop():
+        split_set = [dataset_dict[split] for dataset_dict in dataset_dicts]
+        temp_dict[split] = concatenate_datasets(split_set)
     
-    temp_dict = None
-    for dataset in dataset_dicts:
+    return DatasetDict(temp_dict)
 
-        # Create a temporary dict from the first dataset and concatenate the rest of the datasets to it
-        if not temp_dict:
-            temp_dict = dataset
 
-        else:        
-            temp_dict['train'] = concatenate_datasets([temp_dict['train'], dataset['train']])
-            temp_dict['validation'] = concatenate_datasets([temp_dict['validation'], dataset['validation']])
-            temp_dict['test'] = concatenate_datasets([temp_dict['test'], dataset['test']])
 
-    return temp_dict
+# Get the information set from the dataset
+# The information set contains: dataset name, description, version, citation and licence
+# Param: DatasetDict
+# rtype: DatasetInfo 
+def get_dataset_info(data_dict: DatasetDict) -> DatasetInfo:
+    return data_dict["train"].info
