@@ -1,22 +1,27 @@
 import matplotlib.pyplot as plt
+import itertools
+from typing import Tuple, Generator
 
-def scatter(models,
-            generator,
-            lexical_metric,
-            lexical_key : str,
-            semantic_metric,
-            semantic_key : str ,
+def scatter(models: Tuple,
+            generator: Generator,
+            metrics: Tuple,
+            keys: Tuple,
             max_instances : int = -1):
-            
+
+    lexical_metric = metrics[0]
+    semantic_metric = metrics[1]
+    lexical_key = keys[0]
+    semantic_key = keys[1]
+
     tiny_generator = itertools.islice(generator, max_instances)
 
     model0_lexical = []
     model1_lexical = []
+    model0_semantic = []
     model1_semantic = []
-    model2_semantic = []
     for instance in tiny_generator:
-        model0_summ = model[0].summarize([instance.source])
-        model1_summ = model[1].summarize([instance.source])
+        model0_summ = models[0].summarize([instance.source])
+        model1_summ = models[1].summarize([instance.source])
 
         summary = [instance.summary]
 
@@ -37,12 +42,12 @@ def scatter(models,
     ax.spines['left'].set_visible(False)
     ax.spines['bottom'].set_visible(False)
 
-    ax.scatter(pegasus_meteors, pegasus_bertscores, label='Pegasus')
-    ax.scatter(bart_meteors, bart_bertscores, label='BART')
+    ax.scatter(model0_lexical, model0_semantic, label=models[0].model_name)
+    ax.scatter(model1_lexical, model1_semantic, label=models[1].model_name)
     ax.legend(loc=(1.2, .5))
 
-    plt.xlabel('Lexical (Meteor)', fontsize=12, color='grey')
-    plt.ylabel('Semantic (BERTScore)', fontsize=12, color='grey')
+    plt.xlabel('Lexical ({})'.format(lexical_metric.metric_name), fontsize=12, color='grey')
+    plt.ylabel('Semantic ({})'.format(semantic_metric.metric_name), fontsize=12, color='grey')
 
     ax.text(-.3, -.2, 'Hallucination', fontsize=15)
     ax.text(-.3, 1.2, 'Abstraction', fontsize=15)

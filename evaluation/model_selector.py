@@ -7,7 +7,7 @@ from typing import List, Tuple
 # for type annotations
 def model_selector(models,
                    generator,
-                   metrics : List[SummMetric],
+                   metrics,
                    max_instances : int = -1) -> pd.DataFrame:
     store_data = {} # dictionary to be converted to pd.Dataframe
 
@@ -16,7 +16,7 @@ def model_selector(models,
     else:
         tiny_generator = itertools.islice(generator, max_instances)
 
-    tiny_generators = itertools.tee(tiny_generator, len(models)*len(metrics))
+    tiny_generators = list(itertools.tee(tiny_generator, len(models)*len(metrics)))
 
     for model in models:
         store_data[model.model_name] = {}
@@ -28,7 +28,8 @@ def model_selector(models,
             sum_score_dict = {key: 0 for key in get_keys}
             num_instances = 0
 
-            for instance in tiny_generators.pop():
+            current_generator = tiny_generators.pop()
+            for instance in current_generator:
                 input = model.summarize([instance.source])
                 score_dict = metric.evaluate(input, [instance.summary])
                 sum_score_dict = {key: sum_score_dict[key] + score_dict[key] for key in sum_score_dict}
