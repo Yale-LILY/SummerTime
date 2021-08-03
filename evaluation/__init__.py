@@ -9,6 +9,7 @@ from .rouge_metric import Rouge
 from .bertscore_metric import BertScore
 from .rougewe_metric import RougeWe
 from .bleu_metric import Bleu
-from .model_selector import model_selector
+from .meteor_metric import Meteor 
+from .model_selector import model_selector, visualize_model_selector, smart_model_selector
 
 SUPPORTED_EVALUATION_METRICS = [BertScore, Bleu, Rouge, RougeWe]
