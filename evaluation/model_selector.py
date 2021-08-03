@@ -1,13 +1,13 @@
 import pandas as pd
 import itertools
 from .plotutils.radar import make_radar_plot
-from typing import List, Tuple
+from typing import List, Tuple, Generator
 
 # TODO: figure out how to horizontally import model and data
 # for type annotations
-def model_selector(models,
-                   generator,
-                   metrics,
+def model_selector(models: List,
+                   generator: Generator,
+                   metrics: List,
                    max_instances : int = -1) -> pd.DataFrame:
     store_data = {} # dictionary to be converted to pd.Dataframe
 

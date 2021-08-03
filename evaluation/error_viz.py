@@ -7,6 +7,15 @@ def scatter(models: Tuple,
             metrics: Tuple,
             keys: Tuple,
             max_instances : int = -1):
+    """
+    Scatter plot that compares the qualitative nature of the errors two models
+    are making.
+    models: Tuple[SummModel, SummModel]
+    generator: Generator[SummInstance]
+    metrics: Tuple[SummMetric, SummMetric]
+    keys: Tuple[str, str]
+    max_instances: Defaults to -1, in which case entire dataset is used. 
+    """
 
     lexical_metric = metrics[0]
     semantic_metric = metrics[1]
