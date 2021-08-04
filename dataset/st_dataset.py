@@ -124,7 +124,6 @@ def generate_train_dev_test_splits(dataset: Dataset, seed: int) -> DatasetDict:
     dataset_traindev_split = dataset_traintest_split['train'].train_test_split(test_size=0.11, seed=seed) 
 
     temp_dict = {}
-    1
     temp_dict['train'] = dataset_traindev_split['train']
     temp_dict['dev'] = dataset_traindev_split['test']
     temp_dict['test'] = dataset_traintest_split['test']
