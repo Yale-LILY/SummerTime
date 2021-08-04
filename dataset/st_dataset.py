@@ -115,7 +115,7 @@ class SummDataset:
 # the splits are randomized for each object unless a seed is provided for the random generator
 # Param: Arrow Dataset, seed for the random generator to shuffle the dataset
 # rtype: Arrow DatasetDict containing the three splits
-def generate_train_dev_test_splits(dataset: Dataset, seed: int) -> DatasetDict['train', 'dev', 'test']:
+def generate_train_dev_test_splits(dataset: Dataset, seed: int) -> DatasetDict:
     
     # First split train into: train and test splits
     # Further split the remaining train set into: train and dev sets
