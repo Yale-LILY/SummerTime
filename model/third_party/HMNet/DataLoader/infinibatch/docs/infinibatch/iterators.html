@@ -1,0 +1,2696 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.5" />
+<title>infinibatch.iterators API documentation</title>
+<meta name="description" content="Overview …" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>infinibatch.iterators</code></h1>
+</header>
+<section id="section-intro">
+<h2 id="overview">Overview</h2>
+<p>This part of the documentation covers the <strong>advanced usage</strong> of Infinibatch by assembling <strong>custom data loading pipelines</strong>.
+Before you continue, please go through the tutorial on the top-level of the documentation of the <a title="infinibatch" href="index.html"><code>infinibatch</code></a> module.</p>
+<p>Two of the main features of Infinibatch are <strong>lazy evaluation</strong> through the use of <strong>iterators</strong>
+and built-in support for <strong>checkpointing</strong>.
+In this section, we give an introduction to these features and the basic usage of the Infinibatch iterator library.</p>
+<h3 id="iterators">Iterators</h3>
+<p>As a Python programmer, you are probably familiar with the concept of iterators.
+According to the <a href="https://docs.python.org/3.5/glossary.html#term-iterator">Python documentation</a>,
+an iterator is an object representing a stream of data,
+and repeated calls to the iterator's <code>__next__()</code> method (or passing it to the built-in function <code>next()</code>)
+return successive items in the stream.
+It is important not to confuse an <a href="https://docs.python.org/3.5/glossary.html#term-iterator">iterator</a>
+with an <a href="https://docs.python.org/3.5/glossary.html#term-iterable">iterable</a>.
+For more information on this subject, please follow the links above.</p>
+<p>The Python standard library contains a module of iterators called <code>itertools</code>
+that bears some resembles to Infinibatch.
+Infinibatch differs from <code>itertools</code> in two ways:</p>
+<ol>
+<li>Infinibatch provides iterators specifically for the purpose of creating <strong>randomized batches of data for machine learning</strong>.</li>
+<li>All iterators in Infinibatch support <strong>checkpointing</strong> (see the following section).</li>
+</ol>
+<p>Infinibatch iterators are not directly compatible with itertools due to the checkpointing requirement.</p>
+<p>Infinibatch enables you to build complex data loaders by combining iterators from this module into a pipeline.
+To give you a high-level idea of how this is works, we provide a very simple example.
+Note that this example is completely artificial and does not solve any useful task.
+Its only purpose is to demonstrate the behavior of a pipeline of iterators.
+We provide a more realistic example in a later section.</p>
+<p>First, we create a small test data set.</p>
+<pre><code>&gt;&gt;&gt; dataset = list(range(6))  # 0, 1, 2, 3, 4, 5
+</code></pre>
+<p>We can turn this data set into an Infinibatch iterator by wrapping it in a <a title="infinibatch.iterators.NativeCheckpointableIterator" href="#infinibatch.iterators.NativeCheckpointableIterator"><code>NativeCheckpointableIterator</code></a>.</p>
+<pre><code>&gt;&gt;&gt; it = NativeCheckpointableIterator(dataset)  # 0, 1, 2, 3, 4, 5
+</code></pre>
+<p>We can then transform the data items using a <a title="infinibatch.iterators.MapIterator" href="#infinibatch.iterators.MapIterator"><code>MapIterator</code></a>,
+which applies a given function to each individual data item.
+For example, we can multiply each data item by 2.</p>
+<pre><code>&gt;&gt;&gt; it = MapIterator(it, lambda n: 2 * n)  # 0, 2, 4, 6, 8, 10
+</code></pre>
+<p>We can restructure the data set by batching together pairs of data items into lists using a <a title="infinibatch.iterators.FixedBatchIterator" href="#infinibatch.iterators.FixedBatchIterator"><code>FixedBatchIterator</code></a>.</p>
+<pre><code>&gt;&gt;&gt; it = FixedBatchIterator(it, batch_size=2)  # [0, 2], [4, 6], [8, 10]
+</code></pre>
+<p>Using another <a title="infinibatch.iterators.MapIterator" href="#infinibatch.iterators.MapIterator"><code>MapIterator</code></a>, we can reduce each of these lists to its second element.</p>
+<pre><code>&gt;&gt;&gt; it = MapIterator(it, lambda l: l[1])  # 2, 6, 10
+</code></pre>
+<p>Finally, we can use the resulting iterator <code>it</code> just like any standard Python iterator.</p>
+<pre><code class="py">&gt;&gt;&gt; for item in it:
+...     print(item)
+2
+6
+10
+
+</code></pre>
+<p>By using iterators, Infinibatch operates in a <strong>lazy</strong> fashion:
+It generally doesn't apply operations to an entire data set at once,
+but rather operates on individual data items on-the-fly as they are consumed.
+When used correctly, this allows Infinibatch to have a low start-up time and low memory overhead.
+For more detail on this, please consult the section on performance considerations below.</p>
+<h3 id="checkpointing">Checkpointing</h3>
+<p>The main features that sets Infinibatch iterators apart from standard Python iterators is that they support <strong>checkpointing</strong>.
+A checkpoint encapsulates the internal state of an entire pipeline of iterators at a specific point while iterating through a data set.
+Once you retrieve a checkpoint, you can later use it to reset the pipeline of iterators to the exact state it was in
+when the checkpoint was created.
+Checkpoints can easily be serialized and stored to disk using <a href="https://docs.python.org/3.5/library/pickle.html">Pythons <code>pickle</code> module</a>.
+Infinibatch's checkpointing feature is particularly useful when you're training large deep neural network models over days or weeks,
+and you want to make sure that, in case your training is interrupted for any reason, <strong>you can pick up your training exactly where you left off</strong>.</p>
+<p>The checkpointing interface consists of two functions <code>getstate</code> and <code>setstate</code> that are defined in <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator"><code>CheckpointableIterator</code></a>,
+the common base class of all iterators in this module.
+As the names suggest <code>getstate</code> returns a checkpoint object that represents the state of a pipeline at the time the function is called,
+and 'setstate' receives a checkpoint object to reset the state of a pipeline.
+<code>setstate</code> also accepts <code>None</code>, which resets a pipeline to the <strong>beginning</strong> of the iteration,
+i.e. the state of the pipeline immediately after its construction.</p>
+<p>It is important to realize that <strong>a checkpoint represents the state of a complete pipeline of iterators</strong>.
+If you have a pipeline consisting of a sequence of iterators, you only have to call <code>getstate</code> on the <strong>last</strong> iterator in the sequence
+to capture the state of the entire pipeline.
+Internally, this is achieved by recursive calls that traverse the entire data loading pipeline to collect the state of every iterator in it.
+Similarly, when you want to reset a pipeline to a previous state, you only have to call <code>setstate</code> on the <strong>last</strong> iterator in the pipeline.</p>
+<p>To demonstrate this, we recreate the pipeline from the previous section.</p>
+<pre><code>&gt;&gt;&gt; dataset = list(range(6))  # 0, 1, 2, 3, 4, 5
+&gt;&gt;&gt; it = NativeCheckpointableIterator(dataset)  # 0, 1, 2, 3, 4, 5
+&gt;&gt;&gt; it = MapIterator(it, lambda n: 2 * n)  # 0, 2, 4, 6, 8, 10
+&gt;&gt;&gt; it = FixedBatchIterator(it, batch_size=2)  # [0, 2], [4, 6], [8, 10]
+&gt;&gt;&gt; it = MapIterator(it, lambda l: l[1])  # 2, 6, 10
+</code></pre>
+<p>Since <code>it</code> behaves just like a standard Python iterator, we can call <code>next</code> to retrieve its first element.</p>
+<pre><code>&gt;&gt;&gt; next(it)
+2
+</code></pre>
+<p>We can now call <code>getstate</code> on <code>it</code> (which is the last <a title="infinibatch.iterators.MapIterator" href="#infinibatch.iterators.MapIterator"><code>MapIterator</code></a> in the pipeline)
+to get a checkpoint of the internal state of the entire data loading pipeline.</p>
+<pre><code>&gt;&gt;&gt; checkpoint = it.getstate()
+</code></pre>
+<p>Note that the checkpoint represents the internal state of the pipeline after the data item <code>2</code> has been retrieved.
+Using the checkpoint, we can always return to this <strong>exact</strong> point in the data set.
+To show this, let's exhaust the iterator by casting it to a list.</p>
+<pre><code>&gt;&gt;&gt; list(it)
+[6, 10]
+</code></pre>
+<p>Since the iterator is now exhausted, calling <code>next</code> raises a <code>StopIteration</code> exception.</p>
+<pre><code>&gt;&gt;&gt; next(it)
+Traceback (most recent call last):
+    ...
+StopIteration
+
+</code></pre>
+<p>We can now reset the pipeline to the checkpoint using <code>setstate</code>.</p>
+<pre><code>&gt;&gt;&gt; it.setstate(checkpoint)
+</code></pre>
+<p>This recovers the state of the pipeline after the data item <code>2</code> has been retrieved.
+Thereby, we expect the next element to be <code>6</code>.</p>
+<pre><code>&gt;&gt;&gt; next(it)
+6
+</code></pre>
+<h2 id="types-of-iterators">Types of Iterators</h2>
+<p>This section provides a brief overview of the different types of iterators in Infinibatch.</p>
+<h3 id="classes-and-factory-functions">Classes and Factory Functions</h3>
+<p>Most iterators in this module are implemented as classes that inherit from the abstract base class <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator"><code>CheckpointableIterator</code></a>.
+However, some iterators (such as the <a title="infinibatch.iterators.BlockwiseShuffleIterator" href="#infinibatch.iterators.BlockwiseShuffleIterator"><code>BlockwiseShuffleIterator()</code></a>) are simple combinations of other iterators.
+These iterators are implemented as <strong>factory functions</strong> that construct a pipeline of iterators
+and return the last iterator in the pipeline.
+For consistency with class-based iterators,
+we name these factory function using CamelCase instead of the more pythonic use_of_underscores.</p>
+<div class="admonition todo">
+<p class="admonition-title">TODO</p>
+<p>We currently also have one factory function that actually looks like one: <a title="infinibatch.iterators.create_source_iterator" href="#infinibatch.iterators.create_source_iterator"><code>create_source_iterator()</code></a>.
+Provide a comment on this describing why that is.</p>
+</div>
+<h3 id="source-iterators">Source Iterators</h3>
+<p>There are three iterators that are intended to go at the <strong>beginning</strong> of a data loading pipeline:</p>
+<ul>
+<li><a title="infinibatch.iterators.InfinitePermutationSourceIterator" href="#infinibatch.iterators.InfinitePermutationSourceIterator"><code>InfinitePermutationSourceIterator</code></a>:
+This iterator accepts a list, shuffles it, and yields its elements.
+It repeats this infinitely, shuffling the list after each pass.
+Thereby, <strong>this iterator is infinte and cannot be exhausted</strong>.
+This iterator is meant to be used as the first iterator in a training scenario
+and supports splitting the data for multi-GPU training.</li>
+<li><a title="infinibatch.iterators.ChunkedSourceIterator" href="#infinibatch.iterators.ChunkedSourceIterator"><code>ChunkedSourceIterator()</code></a>:
+This iterator accepts a list and yields its elements.
+It is meant to be used as the first iterator in an inference or validation scenario
+and supports splitting the data for mult-GPU inference.</li>
+<li><a title="infinibatch.iterators.NativeCheckpointableIterator" href="#infinibatch.iterators.NativeCheckpointableIterator"><code>NativeCheckpointableIterator</code></a>:
+This iterator wraps a Python iterable and makes it checkpointable.
+It is mainly intended for demonstration and debugging purposes.</li>
+</ul>
+<h3 id="shuffling">Shuffling</h3>
+<div class="admonition todo">
+<p class="admonition-title">TODO</p>
+<p>Describe <a title="infinibatch.iterators.BufferedShuffleIterator" href="#infinibatch.iterators.BufferedShuffleIterator"><code>BufferedShuffleIterator</code></a> and <a title="infinibatch.iterators.BlockwiseShuffleIterator" href="#infinibatch.iterators.BlockwiseShuffleIterator"><code>BlockwiseShuffleIterator()</code></a>.</p>
+</div>
+<h3 id="batching-selectmany-and-windowing">Batching, SelectMany, and Windowing</h3>
+<div class="admonition todo">
+<p class="admonition-title">TODO</p>
+<p>Describe <a title="infinibatch.iterators.FixedBatchIterator" href="#infinibatch.iterators.FixedBatchIterator"><code>FixedBatchIterator</code></a>, <a title="infinibatch.iterators.SelectManyIterator" href="#infinibatch.iterators.SelectManyIterator"><code>SelectManyIterator</code></a>, and <a title="infinibatch.iterators.WindowedIterator" href="#infinibatch.iterators.WindowedIterator"><code>WindowedIterator</code></a>.</p>
+</div>
+<h3 id="mapping">Mapping</h3>
+<div class="admonition todo">
+<p class="admonition-title">TODO</p>
+<p>Describe <a title="infinibatch.iterators.MapIterator" href="#infinibatch.iterators.MapIterator"><code>MapIterator</code></a>, <a title="infinibatch.iterators.ParallelMapIterator" href="#infinibatch.iterators.ParallelMapIterator"><code>ParallelMapIterator()</code></a>, <a title="infinibatch.iterators.RecurrentIterator" href="#infinibatch.iterators.RecurrentIterator"><code>RecurrentIterator</code></a>, and <a title="infinibatch.iterators.SamplingRandomMapIterator" href="#infinibatch.iterators.SamplingRandomMapIterator"><code>SamplingRandomMapIterator()</code></a>.</p>
+</div>
+<h3 id="other-iterators">Other Iterators</h3>
+<div class="admonition todo">
+<p class="admonition-title">TODO</p>
+<p>Describe <a title="infinibatch.iterators.ZipIterator" href="#infinibatch.iterators.ZipIterator"><code>ZipIterator</code></a>, <a title="infinibatch.iterators.PrefetchIterator" href="#infinibatch.iterators.PrefetchIterator"><code>PrefetchIterator</code></a>, and <a title="infinibatch.iterators.BucketedReadaheadBatchIterator" href="#infinibatch.iterators.BucketedReadaheadBatchIterator"><code>BucketedReadaheadBatchIterator</code></a>.</p>
+</div>
+<h2 id="complete-example">Complete Example</h2>
+<div class="admonition todo">
+<p class="admonition-title">TODO</p>
+<p>Give a more realistic example following, in broad strokes, the ChunkedDataset including:</p>
+<ul>
+<li>use gzip chunks</li>
+<li>training pipeline example</li>
+<li>inference pipeline example</li>
+<li>pipeline that can do both</li>
+<li>etc.</li>
+</ul>
+</div>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<div class="admonition todo">
+<p class="admonition-title">TODO</p>
+<p>Describe what parameters influence performance measures such as memory usage and start-up time.</p>
+</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+## Overview
+
+This part of the documentation covers the __advanced usage__ of Infinibatch by assembling __custom data loading pipelines__.
+Before you continue, please go through the tutorial on the top-level of the documentation of the `infinibatch` module.
+
+Two of the main features of Infinibatch are __lazy evaluation__ through the use of __iterators__
+and built-in support for __checkpointing__.
+In this section, we give an introduction to these features and the basic usage of the Infinibatch iterator library.
+
+
+### Iterators
+
+As a Python programmer, you are probably familiar with the concept of iterators.
+According to the [Python documentation](https://docs.python.org/3.5/glossary.html#term-iterator),
+an iterator is an object representing a stream of data,
+and repeated calls to the iterator&#39;s `__next__()` method (or passing it to the built-in function `next()`)
+return successive items in the stream.
+It is important not to confuse an [iterator](https://docs.python.org/3.5/glossary.html#term-iterator)
+with an [iterable](https://docs.python.org/3.5/glossary.html#term-iterable).
+For more information on this subject, please follow the links above.
+
+The Python standard library contains a module of iterators called `itertools`
+that bears some resembles to Infinibatch.
+Infinibatch differs from `itertools` in two ways:
+
+1. Infinibatch provides iterators specifically for the purpose of creating __randomized batches of data for machine learning__.
+2. All iterators in Infinibatch support __checkpointing__ (see the following section).
+
+Infinibatch iterators are not directly compatible with itertools due to the checkpointing requirement.
+
+Infinibatch enables you to build complex data loaders by combining iterators from this module into a pipeline.
+To give you a high-level idea of how this is works, we provide a very simple example.
+Note that this example is completely artificial and does not solve any useful task.
+Its only purpose is to demonstrate the behavior of a pipeline of iterators.
+We provide a more realistic example in a later section.
+
+First, we create a small test data set.
+&gt;&gt;&gt; dataset = list(range(6))  # 0, 1, 2, 3, 4, 5
+
+We can turn this data set into an Infinibatch iterator by wrapping it in a `NativeCheckpointableIterator`.
+&gt;&gt;&gt; it = NativeCheckpointableIterator(dataset)  # 0, 1, 2, 3, 4, 5
+
+We can then transform the data items using a `MapIterator`,
+which applies a given function to each individual data item.
+For example, we can multiply each data item by 2.
+&gt;&gt;&gt; it = MapIterator(it, lambda n: 2 * n)  # 0, 2, 4, 6, 8, 10
+
+We can restructure the data set by batching together pairs of data items into lists using a `FixedBatchIterator`.
+&gt;&gt;&gt; it = FixedBatchIterator(it, batch_size=2)  # [0, 2], [4, 6], [8, 10]
+
+Using another `MapIterator`, we can reduce each of these lists to its second element.
+&gt;&gt;&gt; it = MapIterator(it, lambda l: l[1])  # 2, 6, 10
+
+Finally, we can use the resulting iterator `it` just like any standard Python iterator.
+```py
+&gt;&gt;&gt; for item in it:
+...     print(item)
+2
+6
+10
+
+```
+
+By using iterators, Infinibatch operates in a __lazy__ fashion:
+It generally doesn&#39;t apply operations to an entire data set at once,
+but rather operates on individual data items on-the-fly as they are consumed.
+When used correctly, this allows Infinibatch to have a low start-up time and low memory overhead.
+For more detail on this, please consult the section on performance considerations below.
+
+
+### Checkpointing
+
+The main features that sets Infinibatch iterators apart from standard Python iterators is that they support __checkpointing__.
+A checkpoint encapsulates the internal state of an entire pipeline of iterators at a specific point while iterating through a data set.
+Once you retrieve a checkpoint, you can later use it to reset the pipeline of iterators to the exact state it was in
+when the checkpoint was created.
+Checkpoints can easily be serialized and stored to disk using [Pythons `pickle` module](https://docs.python.org/3.5/library/pickle.html).
+Infinibatch&#39;s checkpointing feature is particularly useful when you&#39;re training large deep neural network models over days or weeks,
+and you want to make sure that, in case your training is interrupted for any reason, __you can pick up your training exactly where you left off__.
+
+The checkpointing interface consists of two functions `getstate` and `setstate` that are defined in `CheckpointableIterator`,
+the common base class of all iterators in this module.
+As the names suggest `getstate` returns a checkpoint object that represents the state of a pipeline at the time the function is called,
+and &#39;setstate&#39; receives a checkpoint object to reset the state of a pipeline.
+`setstate` also accepts `None`, which resets a pipeline to the __beginning__ of the iteration,
+i.e. the state of the pipeline immediately after its construction.
+
+It is important to realize that __a checkpoint represents the state of a complete pipeline of iterators__.
+If you have a pipeline consisting of a sequence of iterators, you only have to call `getstate` on the __last__ iterator in the sequence
+to capture the state of the entire pipeline.
+Internally, this is achieved by recursive calls that traverse the entire data loading pipeline to collect the state of every iterator in it.
+Similarly, when you want to reset a pipeline to a previous state, you only have to call `setstate` on the __last__ iterator in the pipeline.
+
+
+To demonstrate this, we recreate the pipeline from the previous section.
+&gt;&gt;&gt; dataset = list(range(6))  # 0, 1, 2, 3, 4, 5
+&gt;&gt;&gt; it = NativeCheckpointableIterator(dataset)  # 0, 1, 2, 3, 4, 5
+&gt;&gt;&gt; it = MapIterator(it, lambda n: 2 * n)  # 0, 2, 4, 6, 8, 10
+&gt;&gt;&gt; it = FixedBatchIterator(it, batch_size=2)  # [0, 2], [4, 6], [8, 10]
+&gt;&gt;&gt; it = MapIterator(it, lambda l: l[1])  # 2, 6, 10
+
+Since `it` behaves just like a standard Python iterator, we can call `next` to retrieve its first element.
+&gt;&gt;&gt; next(it)
+2
+
+We can now call `getstate` on `it` (which is the last `MapIterator` in the pipeline)
+to get a checkpoint of the internal state of the entire data loading pipeline.
+&gt;&gt;&gt; checkpoint = it.getstate()
+
+Note that the checkpoint represents the internal state of the pipeline after the data item `2` has been retrieved.
+Using the checkpoint, we can always return to this __exact__ point in the data set.
+To show this, let&#39;s exhaust the iterator by casting it to a list.
+&gt;&gt;&gt; list(it)
+[6, 10]
+
+Since the iterator is now exhausted, calling `next` raises a `StopIteration` exception.
+```
+&gt;&gt;&gt; next(it)
+Traceback (most recent call last):
+    ...
+StopIteration
+
+```
+
+We can now reset the pipeline to the checkpoint using `setstate`.
+&gt;&gt;&gt; it.setstate(checkpoint)
+
+This recovers the state of the pipeline after the data item `2` has been retrieved.
+Thereby, we expect the next element to be `6`.
+&gt;&gt;&gt; next(it)
+6
+
+
+## Types of Iterators
+
+This section provides a brief overview of the different types of iterators in Infinibatch.
+
+
+### Classes and Factory Functions
+
+Most iterators in this module are implemented as classes that inherit from the abstract base class `CheckpointableIterator`.
+However, some iterators (such as the `BlockwiseShuffleIterator`) are simple combinations of other iterators.
+These iterators are implemented as __factory functions__ that construct a pipeline of iterators
+and return the last iterator in the pipeline.
+For consistency with class-based iterators,
+we name these factory function using CamelCase instead of the more pythonic use_of_underscores.
+
+.. todo::
+    We currently also have one factory function that actually looks like one: `create_source_iterator`.
+    Provide a comment on this describing why that is.
+
+
+### Source Iterators
+
+There are three iterators that are intended to go at the __beginning__ of a data loading pipeline:
+
+- `InfinitePermutationSourceIterator`:
+This iterator accepts a list, shuffles it, and yields its elements.
+It repeats this infinitely, shuffling the list after each pass.
+Thereby, __this iterator is infinte and cannot be exhausted__.
+This iterator is meant to be used as the first iterator in a training scenario
+and supports splitting the data for multi-GPU training.
+- `ChunkedSourceIterator`:
+This iterator accepts a list and yields its elements.
+It is meant to be used as the first iterator in an inference or validation scenario
+and supports splitting the data for mult-GPU inference.
+- `NativeCheckpointableIterator`:
+This iterator wraps a Python iterable and makes it checkpointable.
+It is mainly intended for demonstration and debugging purposes.
+
+
+### Shuffling
+
+.. todo:: Describe `BufferedShuffleIterator` and `BlockwiseShuffleIterator`.
+
+
+### Batching, SelectMany, and Windowing
+
+.. todo:: Describe `FixedBatchIterator`, `SelectManyIterator`, and `WindowedIterator`.
+
+
+### Mapping
+
+.. todo:: Describe `MapIterator`, `ParallelMapIterator`, `RecurrentIterator`, and `SamplingRandomMapIterator`.
+
+
+### Other Iterators
+
+.. todo:: Describe `ZipIterator`, `PrefetchIterator`, and `BucketedReadaheadBatchIterator`.
+
+
+## Complete Example
+
+.. todo::
+    Give a more realistic example following, in broad strokes, the ChunkedDataset including:
+
+    - use gzip chunks
+    - training pipeline example
+    - inference pipeline example
+    - pipeline that can do both
+    - etc.
+
+## Performance Considerations
+
+.. todo::
+    Describe what parameters influence performance measures such as memory usage and start-up time.
+&#34;&#34;&#34;
+
+from abc import abstractmethod
+import collections
+import copy
+import gzip
+from itertools import cycle, islice
+import math
+from multiprocessing import Pool
+import os
+from queue import Full, Queue
+from random import Random
+from threading import Thread
+from typing import Any, Callable, Dict, Generator, Iterable, Iterator, List, Optional, Tuple, Union
+
+
+from infinibatch.closablequeue import ClosableQueue, ClosedException
+
+
+# TODO for next release:
+#  - benchmark the accuracy when using BlockwiseShuffleIterator vs. the BufferedShuffleIterator
+#  - change all convenience functions back to true classes, using a wrapper class
+
+# TODO later:
+# - make iterator pipeline work for streaming data
+
+def _advance_iterator(iterator: Iterator, n: int):
+    &#34;&#34;&#34; Little helper to advance an iterator by n items &#34;&#34;&#34;
+    for _ in range(n):
+        next(iterator)
+    return n
+
+
+class CheckpointableIterator(collections.abc.Iterator):
+    &#34;&#34;&#34;
+    Abstract base class that defines the interface for checkpointing.
+    
+    The interface (getstate, setstate) is inspired by Python&#39;s random package.
+    &#34;&#34;&#34;
+    def __iter__(self):
+        return self
+
+    @abstractmethod
+    def getstate(self) -&gt; Dict:
+        &#34;&#34;&#34;
+        Get checkpoint of current state of iterator
+        
+        In a pipeline of iterators, this function __recursively__ calls itself on the preceeding iterator
+        and includes the gathered information in the returned checkpoint.
+        Thereby, to obtain a checkpoint of the state of an entire pipeline of iterators
+        you only have to call this function on the __last__ iterator in the pipeline.
+        A checkpoint is represented as a `dict`,
+        but the caller should treat a checkpoint as an opaque object
+        and not make any assumptions about the existence or meaning of the `dict` entries.
+        &#34;&#34;&#34;
+        pass
+
+    @abstractmethod
+    def setstate(self, checkpoint: Optional[Dict]):
+        &#34;&#34;&#34;
+        Set state of iterator to given checkpoint
+
+        In a pipeline of iterators, this function __recursively__ calls itself on the preceeding iterator.
+        Thereby, to set the state of an entire pipeline of iterators to a given checkpoint
+        you only have to call this function on the __last__ iterator in the pipeline.
+
+        Args:
+            checkpoint: Checkpoint that should be used to reset the state of the iterator (or pipeline).
+                        If this is __None__, the state of the iterator (or pipeline) is reset to the initial
+                        state immediately after construction.
+        &#34;&#34;&#34;
+        pass
+
+    def __getstate__(self) -&gt; Dict:  # implementation of pickle Protocol
+        return self.getstate()
+
+    def __setstate__(self, checkpoint: Optional[Dict]):
+        self.setstate(checkpoint)
+
+    @abstractmethod
+    def __next__(self):
+        pass
+
+
+class NativeCheckpointableIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Simple wrapper class that turns a Python Iterable into a CheckpointableIterator
+    
+    When calling setstate on this class, it simply replays the iterator all the way to the checkpoint one element at a time,
+    which makes it generally inefficient.
+
+    Warning: This class cannot be used with Iterators (as opposed to Iterables), which have an `__iter__` function that simply returns self, but does not reset.
+    &#34;&#34;&#34;
+    def __init__(self, iterable: Iterable):
+        # check whether iterable is iterable or iterator:
+        # if the variable iterable contains an iterator, the function __iter__ returns self
+        # if the variable iterable is an actual iterator, it should not return self
+        if iter(iterable) is iterable:  
+            raise ValueError(&#39;It looks like you are passing an iterator instead of an iterable. This is not supported and can cause undefined behavior when used with checkpointing.&#39;)
+        self._input_iterable = iterable
+        self.setstate(None)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;num_items_yielded&#39;: self._num_items_yielded}
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._iterator = iter(self._input_iterable)
+        self._num_items_yielded = _advance_iterator(self._iterator, checkpoint[&#39;num_items_yielded&#39;]) if checkpoint is not None else 0
+
+    def __next__(self):
+        item = next(self._iterator)  # call this before increasing _num_items_yielded to correctly handle the case when a StopIteration exception is thrown
+        self._num_items_yielded += 1
+        return item
+
+
+def create_source_iterator(source_items: List, train: bool=True, seed: Optional[int]=None, shuffle: bool=True, num_instances: int=1, instance_rank: int=0):
+    if not train and shuffle:
+        raise ValueError(&#39;shuffling is not supported when train=False&#39;)
+    if train:
+        return InfinitePermutationSourceIterator(source_items, seed=seed, shuffle=shuffle, num_instances=num_instances, instance_rank=instance_rank)
+    else:
+        return ChunkedSourceIterator(source_items, num_instances=num_instances, instance_rank=instance_rank)
+
+
+def ChunkedSourceIterator(source_items: List, num_instances: int=1, instance_rank: int=0):
+    &#34;&#34;&#34;
+    Cuts source list into chunks, one per instance, and serves out items in chunk corresponding to instance_rank
+
+    This is a source iterator:
+    It is meant to be used at the beginning of a data loading pipeline.
+    As such, it takes a list as its source and not a CheckpointableIterator.
+
+    Args:
+        source_items: input list, must not be empty and must be small enough to fit into RAM entirely, ownership of the list and the data goes to the iterator, do not modify it!
+        num_instances: number of instances of this iterator. Meant for use with multi-process data loading, e.g., in distributed training.
+        instance_rank: rank of this instance of the iterator. Meant for use with multi-process data loading, e.g., in distributed training.
+    &#34;&#34;&#34;
+    # heuristic: assuming blocks are all of the same size, math.ceil should give us the shortest makespan
+    chunk_size = math.ceil(len(source_items) / num_instances)
+    # this does not cause any out-of-bounds issues:
+    # a slice with a start-index beyong the end of the list is empty,
+    # and an end-index of a slice is capped at the end of the list
+    chunk = source_items[instance_rank * chunk_size : (instance_rank + 1) * chunk_size]
+    return NativeCheckpointableIterator(chunk)
+
+
+class InfinitePermutationSourceIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Infinitely generates permutations of the items in the given list.
+
+    This is a source iterator:
+    It is meant to be used at the beginning of a data loading pipeline.
+    As such, it takes a list as its source and not a CheckpointableIterator.
+    The given list is loaded completely into RAM.
+
+    For example, this is used for randomizing the pathnames of data blocks read by ChunkedReadlinesIterator.
+    &#34;&#34;&#34;
+    def __init__(self, source_items: List, seed: Optional[int]=None, shuffle: bool=True, num_instances: int=1, instance_rank: int=0):
+        &#34;&#34;&#34;
+        Args:
+            source_items: input list, must not be empty and must be small enough to fit into RAM entirely, ownership of the list and the data goes to the iterator, do not modify it!
+            seed: random seed used for shuffling (or None)
+            shuffle: set False to bypass the shuffling. Then this is just a checkpointed version of itertools.cycle(). (Default: True)
+            num_instances: number of instances of this iterator. Meant for use with multi-process data loading, e.g., in distributed training.
+            instance_rank: rank of this instance of the iterator. Meant for use with multi-process data loading, e.g., in distributed training.
+        &#34;&#34;&#34;
+        self._source_items = source_items
+        if not self._source_items:
+            raise ValueError(&#34;InfinitePermutationIterator: source must not be empty&#34;)
+        self._shuffle = shuffle
+        self._seed = seed
+        self._num_instances = num_instances
+        self._instance_rank = instance_rank
+        self.setstate(None)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;random_state&#39;:      self._random_state,  # state of random generator before generating the current shuffling of the sequence
+                &#39;num_items_yielded&#39;: self._num_items_yielded}    # how many items have already been iterated over in the current shuffling
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        # set iteration state. Do this outside the generator below in case getstate() is called before ever iterating
+        self._random_state      = checkpoint[&#39;random_state&#39;]      if checkpoint else None
+        self._num_items_yielded = checkpoint[&#39;num_items_yielded&#39;] if checkpoint else 0
+        # We define the iteration itself as a generator for ease of implementation.
+        # We could as well just have used an explicit state machine represented by class members.
+        def _generate() -&gt; Iterator:
+            # create and reset random generator
+            random = Random(self._seed)
+            if self._random_state is not None:  # restore the random generator&#39;s state
+                random.setstate(self._random_state)
+            skip_to_checkpoint = self._num_items_yielded  # items to skip in order to advance to checkpoint
+            # main outer loop for infinite passes over items (reshuffle before each pass)
+            while True:
+                # (re-)shuffle all items
+                self._random_state = random.getstate()  # remember random state before shuffling
+                self._num_items_yielded   = 0
+                shuffled_items = self._source_items[:]  # note: if underlying iterator is checkpointable, use setstate(checkpoint[&#39;nested_state&#39;]) on it
+                if self._shuffle:
+                    random.shuffle(shuffled_items)
+                shuffled_iterator = iter(shuffled_items)
+                # skip initial items when restarting from checkpoint
+                if skip_to_checkpoint:  # @TODO: find a way to abstract this more, so that we can plug it into the &#39;for&#39; statement directly
+                    self._num_items_yielded += _advance_iterator(shuffled_iterator, skip_to_checkpoint)
+                    skip_to_checkpoint = 0  # done skipping
+                # main inner loop over items
+                for item in shuffled_iterator:
+                    self._num_items_yielded += 1  # record how many items we have iterated over in this pass over the items
+                    if (self._num_items_yielded-1) % self._num_instances == self._instance_rank:  # build-in islice facility
+                        yield item
+        self._iterator = _generate()
+
+    def __next__(self):
+        return next(self._iterator)
+
+
+class SelectManyIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Projects each element of a source sequence to a sequence and flattens the resulting sequences into one sequence.
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, collection_selector: Optional[Callable[[Any], Iterator]]=None):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: iterator over the items to pass to collection_selector()
+            collection_selector: user callback that maps an item into an Iterable, whose items will be yielded.
+                                 The returned Iterator is used only once. Hence, it is also allowed to
+                                 return self-iterables, such as iterators and generator expressions.
+                                 If None is given, no callback is applied.
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator          # type: CheckpointableIterator
+        self._collection_selector = collection_selector  # type: Callable[[Any], Iterator]
+        self.setstate(None)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;source_state&#39;:            self._source_state,
+                &#39;flattened_items_yielded&#39;: self._flattened_items_yielded}
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._source_state            = checkpoint[&#39;source_state&#39;]            if checkpoint else None
+        self._flattened_items_yielded = checkpoint[&#39;flattened_items_yielded&#39;] if checkpoint else 0
+        self._source_iterator.setstate(self._source_state)
+        def _generate():
+            skip_to_checkpoint = self._flattened_items_yielded
+            # main loop over source source_items
+            for source_item in self._source_iterator:
+                if self._collection_selector is not None:
+                    data = iter(self._collection_selector(source_item))
+                else:
+                    data = iter(source_item)
+                self._flattened_items_yielded = 0
+                if skip_to_checkpoint:
+                    #print(&#34;Skipping to index&#34;, skip_to_checkpoint, file=sys.stderr)
+                    self._flattened_items_yielded += _advance_iterator(data, skip_to_checkpoint)
+                    skip_to_checkpoint = 0
+                # main loop over lines
+                for item in data:
+                    self._flattened_items_yielded += 1
+                    yield item
+                self._source_state = self._source_iterator.getstate()
+        self._iterator = _generate()
+
+    def __next__(self):
+        return next(self._iterator)
+
+
+class BufferedShuffleIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Shuffles given iterable using a limited buffer.
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, buffer_size: int, seed: int = 0):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: checkpointable iterator or restartable iterable over input items to shuffle
+            buffer_size: size of the buffer in number of items used for shuffling
+            seed: random seed used for shuffling (or None)
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator
+        self._buffer = [None for _ in range(buffer_size)]  # maybe do this lazily?   --Yes, since user may set state immediately, then this is not needed here
+        self._random = Random(seed)
+        self.setstate(None)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;source_state&#39;: self._source_iterator.getstate(),
+                &#39;buffer&#39;:       copy.deepcopy(self._buffer),
+                &#39;random_state&#39;: self._random.getstate()}
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        if checkpoint:
+            self._source_iterator.setstate(checkpoint[&#39;source_state&#39;])
+            self._buffer = checkpoint[&#39;buffer&#39;]
+            self._random.setstate(checkpoint[&#39;random_state&#39;])
+            # @TODO: Can we add a comment how the flush part is handled?
+        else:
+            self._source_iterator.setstate(None)
+        self._iterator = self._generate()
+
+    def _generate(self) -&gt; Iterator:
+        # shuffle data with a buffer:
+        # this is similar to what the Fisher-Yates shuffle does,
+        # but modified to run with a constant-size buffer
+        # see https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+        # this was inspired by an algorithm implemented in Kaldi
+        # see https://kaldi-asr.org/doc/nnet-shuffle-egs_8cc.html
+        for item in self._source_iterator:
+            index = self._random.randrange(0, len(self._buffer))
+            result = None
+            if self._buffer[index] is not None:
+                result = self._buffer[index]
+            self._buffer[index] = item
+            # only yield value once buffer is updated to allow for correct checkpointing!
+            if result is not None:
+                yield result
+
+        # flush buffer
+        while self._buffer:
+            item = self._buffer.pop()
+            if item is not None:
+                yield item
+
+    def __next__(self):
+        return next(self._iterator)
+
+
+class MapIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Applies given tranform to each data item
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, transform: Callable[[str],Any]):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: checkpointable iterator
+            transform: function to be applied to each data item
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator
+        self._transform = transform
+
+    def getstate(self) -&gt; Dict:
+        return self._source_iterator.getstate()
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._source_iterator.setstate(checkpoint)
+
+    def __next__(self):
+        return self._transform(next(self._source_iterator))
+
+
+def ParallelMapIterator(source_iterator: CheckpointableIterator, transform: Callable[[str],Any], num_processes: int, num_items_per_process: int):
+    &#34;&#34;&#34;
+    Applies given transform to each data item
+
+    Behaves the same as MapIterator, but applies transform in parallel using multiple processes in a parallel map operation.
+
+    Warning:
+    The transform function has to be pickleable because it is sent across process boundaries.
+    To achieve this, transform should be a top-level function.
+
+    Args:
+        source_iterator: checkpointable iterator
+        transform: function to be applied to each data item, has to be pickleable, see above
+        num_processes: number of processes to use for parallel map
+        num_items_per_process: number of data items each process operates on
+    &#34;&#34;&#34;
+    # divide stream of data items into batches
+    batched_samples = FixedBatchIterator(source_iterator, num_processes * num_items_per_process)
+    # create process pool and capture it in closure that performs parallel map
+    p = Pool(num_processes)
+    def parallel_map_transform(buffer):
+        return p.map(transform, buffer)
+    # apply transform in parallel to data items in a batch
+    batched_transformed_samples = MapIterator(batched_samples, parallel_map_transform)
+    # unpack batches to go back to stream of (now transformed) data items
+    transformed_samples = SelectManyIterator(batched_transformed_samples)
+    return transformed_samples
+
+
+class ZipIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Zips items from all given iterators, like the Python standard function zip().
+
+    Like Python&#39;s build-in zip(), the iteration stops when the shortest input iterable is exhausted.
+    &#34;&#34;&#34;
+    def __init__(self, *source_iterators: CheckpointableIterator):
+        &#34;&#34;&#34;
+        Args:
+            source_iterators: list of iterators to zip, item by item
+        &#34;&#34;&#34;
+        for source_iterator in source_iterators:
+            if not isinstance(source_iterator, CheckpointableIterator):
+                raise ValueError(&#39;all iterators in source_iterators have to be CheckpointableIterator&#39;)
+        self._source_iterators = source_iterators    # type: List[CheckpointableIterator]
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;input_states&#39;: tuple(iterator.getstate() for iterator in self._source_iterators)}
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        if checkpoint is None:
+            for iterator in self._source_iterators:
+                iterator.setstate(None)
+        else:
+            for iterator, state in zip(self._source_iterators, checkpoint[&#39;input_states&#39;]):
+                iterator.setstate(state)
+
+    def __next__(self):
+        res = []  # (note: can&#39;t use a generator expression, as it gets confused when a next() call raises StopIteration)
+        for iterator in self._source_iterators:
+            res.append(next(iterator))
+        return tuple(res)
+
+
+# @TODO: The yield makes a (shallow) copy of the window, which has complexity O(width * length). In some cases,
+#        we don&#39;t actually need to consume all items in the window. Hence, to make this faster, we should use
+#        double-buffering and return a slice view (which we&#39;d have to write).
+class WindowedIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Yields &#39;width&#39; consecutive items in a sliding window.
+
+    E.g. [1, 2, 3, 4, 5, 6] with width = 3 will yield
+    [[1, 2, 3], [2, 3, 4], [3, 4, 5], [4, 5, 6]]
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, width: int):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: checkpointable input iterators
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator  # type: CheckpointableIterator
+        self._width = width                      # type: int
+        self.setstate(None)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;source_state&#39;: self._source_state,  # state for first item in FIFO
+                &#39;item_index&#39;:  self._item_index}   # index of next item to serve
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._source_state = checkpoint[&#39;source_state&#39;] if checkpoint else None
+        self._item_index   = checkpoint[&#39;item_index&#39;]   if checkpoint else 0
+        self._source_iterator.setstate(self._source_state)
+        self._iterator = self._generate()
+
+    def _fifo_slice(self, i):  # returns a window into the FIFO beginning at i
+        # @TODO: for efficiency, make this a slice view
+        return tuple(self._fifo[i:i + self._width])
+
+    def _generate(self) -&gt; Iterator:
+        self._source_state = self._source_iterator.getstate()
+        self._fifo = list(islice(self._source_iterator, self._width))
+        # we do this in overlapping blocks of length 2*width, for easier checkpointing and potential efficiency
+        while len(self._fifo) == self._width:
+            # we got &#39;width&#39; items; append another &#39;width&#39; (or less if at end)
+            next_input_state = self._source_iterator.getstate()
+            self._fifo.extend(islice(self._source_iterator, self._width))
+            # now serve all positions in first half (last = width - 1). If at end, then limit accordingly.
+            last = min(self._width - 1, len(self._fifo) - self._width)
+            while self._item_index &lt;= last:
+                window = self._fifo_slice(self._item_index)
+                self._item_index += 1
+                yield window
+            # drop all we just served; if &lt; width left, we have hit the end
+            self._fifo = self._fifo[last + 1:]    # Note: This must be a new list, since the old might still be in a slice view.
+            self._source_state = next_input_state  # this reflects now the first element in the FIFO 
+            self._item_index = 0
+
+    def __next__(self):
+        return next(self._iterator)
+
+
+# @TODO: research on whether this operation has a well-known name
+class FixedBatchIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Batches N consecutive items into a single item that is a list of these items.
+
+    E.g. [1, 2, 3 4, 5, 6, 7, 8] with batch_size = 3 will yield
+    [(1, 2, 3), (4, 5, 6), (7, 8)]
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, batch_size: int):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: checkpointable input iterators
+            batch_size: number of items per batch
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator  # type: CheckpointableIterator
+        self._batch_size = batch_size            # type: int
+        self.setstate(None)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;source_state&#39;: self._source_iterator.getstate()}  # state for first item in next batch
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._source_state = checkpoint[&#39;source_state&#39;] if checkpoint else None
+        self._source_iterator.setstate(self._source_state)
+        self._iterator = self._generate()
+
+    def _generate(self) -&gt; Iterator:
+        while True:
+            batch = list(islice(self._source_iterator, self._batch_size))
+            if not batch:
+                break
+            yield batch
+
+    def __next__(self):
+        return next(self._iterator)
+
+
+class RandomIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Iterator to generate uniformly distributed random numbers in the interval [0,1).
+    Very similar to Random.random(), except that random numbers are
+    obtained via next().
+    &#34;&#34;&#34;
+    def __init__(self, seed: Optional[int]=None):
+        &#34;&#34;&#34;
+        Args:
+            seed: Random seed.
+        &#34;&#34;&#34;
+        self._random = Random()  # type: Random
+        if seed is not None:
+            self._random.seed(seed)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;random_state&#39;: self._random.getstate()}
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._random.setstate(checkpoint[&#39;random_state&#39;] if checkpoint else None)
+
+    def __next__(self):
+        return self._random.random()
+
+
+class RecurrentIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Iterates statefully over a step function. The step function accepts a state and a new item,
+    and returns a new state and an output item, which is yielded.
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, step_function: Callable[[Any,Any], Tuple[Any,Any]], initial_state: Any = None):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: checkpointable iterator to recur over
+            step_function: user-supplied function with signature step_function(state, item) -&gt; (new_state, output)
+            initial_state: initial state to be passed to the step_function upon first invocation
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator  # type: CheckpointableIterator
+        self._step_function = step_function      # type: Callable[[Any,Any], Tuple[Any,Any]]
+        self._initial_state = initial_state      # type: Any
+        self.setstate(None)
+    
+    def getstate(self):
+        return {&#39;recurrent_state&#39;: self._recurrent_state,
+                &#39;source_state&#39;:    self._source_iterator.getstate()}
+    
+    def setstate(self, checkpoint):
+        self._recurrent_state = checkpoint[&#39;recurrent_state&#39;] if checkpoint else self._initial_state
+        self._source_iterator.setstate(checkpoint[&#39;source_state&#39;] if checkpoint else None)
+        def _generate():
+            for item in self._source_iterator:
+                self._recurrent_state, output = self._step_function(self._recurrent_state, item)
+                yield output
+        self._iterator = _generate()
+
+    def __next__(self):
+        return next(self._iterator)
+
+
+def SamplingRandomMapIterator(source_iterator: CheckpointableIterator, transform: Callable[[Random,Any],Any], seed: Optional[int]=None):
+    &#34;&#34;&#34;
+    An iterator that calls a transform function on each item, while also passing a checkpointed
+    random generator.
+
+    Args:
+        source_iterator: checkpointable iterator to recur over
+        step_function: user-supplied function with signature step_function(random, item) -&gt; result_item
+        seed: random seed
+    &#34;&#34;&#34;
+    _random = Random()
+    if seed is not None:
+        _random.seed(seed)
+    def _step_function(state, item):
+        _random.setstate(state)
+        output = transform(_random, item)
+        return _random.getstate(), output
+    return RecurrentIterator(source_iterator, _step_function, initial_state=_random.getstate())
+
+
+def BlockwiseShuffleIterator(source_iterator: CheckpointableIterator, block_size: int, seed: int = 0):
+    &#34;&#34;&#34;
+    Shuffles a sequence of items by grouping consecutive items in blocks of fixed size, shuffling
+    each block, and yielding the shuffled items of all blocks as a flat sequence.
+
+    E.g. [1, 2, 3, 4, 5, 6, 7, 8] with block_size = 3 may yield [3, 1, 2, 4, 6, 5, 8, 7].
+
+    Args:
+        source_iterator: checkpointable iterator or restartable iterable over input items to shuffle
+        block_size: size of the buffer in number of items used for shuffling
+        seed: random seed used for shuffling (or None)
+    &#34;&#34;&#34;
+    # This is implemented as a pipeline:
+    #  - group N consecutive items together
+    #  - shuffle them
+    #  - flatten the result
+    blocks = FixedBatchIterator(source_iterator, batch_size=block_size)
+    def shuffle_block_fn(random: Random, block: List):
+        random.shuffle(block)
+        return block
+    shuffled_blocks = SamplingRandomMapIterator(blocks, transform=shuffle_block_fn, seed=seed)
+    samples = SelectManyIterator(shuffled_blocks, collection_selector=lambda shuffled_block: iter(shuffled_block))
+    return samples
+
+
+class PrefetchIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    An iterator prefetching data into a buffer on a seperate thread to smooth out IO latency.
+
+    Args:
+        source_iterator: checkpointable iterator to recur over
+        buffer_size: size of the queue between the threads
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, buffer_size: int=1000):
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator  # type:CheckpointableIterator
+        self._buffer_size = buffer_size          # type: int
+        self._queue = None                       # type: Optional[ClosableQueue]
+        self._thread = None                      # type: Optional[Thread]
+        self.setstate(None)
+        
+    def getstate(self) -&gt; Dict:
+        return {&#39;source_state&#39;: self._source_state,
+                &#39;item_offset&#39; : self._item_offset  }
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        if self._thread is not None:  # if there is a prefetching thread running, close the queue and wait for the thread to terminate
+            assert self._queue is not None
+            self._queue.close()
+            self._thread.join()
+        
+        self._source_state = checkpoint[&#39;source_state&#39;] if checkpoint is not None else None
+        self._item_offset  = checkpoint[&#39;item_offset&#39; ] if checkpoint is not None else 0
+
+        self._source_iterator.setstate(self._source_state)
+
+        self._queue = ClosableQueue(maxsize=self._buffer_size)  # clear queue
+        # make thread daemonic so it is killed when the main program terminates
+        self._thread = Thread(target=self._prefetch_thread_fn, args=(self._source_iterator, self._item_offset, self._buffer_size, self._queue), daemon=True)
+        self._thread.start()
+
+    @staticmethod
+    def _prefetch_thread_fn(source, item_offset, buffer_size, queue):  # behavior of the prefetching thread, only call from that thread!
+        _advance_iterator(source, item_offset)  # skip to checkpoint
+
+        while True:
+            try:
+                item = next(source)
+            except StopIteration:
+                queue.close()
+                return
+            
+            if item_offset == buffer_size - 1:  # send a new source state a the END of each window of length _buffer_size
+                source_state = source.getstate()  # this is the state for retrieving the NEXT element, i.e. the first element of the next buffer
+                item_offset = 0
+            else:
+                source_state = None
+                item_offset += 1
+            msg = (item, source_state)
+
+            try:
+                queue.put(msg)
+            except ClosedException:
+                return
+
+    def __next__(self):
+        try:
+            msg = self._queue.get()
+        except ClosedException:
+            raise StopIteration
+
+        item, prefetch_source_state = msg
+        if prefetch_source_state is not None:
+            assert self._item_offset == self._buffer_size - 1  # we expect a new source state at then END of each window of length _buffer_size
+            self._source_state = prefetch_source_state
+            self._item_offset = 0
+        else:
+            self._item_offset = self._item_offset + 1
+            assert self._item_offset &lt; self._buffer_size
+        return item  # for debugging, its useful to return msg instead of item
+
+    def __del__(self):  # note: this is often not called. If you really need it, gc.collect() will do the trick.
+        if self._thread is not None:
+            assert self._queue is not None
+            self._queue.close()
+            try:
+                self._thread.join()
+            except:
+                pass
+
+class BucketedReadaheadBatchIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Iterates over items from a checkpointable iterator and groups items of similar length into batches.
+
+    The algorithm reads a head a certain number of lines (e.g. 10 million), sorts them by
+    length, and them groups them into batches from start to end. The sort is stable, such
+    that prior randomization is not undone (except for the length grouping). The batch size
+    is dynamic, and determined by a user-provided callback.
+
+    This is based on Marian NMT&#39;s BatchGenerator.
+    &#34;&#34;&#34;
+
+    def __init__(self, source_iterator: CheckpointableIterator, read_ahead: int, key: Callable[[Any], Any], batch_size: Union[int,Callable[[Any], int]], shuffle: bool=True, seed: Optional[int]=None):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: The data set that is read from. Typically this is an infinite source.
+            read_ahead: Number of items to fetch ahead for grouping purposes.
+            key: User-provided callback to define how data is sorted for purpose of batching.
+            batch_size: Batch size in number of items. Either an integer or a callback to determine batch size for a given first batch item.
+            shuffle: Pass False to not randomize the batches. (default: True)
+            seed: Random seed for batch shuffling.
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        # keep arguments
+        self._key = key                # type: Callable[[Any], Any]
+        self._batch_size = batch_size  # type: Union[int,Callable[[Any], int]]
+        self._read_ahead = read_ahead  # type: int
+        # initialize state
+        self._random = None
+        if shuffle:
+            self._random = Random()                    # type: Random
+            if seed is not None:
+                self._random.seed(seed)
+        self._source_iterator = iter(source_iterator)  # type: CheckpointableIterator
+        self.setstate(None)
+
+    def getstate(self):
+        return {&#39;source_state&#39;: self._source_state,
+                &#39;random_state&#39;: self._random_state,
+                &#39;num_served&#39;:   self._num_batches_yielded}
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._source_state        = checkpoint[&#39;source_state&#39;] if checkpoint else None  # type: Dict  -- state of input before reading the current set of batches
+        self._random_state        = checkpoint[&#39;random_state&#39;] if checkpoint else None  # type: Any   -- state of random generator at _source_state
+        self._num_batches_yielded = checkpoint[&#39;num_served&#39;]   if checkpoint else 0     # type: int   -- number of batches served from the current set of batches
+        # checkpointing: restore to start of current set of batches
+        self._source_iterator.setstate(self._source_state)
+        if self._random_state:
+            self._random.setstate(self._random_state)
+        self._source_exhausted = False  # type: bool  -- set to True once we hit StopIteration on source
+        def _generate():
+            skip_to_checkpoint = self._num_batches_yielded
+            source_exhausted = False
+            while not source_exhausted:
+                # prefetch the readahead buffer
+                self._source_state = self._source_iterator.getstate()
+                self._random_state = self._random.getstate() if self._random else None
+                items = list(islice(self._source_iterator, self._read_ahead))
+                source_exhausted = (len(items) &lt; self._read_ahead)
+                # create batches
+                batches = self._create_batches(items)
+                # shuffle the batches
+                if self._random:
+                    self._random.shuffle(batches)
+                # on first loop iteration, restore iterator inside batches from checkpoint
+                batches = iter(batches)
+                self._num_batches_yielded = _advance_iterator(batches, skip_to_checkpoint)
+                skip_to_checkpoint = 0
+                # main loop over batches in current read-ahead section
+                for batch in batches:
+                    self._num_batches_yielded += 1
+                    yield batch
+        self._iterator = _generate()  # type: Iterator  -- iterator into current set of batches
+
+    def _create_batches(self, items: List[Any]) -&gt; List[List[Any]]:  # helper to form batches from a list of items
+            # sort by length, longest first
+            items.sort(key=self._key, reverse=True)  # note: sort() is stable, so we won&#39;t undo any randomization besides the bucketing
+            # group into batches
+            cur_batch = None
+            batches = []
+            for item in items:
+                if not cur_batch:
+                    batch_size = self._batch_size if isinstance(self._batch_size, int) else \
+                                 self._batch_size(item)
+                    cur_batch = []
+                cur_batch.append(item)
+                if len(cur_batch) &gt;= batch_size:  # this batch is full
+                    batches.append(cur_batch)
+                    cur_batch = None
+            if cur_batch:
+                batches.append(cur_batch)
+            return batches
+
+    def __next__(self):
+        return next(self._iterator)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="infinibatch.iterators.create_source_iterator"><code class="name flex">
+<span>def <span class="ident">create_source_iterator</span></span>(<span>source_items: List, train: bool = True, seed: Union[int, NoneType] = None, shuffle: bool = True, num_instances: int = 1, instance_rank: int = 0)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_source_iterator(source_items: List, train: bool=True, seed: Optional[int]=None, shuffle: bool=True, num_instances: int=1, instance_rank: int=0):
+    if not train and shuffle:
+        raise ValueError(&#39;shuffling is not supported when train=False&#39;)
+    if train:
+        return InfinitePermutationSourceIterator(source_items, seed=seed, shuffle=shuffle, num_instances=num_instances, instance_rank=instance_rank)
+    else:
+        return ChunkedSourceIterator(source_items, num_instances=num_instances, instance_rank=instance_rank)</code></pre>
+</details>
+</dd>
+<dt id="infinibatch.iterators.ChunkedSourceIterator"><code class="name flex">
+<span>def <span class="ident">ChunkedSourceIterator</span></span>(<span>source_items: List, num_instances: int = 1, instance_rank: int = 0)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Cuts source list into chunks, one per instance, and serves out items in chunk corresponding to instance_rank</p>
+<p>This is a source iterator:
+It is meant to be used at the beginning of a data loading pipeline.
+As such, it takes a list as its source and not a CheckpointableIterator.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_items</code></strong></dt>
+<dd>input list, must not be empty and must be small enough to fit into RAM entirely, ownership of the list and the data goes to the iterator, do not modify it!</dd>
+<dt><strong><code>num_instances</code></strong></dt>
+<dd>number of instances of this iterator. Meant for use with multi-process data loading, e.g., in distributed training.</dd>
+<dt><strong><code>instance_rank</code></strong></dt>
+<dd>rank of this instance of the iterator. Meant for use with multi-process data loading, e.g., in distributed training.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ChunkedSourceIterator(source_items: List, num_instances: int=1, instance_rank: int=0):
+    &#34;&#34;&#34;
+    Cuts source list into chunks, one per instance, and serves out items in chunk corresponding to instance_rank
+
+    This is a source iterator:
+    It is meant to be used at the beginning of a data loading pipeline.
+    As such, it takes a list as its source and not a CheckpointableIterator.
+
+    Args:
+        source_items: input list, must not be empty and must be small enough to fit into RAM entirely, ownership of the list and the data goes to the iterator, do not modify it!
+        num_instances: number of instances of this iterator. Meant for use with multi-process data loading, e.g., in distributed training.
+        instance_rank: rank of this instance of the iterator. Meant for use with multi-process data loading, e.g., in distributed training.
+    &#34;&#34;&#34;
+    # heuristic: assuming blocks are all of the same size, math.ceil should give us the shortest makespan
+    chunk_size = math.ceil(len(source_items) / num_instances)
+    # this does not cause any out-of-bounds issues:
+    # a slice with a start-index beyong the end of the list is empty,
+    # and an end-index of a slice is capped at the end of the list
+    chunk = source_items[instance_rank * chunk_size : (instance_rank + 1) * chunk_size]
+    return NativeCheckpointableIterator(chunk)</code></pre>
+</details>
+</dd>
+<dt id="infinibatch.iterators.ParallelMapIterator"><code class="name flex">
+<span>def <span class="ident">ParallelMapIterator</span></span>(<span>source_iterator: <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a>, transform: Callable[[str], Any], num_processes: int, num_items_per_process: int)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Applies given transform to each data item</p>
+<p>Behaves the same as MapIterator, but applies transform in parallel using multiple processes in a parallel map operation.</p>
+<p>Warning:
+The transform function has to be pickleable because it is sent across process boundaries.
+To achieve this, transform should be a top-level function.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_iterator</code></strong></dt>
+<dd>checkpointable iterator</dd>
+<dt><strong><code>transform</code></strong></dt>
+<dd>function to be applied to each data item, has to be pickleable, see above</dd>
+<dt><strong><code>num_processes</code></strong></dt>
+<dd>number of processes to use for parallel map</dd>
+<dt><strong><code>num_items_per_process</code></strong></dt>
+<dd>number of data items each process operates on</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ParallelMapIterator(source_iterator: CheckpointableIterator, transform: Callable[[str],Any], num_processes: int, num_items_per_process: int):
+    &#34;&#34;&#34;
+    Applies given transform to each data item
+
+    Behaves the same as MapIterator, but applies transform in parallel using multiple processes in a parallel map operation.
+
+    Warning:
+    The transform function has to be pickleable because it is sent across process boundaries.
+    To achieve this, transform should be a top-level function.
+
+    Args:
+        source_iterator: checkpointable iterator
+        transform: function to be applied to each data item, has to be pickleable, see above
+        num_processes: number of processes to use for parallel map
+        num_items_per_process: number of data items each process operates on
+    &#34;&#34;&#34;
+    # divide stream of data items into batches
+    batched_samples = FixedBatchIterator(source_iterator, num_processes * num_items_per_process)
+    # create process pool and capture it in closure that performs parallel map
+    p = Pool(num_processes)
+    def parallel_map_transform(buffer):
+        return p.map(transform, buffer)
+    # apply transform in parallel to data items in a batch
+    batched_transformed_samples = MapIterator(batched_samples, parallel_map_transform)
+    # unpack batches to go back to stream of (now transformed) data items
+    transformed_samples = SelectManyIterator(batched_transformed_samples)
+    return transformed_samples</code></pre>
+</details>
+</dd>
+<dt id="infinibatch.iterators.SamplingRandomMapIterator"><code class="name flex">
+<span>def <span class="ident">SamplingRandomMapIterator</span></span>(<span>source_iterator: <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a>, transform: Callable[[random.Random, Any], Any], seed: Union[int, NoneType] = None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>An iterator that calls a transform function on each item, while also passing a checkpointed
+random generator.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_iterator</code></strong></dt>
+<dd>checkpointable iterator to recur over</dd>
+<dt><strong><code>step_function</code></strong></dt>
+<dd>user-supplied function with signature step_function(random, item) -&gt; result_item</dd>
+<dt><strong><code>seed</code></strong></dt>
+<dd>random seed</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def SamplingRandomMapIterator(source_iterator: CheckpointableIterator, transform: Callable[[Random,Any],Any], seed: Optional[int]=None):
+    &#34;&#34;&#34;
+    An iterator that calls a transform function on each item, while also passing a checkpointed
+    random generator.
+
+    Args:
+        source_iterator: checkpointable iterator to recur over
+        step_function: user-supplied function with signature step_function(random, item) -&gt; result_item
+        seed: random seed
+    &#34;&#34;&#34;
+    _random = Random()
+    if seed is not None:
+        _random.seed(seed)
+    def _step_function(state, item):
+        _random.setstate(state)
+        output = transform(_random, item)
+        return _random.getstate(), output
+    return RecurrentIterator(source_iterator, _step_function, initial_state=_random.getstate())</code></pre>
+</details>
+</dd>
+<dt id="infinibatch.iterators.BlockwiseShuffleIterator"><code class="name flex">
+<span>def <span class="ident">BlockwiseShuffleIterator</span></span>(<span>source_iterator: <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a>, block_size: int, seed: int = 0)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Shuffles a sequence of items by grouping consecutive items in blocks of fixed size, shuffling
+each block, and yielding the shuffled items of all blocks as a flat sequence.</p>
+<p>E.g. [1, 2, 3, 4, 5, 6, 7, 8] with block_size = 3 may yield [3, 1, 2, 4, 6, 5, 8, 7].</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_iterator</code></strong></dt>
+<dd>checkpointable iterator or restartable iterable over input items to shuffle</dd>
+<dt><strong><code>block_size</code></strong></dt>
+<dd>size of the buffer in number of items used for shuffling</dd>
+<dt><strong><code>seed</code></strong></dt>
+<dd>random seed used for shuffling (or None)</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def BlockwiseShuffleIterator(source_iterator: CheckpointableIterator, block_size: int, seed: int = 0):
+    &#34;&#34;&#34;
+    Shuffles a sequence of items by grouping consecutive items in blocks of fixed size, shuffling
+    each block, and yielding the shuffled items of all blocks as a flat sequence.
+
+    E.g. [1, 2, 3, 4, 5, 6, 7, 8] with block_size = 3 may yield [3, 1, 2, 4, 6, 5, 8, 7].
+
+    Args:
+        source_iterator: checkpointable iterator or restartable iterable over input items to shuffle
+        block_size: size of the buffer in number of items used for shuffling
+        seed: random seed used for shuffling (or None)
+    &#34;&#34;&#34;
+    # This is implemented as a pipeline:
+    #  - group N consecutive items together
+    #  - shuffle them
+    #  - flatten the result
+    blocks = FixedBatchIterator(source_iterator, batch_size=block_size)
+    def shuffle_block_fn(random: Random, block: List):
+        random.shuffle(block)
+        return block
+    shuffled_blocks = SamplingRandomMapIterator(blocks, transform=shuffle_block_fn, seed=seed)
+    samples = SelectManyIterator(shuffled_blocks, collection_selector=lambda shuffled_block: iter(shuffled_block))
+    return samples</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="infinibatch.iterators.CheckpointableIterator"><code class="flex name class">
+<span>class <span class="ident">CheckpointableIterator</span></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Abstract base class that defines the interface for checkpointing.</p>
+<p>The interface (getstate, setstate) is inspired by Python's random package.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CheckpointableIterator(collections.abc.Iterator):
+    &#34;&#34;&#34;
+    Abstract base class that defines the interface for checkpointing.
+    
+    The interface (getstate, setstate) is inspired by Python&#39;s random package.
+    &#34;&#34;&#34;
+    def __iter__(self):
+        return self
+
+    @abstractmethod
+    def getstate(self) -&gt; Dict:
+        &#34;&#34;&#34;
+        Get checkpoint of current state of iterator
+        
+        In a pipeline of iterators, this function __recursively__ calls itself on the preceeding iterator
+        and includes the gathered information in the returned checkpoint.
+        Thereby, to obtain a checkpoint of the state of an entire pipeline of iterators
+        you only have to call this function on the __last__ iterator in the pipeline.
+        A checkpoint is represented as a `dict`,
+        but the caller should treat a checkpoint as an opaque object
+        and not make any assumptions about the existence or meaning of the `dict` entries.
+        &#34;&#34;&#34;
+        pass
+
+    @abstractmethod
+    def setstate(self, checkpoint: Optional[Dict]):
+        &#34;&#34;&#34;
+        Set state of iterator to given checkpoint
+
+        In a pipeline of iterators, this function __recursively__ calls itself on the preceeding iterator.
+        Thereby, to set the state of an entire pipeline of iterators to a given checkpoint
+        you only have to call this function on the __last__ iterator in the pipeline.
+
+        Args:
+            checkpoint: Checkpoint that should be used to reset the state of the iterator (or pipeline).
+                        If this is __None__, the state of the iterator (or pipeline) is reset to the initial
+                        state immediately after construction.
+        &#34;&#34;&#34;
+        pass
+
+    def __getstate__(self) -&gt; Dict:  # implementation of pickle Protocol
+        return self.getstate()
+
+    def __setstate__(self, checkpoint: Optional[Dict]):
+        self.setstate(checkpoint)
+
+    @abstractmethod
+    def __next__(self):
+        pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>collections.abc.Iterator</li>
+<li>collections.abc.Iterable</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="infinibatch.iterators.BucketedReadaheadBatchIterator" href="#infinibatch.iterators.BucketedReadaheadBatchIterator">BucketedReadaheadBatchIterator</a></li>
+<li><a title="infinibatch.iterators.BufferedShuffleIterator" href="#infinibatch.iterators.BufferedShuffleIterator">BufferedShuffleIterator</a></li>
+<li><a title="infinibatch.iterators.FixedBatchIterator" href="#infinibatch.iterators.FixedBatchIterator">FixedBatchIterator</a></li>
+<li><a title="infinibatch.iterators.InfinitePermutationSourceIterator" href="#infinibatch.iterators.InfinitePermutationSourceIterator">InfinitePermutationSourceIterator</a></li>
+<li><a title="infinibatch.iterators.MapIterator" href="#infinibatch.iterators.MapIterator">MapIterator</a></li>
+<li><a title="infinibatch.iterators.NativeCheckpointableIterator" href="#infinibatch.iterators.NativeCheckpointableIterator">NativeCheckpointableIterator</a></li>
+<li><a title="infinibatch.iterators.PrefetchIterator" href="#infinibatch.iterators.PrefetchIterator">PrefetchIterator</a></li>
+<li><a title="infinibatch.iterators.RandomIterator" href="#infinibatch.iterators.RandomIterator">RandomIterator</a></li>
+<li><a title="infinibatch.iterators.RecurrentIterator" href="#infinibatch.iterators.RecurrentIterator">RecurrentIterator</a></li>
+<li><a title="infinibatch.iterators.SelectManyIterator" href="#infinibatch.iterators.SelectManyIterator">SelectManyIterator</a></li>
+<li><a title="infinibatch.iterators.WindowedIterator" href="#infinibatch.iterators.WindowedIterator">WindowedIterator</a></li>
+<li><a title="infinibatch.iterators.ZipIterator" href="#infinibatch.iterators.ZipIterator">ZipIterator</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="infinibatch.iterators.CheckpointableIterator.getstate"><code class="name flex">
+<span>def <span class="ident">getstate</span></span>(<span>self) -> Dict</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Get checkpoint of current state of iterator</p>
+<p>In a pipeline of iterators, this function <strong>recursively</strong> calls itself on the preceeding iterator
+and includes the gathered information in the returned checkpoint.
+Thereby, to obtain a checkpoint of the state of an entire pipeline of iterators
+you only have to call this function on the <strong>last</strong> iterator in the pipeline.
+A checkpoint is represented as a <code>dict</code>,
+but the caller should treat a checkpoint as an opaque object
+and not make any assumptions about the existence or meaning of the <code>dict</code> entries.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def getstate(self) -&gt; Dict:
+    &#34;&#34;&#34;
+    Get checkpoint of current state of iterator
+    
+    In a pipeline of iterators, this function __recursively__ calls itself on the preceeding iterator
+    and includes the gathered information in the returned checkpoint.
+    Thereby, to obtain a checkpoint of the state of an entire pipeline of iterators
+    you only have to call this function on the __last__ iterator in the pipeline.
+    A checkpoint is represented as a `dict`,
+    but the caller should treat a checkpoint as an opaque object
+    and not make any assumptions about the existence or meaning of the `dict` entries.
+    &#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="infinibatch.iterators.CheckpointableIterator.setstate"><code class="name flex">
+<span>def <span class="ident">setstate</span></span>(<span>self, checkpoint: Union[Dict, NoneType])</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Set state of iterator to given checkpoint</p>
+<p>In a pipeline of iterators, this function <strong>recursively</strong> calls itself on the preceeding iterator.
+Thereby, to set the state of an entire pipeline of iterators to a given checkpoint
+you only have to call this function on the <strong>last</strong> iterator in the pipeline.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>checkpoint</code></strong></dt>
+<dd>Checkpoint that should be used to reset the state of the iterator (or pipeline).
+If this is <strong>None</strong>, the state of the iterator (or pipeline) is reset to the initial
+state immediately after construction.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def setstate(self, checkpoint: Optional[Dict]):
+    &#34;&#34;&#34;
+    Set state of iterator to given checkpoint
+
+    In a pipeline of iterators, this function __recursively__ calls itself on the preceeding iterator.
+    Thereby, to set the state of an entire pipeline of iterators to a given checkpoint
+    you only have to call this function on the __last__ iterator in the pipeline.
+
+    Args:
+        checkpoint: Checkpoint that should be used to reset the state of the iterator (or pipeline).
+                    If this is __None__, the state of the iterator (or pipeline) is reset to the initial
+                    state immediately after construction.
+    &#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="infinibatch.iterators.NativeCheckpointableIterator"><code class="flex name class">
+<span>class <span class="ident">NativeCheckpointableIterator</span></span>
+<span>(</span><span>iterable: Iterable)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Simple wrapper class that turns a Python Iterable into a CheckpointableIterator</p>
+<p>When calling setstate on this class, it simply replays the iterator all the way to the checkpoint one element at a time,
+which makes it generally inefficient.</p>
+<p>Warning: This class cannot be used with Iterators (as opposed to Iterables), which have an <code>__iter__</code> function that simply returns self, but does not reset.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NativeCheckpointableIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Simple wrapper class that turns a Python Iterable into a CheckpointableIterator
+    
+    When calling setstate on this class, it simply replays the iterator all the way to the checkpoint one element at a time,
+    which makes it generally inefficient.
+
+    Warning: This class cannot be used with Iterators (as opposed to Iterables), which have an `__iter__` function that simply returns self, but does not reset.
+    &#34;&#34;&#34;
+    def __init__(self, iterable: Iterable):
+        # check whether iterable is iterable or iterator:
+        # if the variable iterable contains an iterator, the function __iter__ returns self
+        # if the variable iterable is an actual iterator, it should not return self
+        if iter(iterable) is iterable:  
+            raise ValueError(&#39;It looks like you are passing an iterator instead of an iterable. This is not supported and can cause undefined behavior when used with checkpointing.&#39;)
+        self._input_iterable = iterable
+        self.setstate(None)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;num_items_yielded&#39;: self._num_items_yielded}
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._iterator = iter(self._input_iterable)
+        self._num_items_yielded = _advance_iterator(self._iterator, checkpoint[&#39;num_items_yielded&#39;]) if checkpoint is not None else 0
+
+    def __next__(self):
+        item = next(self._iterator)  # call this before increasing _num_items_yielded to correctly handle the case when a StopIteration exception is thrown
+        self._num_items_yielded += 1
+        return item</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></li>
+<li>collections.abc.Iterator</li>
+<li>collections.abc.Iterable</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.getstate" href="#infinibatch.iterators.CheckpointableIterator.getstate">getstate</a></code></li>
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.setstate" href="#infinibatch.iterators.CheckpointableIterator.setstate">setstate</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="infinibatch.iterators.InfinitePermutationSourceIterator"><code class="flex name class">
+<span>class <span class="ident">InfinitePermutationSourceIterator</span></span>
+<span>(</span><span>source_items: List, seed: Union[int, NoneType] = None, shuffle: bool = True, num_instances: int = 1, instance_rank: int = 0)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Infinitely generates permutations of the items in the given list.</p>
+<p>This is a source iterator:
+It is meant to be used at the beginning of a data loading pipeline.
+As such, it takes a list as its source and not a CheckpointableIterator.
+The given list is loaded completely into RAM.</p>
+<p>For example, this is used for randomizing the pathnames of data blocks read by ChunkedReadlinesIterator.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_items</code></strong></dt>
+<dd>input list, must not be empty and must be small enough to fit into RAM entirely, ownership of the list and the data goes to the iterator, do not modify it!</dd>
+<dt><strong><code>seed</code></strong></dt>
+<dd>random seed used for shuffling (or None)</dd>
+<dt><strong><code>shuffle</code></strong></dt>
+<dd>set False to bypass the shuffling. Then this is just a checkpointed version of itertools.cycle(). (Default: True)</dd>
+<dt><strong><code>num_instances</code></strong></dt>
+<dd>number of instances of this iterator. Meant for use with multi-process data loading, e.g., in distributed training.</dd>
+<dt><strong><code>instance_rank</code></strong></dt>
+<dd>rank of this instance of the iterator. Meant for use with multi-process data loading, e.g., in distributed training.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class InfinitePermutationSourceIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Infinitely generates permutations of the items in the given list.
+
+    This is a source iterator:
+    It is meant to be used at the beginning of a data loading pipeline.
+    As such, it takes a list as its source and not a CheckpointableIterator.
+    The given list is loaded completely into RAM.
+
+    For example, this is used for randomizing the pathnames of data blocks read by ChunkedReadlinesIterator.
+    &#34;&#34;&#34;
+    def __init__(self, source_items: List, seed: Optional[int]=None, shuffle: bool=True, num_instances: int=1, instance_rank: int=0):
+        &#34;&#34;&#34;
+        Args:
+            source_items: input list, must not be empty and must be small enough to fit into RAM entirely, ownership of the list and the data goes to the iterator, do not modify it!
+            seed: random seed used for shuffling (or None)
+            shuffle: set False to bypass the shuffling. Then this is just a checkpointed version of itertools.cycle(). (Default: True)
+            num_instances: number of instances of this iterator. Meant for use with multi-process data loading, e.g., in distributed training.
+            instance_rank: rank of this instance of the iterator. Meant for use with multi-process data loading, e.g., in distributed training.
+        &#34;&#34;&#34;
+        self._source_items = source_items
+        if not self._source_items:
+            raise ValueError(&#34;InfinitePermutationIterator: source must not be empty&#34;)
+        self._shuffle = shuffle
+        self._seed = seed
+        self._num_instances = num_instances
+        self._instance_rank = instance_rank
+        self.setstate(None)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;random_state&#39;:      self._random_state,  # state of random generator before generating the current shuffling of the sequence
+                &#39;num_items_yielded&#39;: self._num_items_yielded}    # how many items have already been iterated over in the current shuffling
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        # set iteration state. Do this outside the generator below in case getstate() is called before ever iterating
+        self._random_state      = checkpoint[&#39;random_state&#39;]      if checkpoint else None
+        self._num_items_yielded = checkpoint[&#39;num_items_yielded&#39;] if checkpoint else 0
+        # We define the iteration itself as a generator for ease of implementation.
+        # We could as well just have used an explicit state machine represented by class members.
+        def _generate() -&gt; Iterator:
+            # create and reset random generator
+            random = Random(self._seed)
+            if self._random_state is not None:  # restore the random generator&#39;s state
+                random.setstate(self._random_state)
+            skip_to_checkpoint = self._num_items_yielded  # items to skip in order to advance to checkpoint
+            # main outer loop for infinite passes over items (reshuffle before each pass)
+            while True:
+                # (re-)shuffle all items
+                self._random_state = random.getstate()  # remember random state before shuffling
+                self._num_items_yielded   = 0
+                shuffled_items = self._source_items[:]  # note: if underlying iterator is checkpointable, use setstate(checkpoint[&#39;nested_state&#39;]) on it
+                if self._shuffle:
+                    random.shuffle(shuffled_items)
+                shuffled_iterator = iter(shuffled_items)
+                # skip initial items when restarting from checkpoint
+                if skip_to_checkpoint:  # @TODO: find a way to abstract this more, so that we can plug it into the &#39;for&#39; statement directly
+                    self._num_items_yielded += _advance_iterator(shuffled_iterator, skip_to_checkpoint)
+                    skip_to_checkpoint = 0  # done skipping
+                # main inner loop over items
+                for item in shuffled_iterator:
+                    self._num_items_yielded += 1  # record how many items we have iterated over in this pass over the items
+                    if (self._num_items_yielded-1) % self._num_instances == self._instance_rank:  # build-in islice facility
+                        yield item
+        self._iterator = _generate()
+
+    def __next__(self):
+        return next(self._iterator)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></li>
+<li>collections.abc.Iterator</li>
+<li>collections.abc.Iterable</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.getstate" href="#infinibatch.iterators.CheckpointableIterator.getstate">getstate</a></code></li>
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.setstate" href="#infinibatch.iterators.CheckpointableIterator.setstate">setstate</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="infinibatch.iterators.SelectManyIterator"><code class="flex name class">
+<span>class <span class="ident">SelectManyIterator</span></span>
+<span>(</span><span>source_iterator: <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a>, collection_selector: Union[Callable[[Any], Iterator], NoneType] = None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Projects each element of a source sequence to a sequence and flattens the resulting sequences into one sequence.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_iterator</code></strong></dt>
+<dd>iterator over the items to pass to collection_selector()</dd>
+<dt><strong><code>collection_selector</code></strong></dt>
+<dd>user callback that maps an item into an Iterable, whose items will be yielded.
+The returned Iterator is used only once. Hence, it is also allowed to
+return self-iterables, such as iterators and generator expressions.
+If None is given, no callback is applied.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SelectManyIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Projects each element of a source sequence to a sequence and flattens the resulting sequences into one sequence.
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, collection_selector: Optional[Callable[[Any], Iterator]]=None):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: iterator over the items to pass to collection_selector()
+            collection_selector: user callback that maps an item into an Iterable, whose items will be yielded.
+                                 The returned Iterator is used only once. Hence, it is also allowed to
+                                 return self-iterables, such as iterators and generator expressions.
+                                 If None is given, no callback is applied.
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator          # type: CheckpointableIterator
+        self._collection_selector = collection_selector  # type: Callable[[Any], Iterator]
+        self.setstate(None)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;source_state&#39;:            self._source_state,
+                &#39;flattened_items_yielded&#39;: self._flattened_items_yielded}
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._source_state            = checkpoint[&#39;source_state&#39;]            if checkpoint else None
+        self._flattened_items_yielded = checkpoint[&#39;flattened_items_yielded&#39;] if checkpoint else 0
+        self._source_iterator.setstate(self._source_state)
+        def _generate():
+            skip_to_checkpoint = self._flattened_items_yielded
+            # main loop over source source_items
+            for source_item in self._source_iterator:
+                if self._collection_selector is not None:
+                    data = iter(self._collection_selector(source_item))
+                else:
+                    data = iter(source_item)
+                self._flattened_items_yielded = 0
+                if skip_to_checkpoint:
+                    #print(&#34;Skipping to index&#34;, skip_to_checkpoint, file=sys.stderr)
+                    self._flattened_items_yielded += _advance_iterator(data, skip_to_checkpoint)
+                    skip_to_checkpoint = 0
+                # main loop over lines
+                for item in data:
+                    self._flattened_items_yielded += 1
+                    yield item
+                self._source_state = self._source_iterator.getstate()
+        self._iterator = _generate()
+
+    def __next__(self):
+        return next(self._iterator)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></li>
+<li>collections.abc.Iterator</li>
+<li>collections.abc.Iterable</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.getstate" href="#infinibatch.iterators.CheckpointableIterator.getstate">getstate</a></code></li>
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.setstate" href="#infinibatch.iterators.CheckpointableIterator.setstate">setstate</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="infinibatch.iterators.BufferedShuffleIterator"><code class="flex name class">
+<span>class <span class="ident">BufferedShuffleIterator</span></span>
+<span>(</span><span>source_iterator: <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a>, buffer_size: int, seed: int = 0)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Shuffles given iterable using a limited buffer.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_iterator</code></strong></dt>
+<dd>checkpointable iterator or restartable iterable over input items to shuffle</dd>
+<dt><strong><code>buffer_size</code></strong></dt>
+<dd>size of the buffer in number of items used for shuffling</dd>
+<dt><strong><code>seed</code></strong></dt>
+<dd>random seed used for shuffling (or None)</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BufferedShuffleIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Shuffles given iterable using a limited buffer.
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, buffer_size: int, seed: int = 0):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: checkpointable iterator or restartable iterable over input items to shuffle
+            buffer_size: size of the buffer in number of items used for shuffling
+            seed: random seed used for shuffling (or None)
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator
+        self._buffer = [None for _ in range(buffer_size)]  # maybe do this lazily?   --Yes, since user may set state immediately, then this is not needed here
+        self._random = Random(seed)
+        self.setstate(None)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;source_state&#39;: self._source_iterator.getstate(),
+                &#39;buffer&#39;:       copy.deepcopy(self._buffer),
+                &#39;random_state&#39;: self._random.getstate()}
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        if checkpoint:
+            self._source_iterator.setstate(checkpoint[&#39;source_state&#39;])
+            self._buffer = checkpoint[&#39;buffer&#39;]
+            self._random.setstate(checkpoint[&#39;random_state&#39;])
+            # @TODO: Can we add a comment how the flush part is handled?
+        else:
+            self._source_iterator.setstate(None)
+        self._iterator = self._generate()
+
+    def _generate(self) -&gt; Iterator:
+        # shuffle data with a buffer:
+        # this is similar to what the Fisher-Yates shuffle does,
+        # but modified to run with a constant-size buffer
+        # see https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+        # this was inspired by an algorithm implemented in Kaldi
+        # see https://kaldi-asr.org/doc/nnet-shuffle-egs_8cc.html
+        for item in self._source_iterator:
+            index = self._random.randrange(0, len(self._buffer))
+            result = None
+            if self._buffer[index] is not None:
+                result = self._buffer[index]
+            self._buffer[index] = item
+            # only yield value once buffer is updated to allow for correct checkpointing!
+            if result is not None:
+                yield result
+
+        # flush buffer
+        while self._buffer:
+            item = self._buffer.pop()
+            if item is not None:
+                yield item
+
+    def __next__(self):
+        return next(self._iterator)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></li>
+<li>collections.abc.Iterator</li>
+<li>collections.abc.Iterable</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.getstate" href="#infinibatch.iterators.CheckpointableIterator.getstate">getstate</a></code></li>
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.setstate" href="#infinibatch.iterators.CheckpointableIterator.setstate">setstate</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="infinibatch.iterators.MapIterator"><code class="flex name class">
+<span>class <span class="ident">MapIterator</span></span>
+<span>(</span><span>source_iterator: <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a>, transform: Callable[[str], Any])</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Applies given tranform to each data item</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_iterator</code></strong></dt>
+<dd>checkpointable iterator</dd>
+<dt><strong><code>transform</code></strong></dt>
+<dd>function to be applied to each data item</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MapIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Applies given tranform to each data item
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, transform: Callable[[str],Any]):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: checkpointable iterator
+            transform: function to be applied to each data item
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator
+        self._transform = transform
+
+    def getstate(self) -&gt; Dict:
+        return self._source_iterator.getstate()
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._source_iterator.setstate(checkpoint)
+
+    def __next__(self):
+        return self._transform(next(self._source_iterator))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></li>
+<li>collections.abc.Iterator</li>
+<li>collections.abc.Iterable</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.getstate" href="#infinibatch.iterators.CheckpointableIterator.getstate">getstate</a></code></li>
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.setstate" href="#infinibatch.iterators.CheckpointableIterator.setstate">setstate</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="infinibatch.iterators.ZipIterator"><code class="flex name class">
+<span>class <span class="ident">ZipIterator</span></span>
+<span>(</span><span>*source_iterators: <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a>)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Zips items from all given iterators, like the Python standard function zip().</p>
+<p>Like Python's build-in zip(), the iteration stops when the shortest input iterable is exhausted.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_iterators</code></strong></dt>
+<dd>list of iterators to zip, item by item</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ZipIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Zips items from all given iterators, like the Python standard function zip().
+
+    Like Python&#39;s build-in zip(), the iteration stops when the shortest input iterable is exhausted.
+    &#34;&#34;&#34;
+    def __init__(self, *source_iterators: CheckpointableIterator):
+        &#34;&#34;&#34;
+        Args:
+            source_iterators: list of iterators to zip, item by item
+        &#34;&#34;&#34;
+        for source_iterator in source_iterators:
+            if not isinstance(source_iterator, CheckpointableIterator):
+                raise ValueError(&#39;all iterators in source_iterators have to be CheckpointableIterator&#39;)
+        self._source_iterators = source_iterators    # type: List[CheckpointableIterator]
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;input_states&#39;: tuple(iterator.getstate() for iterator in self._source_iterators)}
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        if checkpoint is None:
+            for iterator in self._source_iterators:
+                iterator.setstate(None)
+        else:
+            for iterator, state in zip(self._source_iterators, checkpoint[&#39;input_states&#39;]):
+                iterator.setstate(state)
+
+    def __next__(self):
+        res = []  # (note: can&#39;t use a generator expression, as it gets confused when a next() call raises StopIteration)
+        for iterator in self._source_iterators:
+            res.append(next(iterator))
+        return tuple(res)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></li>
+<li>collections.abc.Iterator</li>
+<li>collections.abc.Iterable</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.getstate" href="#infinibatch.iterators.CheckpointableIterator.getstate">getstate</a></code></li>
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.setstate" href="#infinibatch.iterators.CheckpointableIterator.setstate">setstate</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="infinibatch.iterators.WindowedIterator"><code class="flex name class">
+<span>class <span class="ident">WindowedIterator</span></span>
+<span>(</span><span>source_iterator: <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a>, width: int)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Yields 'width' consecutive items in a sliding window.</p>
+<p>E.g. [1, 2, 3, 4, 5, 6] with width = 3 will yield
+[[1, 2, 3], [2, 3, 4], [3, 4, 5], [4, 5, 6]]</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_iterator</code></strong></dt>
+<dd>checkpointable input iterators</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WindowedIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Yields &#39;width&#39; consecutive items in a sliding window.
+
+    E.g. [1, 2, 3, 4, 5, 6] with width = 3 will yield
+    [[1, 2, 3], [2, 3, 4], [3, 4, 5], [4, 5, 6]]
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, width: int):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: checkpointable input iterators
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator  # type: CheckpointableIterator
+        self._width = width                      # type: int
+        self.setstate(None)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;source_state&#39;: self._source_state,  # state for first item in FIFO
+                &#39;item_index&#39;:  self._item_index}   # index of next item to serve
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._source_state = checkpoint[&#39;source_state&#39;] if checkpoint else None
+        self._item_index   = checkpoint[&#39;item_index&#39;]   if checkpoint else 0
+        self._source_iterator.setstate(self._source_state)
+        self._iterator = self._generate()
+
+    def _fifo_slice(self, i):  # returns a window into the FIFO beginning at i
+        # @TODO: for efficiency, make this a slice view
+        return tuple(self._fifo[i:i + self._width])
+
+    def _generate(self) -&gt; Iterator:
+        self._source_state = self._source_iterator.getstate()
+        self._fifo = list(islice(self._source_iterator, self._width))
+        # we do this in overlapping blocks of length 2*width, for easier checkpointing and potential efficiency
+        while len(self._fifo) == self._width:
+            # we got &#39;width&#39; items; append another &#39;width&#39; (or less if at end)
+            next_input_state = self._source_iterator.getstate()
+            self._fifo.extend(islice(self._source_iterator, self._width))
+            # now serve all positions in first half (last = width - 1). If at end, then limit accordingly.
+            last = min(self._width - 1, len(self._fifo) - self._width)
+            while self._item_index &lt;= last:
+                window = self._fifo_slice(self._item_index)
+                self._item_index += 1
+                yield window
+            # drop all we just served; if &lt; width left, we have hit the end
+            self._fifo = self._fifo[last + 1:]    # Note: This must be a new list, since the old might still be in a slice view.
+            self._source_state = next_input_state  # this reflects now the first element in the FIFO 
+            self._item_index = 0
+
+    def __next__(self):
+        return next(self._iterator)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></li>
+<li>collections.abc.Iterator</li>
+<li>collections.abc.Iterable</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.getstate" href="#infinibatch.iterators.CheckpointableIterator.getstate">getstate</a></code></li>
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.setstate" href="#infinibatch.iterators.CheckpointableIterator.setstate">setstate</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="infinibatch.iterators.FixedBatchIterator"><code class="flex name class">
+<span>class <span class="ident">FixedBatchIterator</span></span>
+<span>(</span><span>source_iterator: <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a>, batch_size: int)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Batches N consecutive items into a single item that is a list of these items.</p>
+<p>E.g. [1, 2, 3 4, 5, 6, 7, 8] with batch_size = 3 will yield
+[(1, 2, 3), (4, 5, 6), (7, 8)]</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_iterator</code></strong></dt>
+<dd>checkpointable input iterators</dd>
+<dt><strong><code>batch_size</code></strong></dt>
+<dd>number of items per batch</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FixedBatchIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Batches N consecutive items into a single item that is a list of these items.
+
+    E.g. [1, 2, 3 4, 5, 6, 7, 8] with batch_size = 3 will yield
+    [(1, 2, 3), (4, 5, 6), (7, 8)]
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, batch_size: int):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: checkpointable input iterators
+            batch_size: number of items per batch
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator  # type: CheckpointableIterator
+        self._batch_size = batch_size            # type: int
+        self.setstate(None)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;source_state&#39;: self._source_iterator.getstate()}  # state for first item in next batch
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._source_state = checkpoint[&#39;source_state&#39;] if checkpoint else None
+        self._source_iterator.setstate(self._source_state)
+        self._iterator = self._generate()
+
+    def _generate(self) -&gt; Iterator:
+        while True:
+            batch = list(islice(self._source_iterator, self._batch_size))
+            if not batch:
+                break
+            yield batch
+
+    def __next__(self):
+        return next(self._iterator)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></li>
+<li>collections.abc.Iterator</li>
+<li>collections.abc.Iterable</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.getstate" href="#infinibatch.iterators.CheckpointableIterator.getstate">getstate</a></code></li>
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.setstate" href="#infinibatch.iterators.CheckpointableIterator.setstate">setstate</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="infinibatch.iterators.RandomIterator"><code class="flex name class">
+<span>class <span class="ident">RandomIterator</span></span>
+<span>(</span><span>seed: Union[int, NoneType] = None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Iterator to generate uniformly distributed random numbers in the interval [0,1).
+Very similar to Random.random(), except that random numbers are
+obtained via next().</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>seed</code></strong></dt>
+<dd>Random seed.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RandomIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Iterator to generate uniformly distributed random numbers in the interval [0,1).
+    Very similar to Random.random(), except that random numbers are
+    obtained via next().
+    &#34;&#34;&#34;
+    def __init__(self, seed: Optional[int]=None):
+        &#34;&#34;&#34;
+        Args:
+            seed: Random seed.
+        &#34;&#34;&#34;
+        self._random = Random()  # type: Random
+        if seed is not None:
+            self._random.seed(seed)
+
+    def getstate(self) -&gt; Dict:
+        return {&#39;random_state&#39;: self._random.getstate()}
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._random.setstate(checkpoint[&#39;random_state&#39;] if checkpoint else None)
+
+    def __next__(self):
+        return self._random.random()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></li>
+<li>collections.abc.Iterator</li>
+<li>collections.abc.Iterable</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.getstate" href="#infinibatch.iterators.CheckpointableIterator.getstate">getstate</a></code></li>
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.setstate" href="#infinibatch.iterators.CheckpointableIterator.setstate">setstate</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="infinibatch.iterators.RecurrentIterator"><code class="flex name class">
+<span>class <span class="ident">RecurrentIterator</span></span>
+<span>(</span><span>source_iterator: <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a>, step_function: Callable[[Any, Any], Tuple[Any, Any]], initial_state: Any = None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Iterates statefully over a step function. The step function accepts a state and a new item,
+and returns a new state and an output item, which is yielded.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_iterator</code></strong></dt>
+<dd>checkpointable iterator to recur over</dd>
+<dt><strong><code>step_function</code></strong></dt>
+<dd>user-supplied function with signature step_function(state, item) -&gt; (new_state, output)</dd>
+<dt><strong><code>initial_state</code></strong></dt>
+<dd>initial state to be passed to the step_function upon first invocation</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RecurrentIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Iterates statefully over a step function. The step function accepts a state and a new item,
+    and returns a new state and an output item, which is yielded.
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, step_function: Callable[[Any,Any], Tuple[Any,Any]], initial_state: Any = None):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: checkpointable iterator to recur over
+            step_function: user-supplied function with signature step_function(state, item) -&gt; (new_state, output)
+            initial_state: initial state to be passed to the step_function upon first invocation
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator  # type: CheckpointableIterator
+        self._step_function = step_function      # type: Callable[[Any,Any], Tuple[Any,Any]]
+        self._initial_state = initial_state      # type: Any
+        self.setstate(None)
+    
+    def getstate(self):
+        return {&#39;recurrent_state&#39;: self._recurrent_state,
+                &#39;source_state&#39;:    self._source_iterator.getstate()}
+    
+    def setstate(self, checkpoint):
+        self._recurrent_state = checkpoint[&#39;recurrent_state&#39;] if checkpoint else self._initial_state
+        self._source_iterator.setstate(checkpoint[&#39;source_state&#39;] if checkpoint else None)
+        def _generate():
+            for item in self._source_iterator:
+                self._recurrent_state, output = self._step_function(self._recurrent_state, item)
+                yield output
+        self._iterator = _generate()
+
+    def __next__(self):
+        return next(self._iterator)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></li>
+<li>collections.abc.Iterator</li>
+<li>collections.abc.Iterable</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.getstate" href="#infinibatch.iterators.CheckpointableIterator.getstate">getstate</a></code></li>
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.setstate" href="#infinibatch.iterators.CheckpointableIterator.setstate">setstate</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="infinibatch.iterators.PrefetchIterator"><code class="flex name class">
+<span>class <span class="ident">PrefetchIterator</span></span>
+<span>(</span><span>source_iterator: <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a>, buffer_size: int = 1000)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>An iterator prefetching data into a buffer on a seperate thread to smooth out IO latency.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_iterator</code></strong></dt>
+<dd>checkpointable iterator to recur over</dd>
+<dt><strong><code>buffer_size</code></strong></dt>
+<dd>size of the queue between the threads</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PrefetchIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    An iterator prefetching data into a buffer on a seperate thread to smooth out IO latency.
+
+    Args:
+        source_iterator: checkpointable iterator to recur over
+        buffer_size: size of the queue between the threads
+    &#34;&#34;&#34;
+    def __init__(self, source_iterator: CheckpointableIterator, buffer_size: int=1000):
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        self._source_iterator = source_iterator  # type:CheckpointableIterator
+        self._buffer_size = buffer_size          # type: int
+        self._queue = None                       # type: Optional[ClosableQueue]
+        self._thread = None                      # type: Optional[Thread]
+        self.setstate(None)
+        
+    def getstate(self) -&gt; Dict:
+        return {&#39;source_state&#39;: self._source_state,
+                &#39;item_offset&#39; : self._item_offset  }
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        if self._thread is not None:  # if there is a prefetching thread running, close the queue and wait for the thread to terminate
+            assert self._queue is not None
+            self._queue.close()
+            self._thread.join()
+        
+        self._source_state = checkpoint[&#39;source_state&#39;] if checkpoint is not None else None
+        self._item_offset  = checkpoint[&#39;item_offset&#39; ] if checkpoint is not None else 0
+
+        self._source_iterator.setstate(self._source_state)
+
+        self._queue = ClosableQueue(maxsize=self._buffer_size)  # clear queue
+        # make thread daemonic so it is killed when the main program terminates
+        self._thread = Thread(target=self._prefetch_thread_fn, args=(self._source_iterator, self._item_offset, self._buffer_size, self._queue), daemon=True)
+        self._thread.start()
+
+    @staticmethod
+    def _prefetch_thread_fn(source, item_offset, buffer_size, queue):  # behavior of the prefetching thread, only call from that thread!
+        _advance_iterator(source, item_offset)  # skip to checkpoint
+
+        while True:
+            try:
+                item = next(source)
+            except StopIteration:
+                queue.close()
+                return
+            
+            if item_offset == buffer_size - 1:  # send a new source state a the END of each window of length _buffer_size
+                source_state = source.getstate()  # this is the state for retrieving the NEXT element, i.e. the first element of the next buffer
+                item_offset = 0
+            else:
+                source_state = None
+                item_offset += 1
+            msg = (item, source_state)
+
+            try:
+                queue.put(msg)
+            except ClosedException:
+                return
+
+    def __next__(self):
+        try:
+            msg = self._queue.get()
+        except ClosedException:
+            raise StopIteration
+
+        item, prefetch_source_state = msg
+        if prefetch_source_state is not None:
+            assert self._item_offset == self._buffer_size - 1  # we expect a new source state at then END of each window of length _buffer_size
+            self._source_state = prefetch_source_state
+            self._item_offset = 0
+        else:
+            self._item_offset = self._item_offset + 1
+            assert self._item_offset &lt; self._buffer_size
+        return item  # for debugging, its useful to return msg instead of item
+
+    def __del__(self):  # note: this is often not called. If you really need it, gc.collect() will do the trick.
+        if self._thread is not None:
+            assert self._queue is not None
+            self._queue.close()
+            try:
+                self._thread.join()
+            except:
+                pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></li>
+<li>collections.abc.Iterator</li>
+<li>collections.abc.Iterable</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.getstate" href="#infinibatch.iterators.CheckpointableIterator.getstate">getstate</a></code></li>
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.setstate" href="#infinibatch.iterators.CheckpointableIterator.setstate">setstate</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="infinibatch.iterators.BucketedReadaheadBatchIterator"><code class="flex name class">
+<span>class <span class="ident">BucketedReadaheadBatchIterator</span></span>
+<span>(</span><span>source_iterator: <a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a>, read_ahead: int, key: Callable[[Any], Any], batch_size: Union[int, Callable[[Any], int]], shuffle: bool = True, seed: Union[int, NoneType] = None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Iterates over items from a checkpointable iterator and groups items of similar length into batches.</p>
+<p>The algorithm reads a head a certain number of lines (e.g. 10 million), sorts them by
+length, and them groups them into batches from start to end. The sort is stable, such
+that prior randomization is not undone (except for the length grouping). The batch size
+is dynamic, and determined by a user-provided callback.</p>
+<p>This is based on Marian NMT's BatchGenerator.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_iterator</code></strong></dt>
+<dd>The data set that is read from. Typically this is an infinite source.</dd>
+<dt><strong><code>read_ahead</code></strong></dt>
+<dd>Number of items to fetch ahead for grouping purposes.</dd>
+<dt><strong><code>key</code></strong></dt>
+<dd>User-provided callback to define how data is sorted for purpose of batching.</dd>
+<dt><strong><code>batch_size</code></strong></dt>
+<dd>Batch size in number of items. Either an integer or a callback to determine batch size for a given first batch item.</dd>
+<dt><strong><code>shuffle</code></strong></dt>
+<dd>Pass False to not randomize the batches. (default: True)</dd>
+<dt><strong><code>seed</code></strong></dt>
+<dd>Random seed for batch shuffling.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BucketedReadaheadBatchIterator(CheckpointableIterator):
+    &#34;&#34;&#34;
+    Iterates over items from a checkpointable iterator and groups items of similar length into batches.
+
+    The algorithm reads a head a certain number of lines (e.g. 10 million), sorts them by
+    length, and them groups them into batches from start to end. The sort is stable, such
+    that prior randomization is not undone (except for the length grouping). The batch size
+    is dynamic, and determined by a user-provided callback.
+
+    This is based on Marian NMT&#39;s BatchGenerator.
+    &#34;&#34;&#34;
+
+    def __init__(self, source_iterator: CheckpointableIterator, read_ahead: int, key: Callable[[Any], Any], batch_size: Union[int,Callable[[Any], int]], shuffle: bool=True, seed: Optional[int]=None):
+        &#34;&#34;&#34;
+        Args:
+            source_iterator: The data set that is read from. Typically this is an infinite source.
+            read_ahead: Number of items to fetch ahead for grouping purposes.
+            key: User-provided callback to define how data is sorted for purpose of batching.
+            batch_size: Batch size in number of items. Either an integer or a callback to determine batch size for a given first batch item.
+            shuffle: Pass False to not randomize the batches. (default: True)
+            seed: Random seed for batch shuffling.
+        &#34;&#34;&#34;
+        if not isinstance(source_iterator, CheckpointableIterator):
+            raise ValueError(&#39;source_iterator has to be a CheckpointableIterator&#39;)
+        # keep arguments
+        self._key = key                # type: Callable[[Any], Any]
+        self._batch_size = batch_size  # type: Union[int,Callable[[Any], int]]
+        self._read_ahead = read_ahead  # type: int
+        # initialize state
+        self._random = None
+        if shuffle:
+            self._random = Random()                    # type: Random
+            if seed is not None:
+                self._random.seed(seed)
+        self._source_iterator = iter(source_iterator)  # type: CheckpointableIterator
+        self.setstate(None)
+
+    def getstate(self):
+        return {&#39;source_state&#39;: self._source_state,
+                &#39;random_state&#39;: self._random_state,
+                &#39;num_served&#39;:   self._num_batches_yielded}
+
+    def setstate(self, checkpoint: Optional[Dict]):
+        self._source_state        = checkpoint[&#39;source_state&#39;] if checkpoint else None  # type: Dict  -- state of input before reading the current set of batches
+        self._random_state        = checkpoint[&#39;random_state&#39;] if checkpoint else None  # type: Any   -- state of random generator at _source_state
+        self._num_batches_yielded = checkpoint[&#39;num_served&#39;]   if checkpoint else 0     # type: int   -- number of batches served from the current set of batches
+        # checkpointing: restore to start of current set of batches
+        self._source_iterator.setstate(self._source_state)
+        if self._random_state:
+            self._random.setstate(self._random_state)
+        self._source_exhausted = False  # type: bool  -- set to True once we hit StopIteration on source
+        def _generate():
+            skip_to_checkpoint = self._num_batches_yielded
+            source_exhausted = False
+            while not source_exhausted:
+                # prefetch the readahead buffer
+                self._source_state = self._source_iterator.getstate()
+                self._random_state = self._random.getstate() if self._random else None
+                items = list(islice(self._source_iterator, self._read_ahead))
+                source_exhausted = (len(items) &lt; self._read_ahead)
+                # create batches
+                batches = self._create_batches(items)
+                # shuffle the batches
+                if self._random:
+                    self._random.shuffle(batches)
+                # on first loop iteration, restore iterator inside batches from checkpoint
+                batches = iter(batches)
+                self._num_batches_yielded = _advance_iterator(batches, skip_to_checkpoint)
+                skip_to_checkpoint = 0
+                # main loop over batches in current read-ahead section
+                for batch in batches:
+                    self._num_batches_yielded += 1
+                    yield batch
+        self._iterator = _generate()  # type: Iterator  -- iterator into current set of batches
+
+    def _create_batches(self, items: List[Any]) -&gt; List[List[Any]]:  # helper to form batches from a list of items
+            # sort by length, longest first
+            items.sort(key=self._key, reverse=True)  # note: sort() is stable, so we won&#39;t undo any randomization besides the bucketing
+            # group into batches
+            cur_batch = None
+            batches = []
+            for item in items:
+                if not cur_batch:
+                    batch_size = self._batch_size if isinstance(self._batch_size, int) else \
+                                 self._batch_size(item)
+                    cur_batch = []
+                cur_batch.append(item)
+                if len(cur_batch) &gt;= batch_size:  # this batch is full
+                    batches.append(cur_batch)
+                    cur_batch = None
+            if cur_batch:
+                batches.append(cur_batch)
+            return batches
+
+    def __next__(self):
+        return next(self._iterator)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></li>
+<li>collections.abc.Iterator</li>
+<li>collections.abc.Iterable</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.getstate" href="#infinibatch.iterators.CheckpointableIterator.getstate">getstate</a></code></li>
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.setstate" href="#infinibatch.iterators.CheckpointableIterator.setstate">setstate</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul>
+<li><a href="#overview">Overview</a><ul>
+<li><a href="#iterators">Iterators</a></li>
+<li><a href="#checkpointing">Checkpointing</a></li>
+</ul>
+</li>
+<li><a href="#types-of-iterators">Types of Iterators</a><ul>
+<li><a href="#classes-and-factory-functions">Classes and Factory Functions</a></li>
+<li><a href="#source-iterators">Source Iterators</a></li>
+<li><a href="#shuffling">Shuffling</a></li>
+<li><a href="#batching-selectmany-and-windowing">Batching, SelectMany, and Windowing</a></li>
+<li><a href="#mapping">Mapping</a></li>
+<li><a href="#other-iterators">Other Iterators</a></li>
+</ul>
+</li>
+<li><a href="#complete-example">Complete Example</a></li>
+<li><a href="#performance-considerations">Performance Considerations</a></li>
+</ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="infinibatch" href="index.html">infinibatch</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="infinibatch.iterators.create_source_iterator" href="#infinibatch.iterators.create_source_iterator">create_source_iterator</a></code></li>
+<li><code><a title="infinibatch.iterators.ChunkedSourceIterator" href="#infinibatch.iterators.ChunkedSourceIterator">ChunkedSourceIterator</a></code></li>
+<li><code><a title="infinibatch.iterators.ParallelMapIterator" href="#infinibatch.iterators.ParallelMapIterator">ParallelMapIterator</a></code></li>
+<li><code><a title="infinibatch.iterators.SamplingRandomMapIterator" href="#infinibatch.iterators.SamplingRandomMapIterator">SamplingRandomMapIterator</a></code></li>
+<li><code><a title="infinibatch.iterators.BlockwiseShuffleIterator" href="#infinibatch.iterators.BlockwiseShuffleIterator">BlockwiseShuffleIterator</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="infinibatch.iterators.CheckpointableIterator" href="#infinibatch.iterators.CheckpointableIterator">CheckpointableIterator</a></code></h4>
+<ul class="">
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.getstate" href="#infinibatch.iterators.CheckpointableIterator.getstate">getstate</a></code></li>
+<li><code><a title="infinibatch.iterators.CheckpointableIterator.setstate" href="#infinibatch.iterators.CheckpointableIterator.setstate">setstate</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="infinibatch.iterators.NativeCheckpointableIterator" href="#infinibatch.iterators.NativeCheckpointableIterator">NativeCheckpointableIterator</a></code></h4>
+</li>
+<li>
+<h4><code><a title="infinibatch.iterators.InfinitePermutationSourceIterator" href="#infinibatch.iterators.InfinitePermutationSourceIterator">InfinitePermutationSourceIterator</a></code></h4>
+</li>
+<li>
+<h4><code><a title="infinibatch.iterators.SelectManyIterator" href="#infinibatch.iterators.SelectManyIterator">SelectManyIterator</a></code></h4>
+</li>
+<li>
+<h4><code><a title="infinibatch.iterators.BufferedShuffleIterator" href="#infinibatch.iterators.BufferedShuffleIterator">BufferedShuffleIterator</a></code></h4>
+</li>
+<li>
+<h4><code><a title="infinibatch.iterators.MapIterator" href="#infinibatch.iterators.MapIterator">MapIterator</a></code></h4>
+</li>
+<li>
+<h4><code><a title="infinibatch.iterators.ZipIterator" href="#infinibatch.iterators.ZipIterator">ZipIterator</a></code></h4>
+</li>
+<li>
+<h4><code><a title="infinibatch.iterators.WindowedIterator" href="#infinibatch.iterators.WindowedIterator">WindowedIterator</a></code></h4>
+</li>
+<li>
+<h4><code><a title="infinibatch.iterators.FixedBatchIterator" href="#infinibatch.iterators.FixedBatchIterator">FixedBatchIterator</a></code></h4>
+</li>
+<li>
+<h4><code><a title="infinibatch.iterators.RandomIterator" href="#infinibatch.iterators.RandomIterator">RandomIterator</a></code></h4>
+</li>
+<li>
+<h4><code><a title="infinibatch.iterators.RecurrentIterator" href="#infinibatch.iterators.RecurrentIterator">RecurrentIterator</a></code></h4>
+</li>
+<li>
+<h4><code><a title="infinibatch.iterators.PrefetchIterator" href="#infinibatch.iterators.PrefetchIterator">PrefetchIterator</a></code></h4>
+</li>
+<li>
+<h4><code><a title="infinibatch.iterators.BucketedReadaheadBatchIterator" href="#infinibatch.iterators.BucketedReadaheadBatchIterator">BucketedReadaheadBatchIterator</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.5</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
