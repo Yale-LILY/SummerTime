@@ -1,13 +1,14 @@
 import os
-import random
-import datasets
-from datasets import Dataset
 from tqdm import tqdm
-from typing import Optional, List, Tuple
-from dataset.st_dataset import SummInstance, SummDataset
+from typing import Optional, List, Tuple, Generator
 
+from datasets import Dataset, load_dataset
 
-BASE_NONHUGGINGFACE_DATASETS_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "non_huggingface_datasets_builders")
+from dataset.st_dataset import SummInstance, SummDataset, generate_train_dev_test_splits
+
+# Set directory to load non_huggingface dataset scripts
+FILE_DIRECTORY_PATH = os.path.dirname(os.path.realpath(__file__))
+BASE_NONHUGGINGFACE_DATASETS_PATH = os.path.join(FILE_DIRECTORY_PATH, "dataset", "non_huggingface_datasets_builders")
 
 
 class ScisummnetDataset(SummDataset):
@@ -26,25 +27,17 @@ class ScisummnetDataset(SummDataset):
                     
     builder_script_path = os.path.join(BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py")
     
-    def __init__(self):   
-
+    def __init__(self, seed=None):   
 
         # Load dataset
-        scisummnet_dataset = datasets.load_dataset(path=ScisummnetDataset.builder_script_path)
-        info_set = scisummnet_dataset["train"]
+        scisummnet_dataset = load_dataset(path=ScisummnetDataset.builder_script_path)
         
-        #  Process the train, dev and test se
-        processed_dataset = ScisummnetDataset.process_scisummnet_data(scisummnet_dataset["train"])
-        
-        # Randomize and split data into train, dev and test sets
-        processed_dataset = list(processed_dataset)
-        random.shuffle(processed_dataset)
-        split_1 = int(0.8 * len(processed_dataset))
-        split_2 = int(0.9 * len(processed_dataset))
+        # No dev and test splits provided; hence creating these splits from the train set 
+        scisummnet_split_dataset = generate_train_dev_test_splits(scisummnet_dataset['train'], seed=seed)
 
-        processed_train_set = processed_dataset[:split_1]
-        processed_dev_set = processed_dataset[split_1:split_2]
-        processed_test_set = processed_dataset[split_2:]
+        processed_train_set = ScisummnetDataset.process_scisummnet_data(scisummnet_split_dataset['train'])
+        processed_dev_set = ScisummnetDataset.process_scisummnet_data(scisummnet_split_dataset['dev'])
+        processed_test_set = ScisummnetDataset.process_scisummnet_data(scisummnet_split_dataset['test'])
 
         super().__init__(ScisummnetDataset.dataset_name,
                          ScisummnetDataset.description,
@@ -57,7 +50,7 @@ class ScisummnetDataset(SummDataset):
                          )
 
     @staticmethod
-    def process_scisummnet_data(data: Dataset) -> List[SummInstance]:
+    def process_scisummnet_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
             docs: List = [instance['document_xml'], instance['citing_sentences_annotated.json']]
             summary: str = instance['summary']
@@ -80,8 +73,7 @@ class SummscreenDataset(SummDataset):
     def __init__(self):
         
         # Load dataset
-        summscreen_dataset = datasets.load_dataset(path=SummscreenDataset.builder_script_path)
-        info_set = summscreen_dataset["train"]
+        summscreen_dataset = load_dataset(path=SummscreenDataset.builder_script_path)
         
         #  Process the train, dev and test se
         processed_train_set = SummscreenDataset.process_summscreen_data(summscreen_dataset["train"])
@@ -105,15 +97,13 @@ class SummscreenDataset(SummDataset):
                          )
     
     @staticmethod
-    def process_summscreen_data(data: Dataset) -> List[SummInstance]:
-        processed_set = []
+    def process_summscreen_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
             transcript: List = instance['transcript']   #convert string into a list of string dialogues
             recap: str = instance['recap']
             summ_instance = SummInstance(source=transcript, summary=recap)
-            processed_set.append(summ_instance)
-            
-        return processed_set
+
+            yield summ_instance
 
 
 
@@ -134,8 +124,7 @@ class QMsumDataset(SummDataset):
     def __init__(self):
         
         # Load dataset
-        qmsum_dataset = datasets.load_dataset(path=QMsumDataset.builder_script_path)
-        info_set = qmsum_dataset["train"]
+        qmsum_dataset = load_dataset(path=QMsumDataset.builder_script_path)
 
         # Extract the dataset entries from folders and load into dataset
         processed_train_set = QMsumDataset.process_qmsum_data(qmsum_dataset["train"])
@@ -156,8 +145,7 @@ class QMsumDataset(SummDataset):
         
 
     @staticmethod
-    def process_qmsum_data(data: Dataset) -> List[SummInstance]:
-        processed_set = []
+    def process_qmsum_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
             for query_set in instance['general_query_list'] + instance['specific_query_list']:
                 meeting: List = [utterance['speaker'] + " : " + utterance['content']\
@@ -165,10 +153,8 @@ class QMsumDataset(SummDataset):
                 query: str = query_set['query']
                 summary: str = query_set['answer']    
                 summ_instance = SummInstance(source=meeting, summary=summary, query=query)
-                processed_set.append(summ_instance)
 
-
-        return processed_set
+            yield summ_instance
 
 
 
@@ -195,8 +181,7 @@ class ArxivDataset(SummDataset):
               "*****************", sep="\n")
         
         # Load dataset
-        arxiv_dataset = datasets.load_dataset(path=ArxivDataset.builder_script_path)
-        info_set = arxiv_dataset["train"]
+        arxiv_dataset = load_dataset(path=ArxivDataset.builder_script_path)
 
         # Extract the dataset entries from folders and load into dataset
         processed_train_set = ArxivDataset.process_arxiv_data(arxiv_dataset["train"])
@@ -216,12 +201,10 @@ class ArxivDataset(SummDataset):
                          )
 
     @staticmethod
-    def process_arxiv_data(data: Dataset) -> List[SummInstance]:
-        processed_set = []
+    def process_arxiv_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
             article: List = instance['article_text']
             abstract: str = " ".join(instance['abstract_text'])
             summ_instance = SummInstance(source=article, summary=abstract)
-            processed_set.append(summ_instance)
 
-        return processed_set
+            yield summ_instance
