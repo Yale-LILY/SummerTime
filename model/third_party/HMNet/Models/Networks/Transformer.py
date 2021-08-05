@@ -130,9 +130,7 @@ class Attention(nn.Module):
         assert n_state % n_head == 0
         # if mask is needed, uncomment this
         self.maxlen = 2048 # beyond this scale 
-        self.mask = Variable(torch.tril(torch.ones(self.maxlen, self.maxlen)).view(1, 1, self.maxlen, self.maxlen), requires_grad=False)
-        if use_cuda:
-            self.mask.cuda()
+        self.mask = Variable(torch.tril(torch.ones(self.maxlen, self.maxlen)).view(1, 1, self.maxlen, self.maxlen), requires_grad=False).cuda() if use_cuda else Variable(torch.tril(torch.ones(self.maxlen, self.maxlen)).view(1, 1, self.maxlen, self.maxlen), requires_grad=False)
         self.n_head = n_head
         self.c_proj = Conv1D(n_state, nx)
         self.attn_dropout = nn.Dropout(attn_pdrop)
@@ -159,13 +157,9 @@ class Attention(nn.Module):
         mask = None
         if one_dir_visible: # mask "seeing the future"
             if w.size(-2) <= self.maxlen and w.size(-1) <= self.maxlen:
-                mask = self.mask[:, :, :w.size(-2), :w.size(-1)]
-                if self.use_cuda:
-                    mask.cuda()
+                mask = self.mask[:, :, :w.size(-2), :w.size(-1)].cuda() if self.use_cuda else self.mask[:, :, :w.size(-2), :w.size(-1)]
             else:
-                mask = Variable(torch.tril(torch.ones(w.size(-2), w.size(-1))).view(1, 1, w.size(-2), w.size(-1)), requires_grad=False)
-                if self.use_cuda:
-                    mask.cuda()
+                mask = Variable(torch.tril(torch.ones(w.size(-2), w.size(-1))).view(1, 1, w.size(-2), w.size(-1)), requires_grad=False).cuda() if self.use_cuda else Variable(torch.tril(torch.ones(w.size(-2), w.size(-1))).view(1, 1, w.size(-2), w.size(-1)), requires_grad=False)
 
         if x_mask is not None:
             mask = x_mask.unsqueeze(1).unsqueeze(1).expand_as(w).float()
@@ -394,9 +388,7 @@ class Embedder(nn.Module):
         batch_size = x.shape[0]
         x_len = x.shape[1]
         x_pos = self.pos_emb(torch.arange(x_len).type(torch.cuda.FloatTensor if self.use_cuda else torch.FloatTensor)) # len x n_state
-        x_pos = Variable(x_pos.unsqueeze(0).repeat(batch_size, 1, 1), requires_grad=False)
-        if self.use_cuda:
-            x_pos.cuda()
+        x_pos = Variable(x_pos.unsqueeze(0).repeat(batch_size, 1, 1), requires_grad=False).cuda() if self.use_cuda else Variable(x_pos.unsqueeze(0).repeat(batch_size, 1, 1), requires_grad=False)
         x_input = x_emb + x_pos
         h = self.drop(x_input)
         return h
@@ -556,9 +548,7 @@ class TransformerBeam():
         if 'MIN_GEN_LENGTH' in self.opt:
             MIN_GEN_LENGTH = int(self.opt['MIN_GEN_LENGTH'])
         for l in range(self.max_sent_len):
-            y = Variable(torch.LongTensor(sent_ids)) # batch_size x l
-            if self.use_cuda:
-                y.cuda()
+            y = Variable(torch.LongTensor(sent_ids)).cuda() if self.use_cuda else Variable(torch.LongTensor(sent_ids)) # batch_size x l
             decoder_outputs = self.decoder(x, x_out, y)
             probs = decoder_outputs[:, -1, :] # batch_size x vocab_size (only take the last output)
             for i in range(batch_size):
@@ -620,9 +610,7 @@ class TransformerBeam():
                 x_outs.extend([x_out[idx, :, :].unsqueeze(0) for node in last_nodes[idx]])
                 xs.extend([x[idx, :].unsqueeze(0) for node in last_nodes[idx]])
 
-            ys = Variable(torch.LongTensor(ys)) # N x l
-            if self.use_cuda:
-                ys.cuda()
+            ys = Variable(torch.LongTensor(ys)).cuda() if self.use_cuda else Variable(torch.LongTensor(ys)) # N x l
             x_outs = torch.cat(x_outs, dim = 0) # N x x_len x n_state
             xs = torch.cat(xs, dim = 0) # N x x_len
             probs = self.decoder(xs, x_outs, ys)
