@@ -8,7 +8,7 @@ from dataset.st_dataset import SummInstance, SummDataset, generate_train_dev_tes
 
 # Set directory to load non_huggingface dataset scripts
 FILE_DIRECTORY_PATH = os.path.dirname(os.path.realpath(__file__))
-BASE_NONHUGGINGFACE_DATASETS_PATH = os.path.join(FILE_DIRECTORY_PATH, "dataset", "non_huggingface_datasets_builders")
+BASE_NONHUGGINGFACE_DATASETS_PATH = os.path.join(FILE_DIRECTORY_PATH, "non_huggingface_datasets_builders")
 
 
 class ScisummnetDataset(SummDataset):
