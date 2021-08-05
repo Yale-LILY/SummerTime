@@ -421,6 +421,7 @@ class TransformerEncoder(nn.Module):
         self.embedder = Embedder(opt, embed)
         block = EncoderBlock(opt)
         self.blocks = nn.ModuleList([copy.deepcopy(block) for _ in range(n_layer)])
+        self.use_cuda = opt['cuda']
 
     '''
       Input: 
@@ -467,6 +468,7 @@ class TransformerDecoder(nn.Module):
             self.linear = nn.Linear(n_state, vocab_size, bias = False)
             if 'FINETUNE_RETRAIN_SOFTMAX' not in opt: # if FINETUNE_RETRAIN_SOFTMAX, linear needs to be seperately trained
                 self.linear.weight = embed.weight # share weight
+        self.use_coda = opt['cuda']
 
     '''
       Input: 
@@ -514,6 +516,7 @@ class TransformerBeam():
         self.begin_id = begin_id
         self.vocab = vocab
         self.beam_width = int(opt['beam_width'])
+        self.use_cuda = opt['cuda']
 
     # each candidate is (idx, prob, 0/1, position/wordid)
     def merge_candidates(self, cand_A, cand_B):
