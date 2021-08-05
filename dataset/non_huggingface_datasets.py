@@ -7,7 +7,7 @@ from typing import Optional, List, Tuple
 from dataset.st_dataset import SummInstance, SummDataset
 
 
-BASE_NONHUGGINGFACE_DATASETS_PATH = os.path.join(os.getcwd(), "dataset", "non_huggingface_datasets_builders")
+BASE_NONHUGGINGFACE_DATASETS_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "non_huggingface_datasets_builders")
 
 
 class ScisummnetDataset(SummDataset):
