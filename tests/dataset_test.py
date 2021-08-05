@@ -13,6 +13,7 @@ class TestDatasets(unittest.TestCase):
             self.assertTrue(isinstance(ins.source, list))
         else:
             self.assertTrue(isinstance(ins.source, list) or isinstance(ins.source, str))
+        self.assertTrue(isinstance(ins.summary, str))
         if is_query:
             self.assertTrue(isinstance(ins.query, str))
 
