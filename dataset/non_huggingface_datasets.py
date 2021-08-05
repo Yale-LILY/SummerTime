@@ -1,4 +1,5 @@
 import os
+import pathlib
 from tqdm import tqdm
 from typing import Optional, List, Tuple, Generator
 
@@ -6,8 +7,8 @@ from datasets import Dataset, load_dataset
 
 from dataset.st_dataset import SummInstance, SummDataset, generate_train_dev_test_splits
 
-
-BASE_NONHUGGINGFACE_DATASETS_PATH = os.path.join(os.getcwd(), "dataset", "non_huggingface_datasets_builders")
+FILE_DIRECTORY_PATH = pathlib.Path(__file__).parent.resolve()
+BASE_NONHUGGINGFACE_DATASETS_PATH = os.path.join(FILE_DIRECTORY_PATH, "dataset", "non_huggingface_datasets_builders")
 
 
 class ScisummnetDataset(SummDataset):
