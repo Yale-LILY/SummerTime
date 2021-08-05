@@ -23,13 +23,6 @@ class SummInstance:
         self.summary = summary
         self.query = query
 
-    def __str__(self):
-        instance_str = {"source": self.source, "summary":self.summary}
-        if self.query:
-            instance_str["query"] = self.query
-
-        return str(instance_str)
-
 
 class SummDataset:
     """
