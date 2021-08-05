@@ -17,9 +17,9 @@ class Task:
 
         
         if task_name == 'HMNet':
-            from Utils.HMNet.InfinibatchLoader import HMNetBatchGen
+            from model.third_party.HMNet.Utils.HMNet.InfinibatchLoader import HMNetBatchGen
             batch_gen = HMNetBatchGen
-            from Evaluation.ROUGEEval import ROUGEEval
+            from model.third_party.HMNet.Evaluation.ROUGEEval import ROUGEEval
             evaluator = ROUGEEval(opt['datadir'], save_dir, opt)
         else:
             assert False

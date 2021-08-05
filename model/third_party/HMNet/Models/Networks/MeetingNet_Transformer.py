@@ -13,10 +13,10 @@ import torch.nn as nn
 import torch.nn.init as init
 import torch.nn.functional as F
 from torch.nn.parameter import Parameter
-from Models.Networks.Layers import dropout, set_seq_dropout
-from Models.Networks.Transformer import EncoderBlock, LayerNorm, Embedder, Splitter, Attention, MLP
-from ThirdParty.Huggingface.Transformers.src.transformers import tokenization_transfo_xl 
-from ThirdParty.Huggingface.Transformers.src.transformers.modeling_encoder_decoder import calc_banned_ngram_tokens, calc_banned_bad_words_ids, top_k_top_p_filtering, BeamHypotheses
+from model.third_party.HMNet.Models.Networks.Layers import dropout, set_seq_dropout
+from model.third_party.HMNet.Models.Networks.Transformer import EncoderBlock, LayerNorm, Embedder, Splitter, Attention, MLP
+from model.third_party.HMNet.ThirdParty.Huggingface.Transformers.src.transformers import tokenization_transfo_xl 
+from model.third_party.HMNet.ThirdParty.Huggingface.Transformers.src.transformers.modeling_encoder_decoder import calc_banned_ngram_tokens, calc_banned_bad_words_ids, top_k_top_p_filtering, BeamHypotheses
 import sys
 import os
 
@@ -82,7 +82,7 @@ class MeetingNet_Transformer(nn.Module):
         torch.save(params, os.path.join(save_dir, 'model.pt'))
 
     def from_pretrained(self, load_dir):
-        checkpoint = torch.load(os.path.join(load_dir, 'model.pt'), map_location=torch.device('cuda', self.opt['local_rank']))
+        checkpoint = torch.load(os.path.join(load_dir, 'model.pt'), map_location=torch.device('cuda', self.opt['local_rank']) if self.use_cuda else 'cpu')
         state_dict = checkpoint['state_dict']
         
         self.load_state_dict(state_dict['network'])

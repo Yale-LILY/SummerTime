@@ -1,11 +1,11 @@
-from ..base_model import SummModel
+from model.base_model import SummModel
 import argparse
 import os
 import torch
 import gzip
 import json
-from ..third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
-from ..third_party.HMNet.Utils.Arguments import Arguments
+from model.third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
+from model.third_party.HMNet.Utils.Arguments import Arguments
 
 import spacy
 nlp = spacy.load('en_core_web_sm', disable=['parser'])
@@ -23,6 +23,7 @@ class HMNetModel(SummModel):
     model_name = "HMNET"
     is_extractive = False
     is_neural = True
+    is_dialogue_based = True
 
     def __init__(self):
         super(HMNetModel, self).__init__()
