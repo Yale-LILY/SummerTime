@@ -90,11 +90,11 @@ class IntegrationTests(unittest.TestCase):
             if dataset.train_set is not None:
                 dataset_instances = list(dataset.train_set)
                 print(f"\n{dataset.dataset_name} has a training set of {len(dataset_instances)} examples")
-                test_instances = self.retrieve_test_instances(dataset_instances)
                 IntegrationTests.print_with_color(f"Initializing all matching model pipelines for {dataset.dataset_name} dataset...", "35")
                 # matching_model_instances = assemble_model_pipeline(dataset_cls, list(filter(lambda m: m != PegasusModel, SUPPORTED_SUMM_MODELS)))
                 matching_model_instances = assemble_model_pipeline(dataset_cls, SUPPORTED_SUMM_MODELS)
                 for model in matching_model_instances:
+                    test_instances = self.retrieve_test_instances(dataset_instances, 1 if model.is_dialogue_based else 3)
                     IntegrationTests.print_with_color(f"{'#' * 20} Testing: {dataset.dataset_name} dataset, {model.model_name} model {'#' * 20}", "35")
                     prediction, tgt = self.get_prediction(model, dataset, test_instances)
                     print(f"Prediction: {prediction}\nTarget: {tgt}\n")
