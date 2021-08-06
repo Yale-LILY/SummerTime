@@ -6,6 +6,7 @@ from dataset.non_huggingface_datasets import QMsumDataset
 from model import SUPPORTED_SUMM_MODELS, list_all_models
 from model.single_doc import LexRankModel, LongformerModel
 from model.multi_doc import MultiDocJointModel, MultiDocSeparateModel
+from model.dialogue import HMNetModel
 
 
 class TestModels(unittest.TestCase):
@@ -24,14 +25,14 @@ class TestModels(unittest.TestCase):
 
         return list(src), list(tgt)
     
-    def get_dialogue_summarization_set(self, size: int = 1) -> Tuple[List[str], List[str]]:
+    def get_dialogue_summarization_set(self, size: int = 1) -> Tuple[List[str], List[str], List[str]]:
         subset = []
         for i in range(size):
             subset.append(self.dialogue_based_dataset.train_set[i])
         
-        src, tgt = zip(*(list(map(lambda x: (x.source, x.summary), subset))))
+        src, tgt, queries = zip(*(list(map(lambda x: (x.source, x.summary, x.query), subset))))
 
-        return list(src), list(tgt)
+        return list(src), list(tgt), list(queries)
 
     def test_list_models(self):
         print(f"{'#'*10} test_list_models STARTS {'#'*10}")
@@ -54,13 +55,12 @@ class TestModels(unittest.TestCase):
         for model_class, _ in all_models:
             print(f"\nTest on {model_class}")
 
-            if not model_class.is_dialogue_based:
-                continue
-
             if model_class == LexRankModel:
                 # current LexRankModel requires a training set
                 training_src, training_tgt = self.get_summarization_set(100)
                 model = model_class(training_src)
+            elif model_class.is_query_based:
+                model = model_class(model_backend=HMNetModel)
             else:
                 model = model_class()
 
@@ -70,15 +70,19 @@ class TestModels(unittest.TestCase):
                 print(f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
                 self.validate_prediction(prediction, [test_src])
             elif model.is_dialogue_based:
-                test_src, test_tgt = self.get_dialogue_summarization_set(1)
+                test_src, test_tgt, test_query = self.get_dialogue_summarization_set(1)
                 prediction = model.summarize(test_src)
-                print(f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
-                self.validate_prediction(prediction, [test_src])
+                print(f"Gold summary: {test_tgt}\nPredicted summary: {prediction}")
+                self.validate_prediction(prediction, test_src)
+            elif model.is_query_based:
+                test_src, test_tgt, test_query = self.get_dialogue_summarization_set(1)
+                prediction = model.summarize(test_src, test_query)
+                print(f"Query: {test_query}\nGold summary: {test_tgt}\nPredicted summary: {prediction}")
             else:
                 test_src, test_tgt = self.get_summarization_set(1)
                 prediction = model.summarize([test_src[0] * 5] if model_class == LongformerModel else test_src)
                 print(f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
-                self.validate_prediction(prediction, [test_src[0] * 50] if model_class == LongformerModel else test_src)
+                self.validate_prediction(prediction, [test_src[0] * 5] if model_class == LongformerModel else test_src)
 
         print(f"{'#'*10} test_model_summarize ENDS {'#'*10}\n\n")
 
