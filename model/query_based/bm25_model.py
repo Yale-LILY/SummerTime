@@ -1,5 +1,6 @@
 from .base_query_based_model import QueryBasedSummModel
 from model.base_model import SummModel
+from model.single_doc import TextRankModel
 from typing import Union, List
 
 from gensim.summarization.bm25 import BM25
@@ -18,7 +19,7 @@ class BM25SummModel(QueryBasedSummModel):
                  trained_domain: str = None,
                  max_input_length: int = None,
                  max_output_length: int = None,
-                 model_backend: SummModel = None,
+                 model_backend: SummModel = TextRankModel,
                  retrieval_ratio: float = 0.5,
                  preprocess: bool = True,
                  **kwargs
