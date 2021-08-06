@@ -58,7 +58,10 @@ class IntegrationTests(unittest.TestCase):
         models = []
         for model_cls in SUPPORTED_SUMM_MODELS:
             print(model_cls)
-            models.append(model_cls([x.source for x in list(lxr_dataset.train_set)[0:100]]) if model_cls == LexRankModel else model_cls())
+            if model_cls == LexRankModel:
+                models.append(model_cls([x.source for x in list(lxr_dataset.train_set)[0:100]]))
+            else:
+                models.append(model_cls())
         IntegrationTests.print_with_color("\nInitializing all evaluation metrics...", "35")
         evaluation_metrics = []
         for eval_cls in SUPPORTED_EVALUATION_METRICS:
