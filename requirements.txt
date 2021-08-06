@@ -14,3 +14,4 @@ jupyter
 gensim==3.8.3
 sklearn
 py7zr==0.16.1
+tqdm==4.49.0
