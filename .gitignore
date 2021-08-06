@@ -141,4 +141,5 @@ cython_debug/
 .idea
 
 # HMNet run confs
-model/dialogue/hmnet/config/dialogue.conf_conf~/run_**/**
+model/dialogue/hmnet/config/dialogue.conf_conf~/run_*/*
+model/dialogue/hmnet/ExampleRawData/meeting_summarization/**/*.jsonl.gz
