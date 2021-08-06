@@ -139,3 +139,6 @@ cython_debug/
 
 # defined by Ansong
 .idea
+
+# HMNet run confs
+model/dialogue/hmnet/config/dialogue.conf_conf~/run_**/**
