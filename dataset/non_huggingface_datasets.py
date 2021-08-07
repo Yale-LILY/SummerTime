@@ -23,6 +23,9 @@ class ScisummnetDataset(SummDataset):
                     "paper summarization (Scisumm), the CL-Scisumm shared task has been organized since 2014 for " \
                     "papers in the computational linguistics and NLP domain."
 
+    is_dialogue_based = False
+    is_multi_document = False
+    is_query_based = False
                     
     builder_script_path = os.path.join(BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py")
     
@@ -48,9 +51,6 @@ class ScisummnetDataset(SummDataset):
 
         super().__init__(ScisummnetDataset.dataset_name,
                          ScisummnetDataset.description,
-                         is_dialogue_based=False,
-                         is_multi_document=False,
-                         is_query_based=False,
                          train_set=processed_train_set,  
                          dev_set=processed_dev_set, 
                          test_set=processed_test_set, 
@@ -74,6 +74,9 @@ class SummscreenDataset(SummDataset):
       
     dataset_name = "Summscreen"
     version = "1.1.0"
+    is_dialogue_based = True
+    is_multi_document = False
+    is_query_based = False
 
     builder_script_path = os.path.join(BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py")
     
@@ -96,9 +99,6 @@ class SummscreenDataset(SummDataset):
                         The current version being used is the one where the transcripts have already been tokenized."
         super().__init__(dataset_name,
                          description,
-                         is_dialogue_based=True,
-                         is_multi_document=False,
-                         is_query_based=False,
                          train_set=processed_train_set,  
                          dev_set=processed_dev_set, 
                          test_set=processed_test_set, 
@@ -129,6 +129,10 @@ class QMsumDataset(SummDataset):
     which consists of 1,808 query-summary pairs over 232 meetings in multiple domains.
     '''
 
+    is_dialogue_based = True
+    is_multi_document = False
+    is_query_based = True
+
     builder_script_path = os.path.join(BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py")
     
     def __init__(self):
@@ -146,9 +150,6 @@ class QMsumDataset(SummDataset):
         #  Process the train, dev and test set and replace the last three args in __init__() below
         super().__init__(QMsumDataset.dataset_name,
                          QMsumDataset.description,
-                         is_dialogue_based=True,
-                         is_multi_document=False,
-                         is_query_based=True,
                          train_set=processed_train_set,  
                          dev_set=processed_dev_set, 
                          test_set=processed_test_set, 
@@ -184,6 +185,10 @@ class ArxivDataset(SummDataset):
     It contains papers and their abstracts.
     '''
 
+    is_dialogue_based = False
+    is_multi_document = False
+    is_query_based = False
+
     builder_script_path = os.path.join(BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py")
     
     def __init__(self):
@@ -207,9 +212,6 @@ class ArxivDataset(SummDataset):
         #  Process the train, dev and test set and replace the last three args in __init__() below
         super().__init__(ArxivDataset.dataset_name,
                          ArxivDataset.description,
-                         is_dialogue_based=False,
-                         is_multi_document=False,
-                         is_query_based=False,
                          train_set=processed_train_set,  
                          dev_set=processed_dev_set, 
                          test_set=processed_test_set, 

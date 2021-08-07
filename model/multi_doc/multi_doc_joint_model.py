@@ -14,7 +14,7 @@ class MultiDocJointModel(MultiDocSummModel):
         model = model_backend(**kwargs)
         self.model = model
 
-    def summarize(self, corpus: Union[List[str], List[List[str]]]) -> List[str]:
+    def summarize(self, corpus: Union[List[str], List[List[str]]], query: Union[List[str], List[List[str]]] = None) -> List[str]:
         self.assert_summ_input_type(corpus, None)
         joint_corpus = []
         for instance in corpus:

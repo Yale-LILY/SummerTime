@@ -11,7 +11,7 @@ from evaluation import SUPPORTED_EVALUATION_METRICS, Rouge, RougeWe
 from dataset.st_dataset import SummInstance, SummDataset
 from dataset import SUPPORTED_SUMM_DATASETS
 from dataset.non_huggingface_datasets import ScisummnetDataset
-from dataset.huggingface_datasets import CnndmDataset
+from dataset.huggingface_datasets import CnndmDataset, MlsumDataset
 
 import random
 import time
@@ -39,11 +39,13 @@ class IntegrationTests(unittest.TestCase):
         src = [ins.source[0] for ins in test_instances] if isinstance(dataset, ScisummnetDataset) else [ins.source for ins in test_instances]
         tgt = [ins.summary for ins in test_instances]
         query = [ins.query for ins in test_instances] if dataset.is_query_based else None
-        prediction = model.summarize([src] if model.is_multi_document else src, query)
+        # prediction = model.summarize([src] if model.is_multi_document else src, query)
+        prediction = model.summarize(src, query)
         return prediction, tgt
     
     def get_eval_dict(self, model: SummModel, metric: SummMetric, prediction: List[str], tgt: List[str]):
-        score_dict = metric.evaluate(prediction, [" ".join(tgt)] if model.is_multi_document else tgt)
+        # score_dict = metric.evaluate(prediction, [" ".join(tgt)] if model.is_multi_document else tgt)
+        score_dict = metric.evaluate(prediction, tgt)
         return score_dict
 
     def _test_single_integration(self, dataset: SummDataset, test_instances: List[SummInstance], model: SummModel, metric: SummMetric):
@@ -86,6 +88,8 @@ class IntegrationTests(unittest.TestCase):
 
         IntegrationTests.print_with_color("\n\nBeginning integration tests...", "35")
         for dataset_cls in SUPPORTED_SUMM_DATASETS:
+            if dataset_cls == MlsumDataset or not dataset_cls.is_multi_document:
+                continue
             dataset = dataset_cls()
             if dataset.train_set is not None:
                 dataset_instances = list(dataset.train_set)

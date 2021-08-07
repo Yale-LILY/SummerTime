@@ -7,7 +7,7 @@ from dataset.st_dataset import SummDataset
 from typing import List
 
 
-def get_train_set(dataset: SummDataset, size: int = 100) -> List[str]:
+def get_lxr_train_set(dataset: SummDataset, size: int = 100) -> List[str]:
 
     """
     return some dummy summarization examples, in the format of a list of sources
@@ -16,7 +16,7 @@ def get_train_set(dataset: SummDataset, size: int = 100) -> List[str]:
     for i in range(size):
         subset.append(next(dataset.train_set))
 
-    src = list(map(lambda x: x.source, subset))
+    src = list(map(lambda x: " ".join(x.source) if dataset.is_dialogue_based or dataset.is_multi_document else x.source, subset))
 
     return src
 
@@ -36,10 +36,11 @@ def assemble_model_pipeline(dataset: SummDataset, model_list: List[SummModel] = 
                 not (model_cls.is_dialogue_based or model_cls.is_query_based or model_cls.is_multi_document),
             model_list))
     single_doc_model_instances = [
-        model_cls(get_train_set(dataset)) if model_cls == LexRankModel else model_cls() for model_cls in single_doc_model_list
-    ] if not (dataset.is_dialogue_based or dataset.is_query_based or dataset.is_multi_document) else []
+        model_cls(get_lxr_train_set(dataset)) if model_cls == LexRankModel else model_cls() for model_cls in single_doc_model_list
+    ]
         
     multi_doc_model_list = list(filter(lambda model_cls: model_cls.is_multi_document, model_list))
+    print(multi_doc_model_list)
     
     query_based_model_list = list(filter(lambda model_cls: model_cls.is_query_based, model_list))
 
@@ -59,12 +60,13 @@ def assemble_model_pipeline(dataset: SummDataset, model_list: List[SummModel] = 
                     full_query_model = query_model_cls(model_backend=single_doc_model)
                     matching_models.append(full_query_dialogue_model)
         return matching_models
-    
+
     if dataset.is_multi_document:
         for multi_doc_model_cls in multi_doc_model_list:
-            for single_doc_model in single_doc_model_instances:
-                full_multi_doc_model = multi_doc_model_cls(model_backend=single_doc_model)
+            for single_doc_model in single_doc_model_list:
+                full_multi_doc_model = multi_doc_model_cls(single_doc_model, data=get_lxr_train_set(dataset)) if single_doc_model == LexRankModel else multi_doc_model_cls(model_backend=single_doc_model)
                 matching_models.append(full_multi_doc_model)
+        print(matching_models)
         return matching_models
     
     if dataset.is_dialogue_based:
