@@ -217,7 +217,7 @@ class PubmedqaDataset(HuggingfaceDataset):
     @staticmethod
     def process_pubmedqa_data(data: Dataset) -> List[SummInstance]:
         for instance in tqdm(data):
-            context: str = instance["context"]["contexts"]
+            context: str = " ".join(instance["context"]["contexts"])
             answer: str = instance["long_answer"]
             query: str = instance["question"]
             summ_instance = SummInstance(source=context, summary=answer, query=query)

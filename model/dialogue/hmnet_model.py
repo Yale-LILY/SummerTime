@@ -167,6 +167,8 @@ class HMNetModel(SummModel):
             # add all the turns one by one
             for turn in sample:
                 turn = [x.strip() for x in turn.split(':')]
+                if len(turn) < 2:
+                    continue
                 tokenized_turn = nlp(turn[1])
                 # In case we can't find proper entity in move_names
                 ent_id = []

@@ -10,7 +10,7 @@ from evaluation import SUPPORTED_EVALUATION_METRICS, Rouge, RougeWe
 
 from dataset.st_dataset import SummInstance, SummDataset
 from dataset import SUPPORTED_SUMM_DATASETS
-from dataset.non_huggingface_datasets import ScisummnetDataset
+from dataset.non_huggingface_datasets import ScisummnetDataset, SummscreenDataset, ArxivDataset
 from dataset.huggingface_datasets import CnndmDataset, MlsumDataset
 
 import random
@@ -88,7 +88,8 @@ class IntegrationTests(unittest.TestCase):
 
         IntegrationTests.print_with_color("\n\nBeginning integration tests...", "35")
         for dataset_cls in SUPPORTED_SUMM_DATASETS:
-            if dataset_cls == MlsumDataset or not dataset_cls.is_multi_document:
+            # Skip MLSumm (Gitlab: server-side login gating) and Arxiv (size/time)
+            if dataset_cls in [MlsumDataset, ArxivDataset]:
                 continue
             dataset = dataset_cls()
             if dataset.train_set is not None:
