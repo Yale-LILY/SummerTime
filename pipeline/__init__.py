@@ -5,7 +5,7 @@ from model.single_doc import LexRankModel
 from dataset.st_dataset import SummDataset
 from dataset.non_huggingface_datasets import ScisummnetDataset
 
-from typing import List
+from typing import List, Tuple
 
 
 def get_lxr_train_set(dataset: SummDataset, size: int = 100) -> List[str]:
@@ -22,11 +22,14 @@ def get_lxr_train_set(dataset: SummDataset, size: int = 100) -> List[str]:
     return src
 
 
-def assemble_model_pipeline(dataset: SummDataset, model_list: List[SummModel] = SUPPORTED_SUMM_MODELS) -> List[SummModel]:
+def assemble_model_pipeline(dataset: SummDataset, model_list: List[SummModel] = SUPPORTED_SUMM_MODELS) -> List[Tuple[SummModel, str]]:
 
     """
-    Returns filtered initialized subset of `model_list` where the summarization
-    task matches given `dataset`. Initial `model_list` defaults to `SUPPORTED_SUMM_MODELS`.
+    Return initialized list of all model pipelines that match the summarization task of given dataset.
+
+    :param SummDataset `dataset`: Dataset to retrieve model pipelines for.
+    :param List[SummModel] `model_list`: List of candidate model classes (uninitialized). Defaults to `model.SUPPORTED_SUMM_MODELS`.
+    :returns List of tuples, where each tuple contains an initialized model and the name of that model as `(model, name)`.
     """
 
     dataset = dataset if isinstance(dataset, SummDataset) else dataset()
@@ -53,23 +56,22 @@ def assemble_model_pipeline(dataset: SummDataset, model_list: List[SummModel] = 
             for query_model_cls in query_based_model_list:
                 for dialogue_model in dialogue_based_model_list:
                     full_query_dialogue_model = query_model_cls(model_backend=dialogue_model)
-                    matching_models.append(full_query_dialogue_model)
+                    matching_models.append((full_query_dialogue_model, f"{query_model_cls.model_name} ({dialogue_model.model_name})"))
         else:
             for query_model_cls in query_based_model_list:
                 for single_doc_model in single_doc_model_list:
                     full_query_model = query_model_cls(model_backend=single_doc_model, data=get_lxr_train_set(dataset)) if single_doc_model == LexRankModel else query_model_cls(model_backend=single_doc_model)
-                    matching_models.append(full_query_model)
+                    matching_models.append((full_query_model, f"{query_model_cls.model_name} ({single_doc_model.model_name})"))
         return matching_models
 
     if dataset.is_multi_document:
         for multi_doc_model_cls in multi_doc_model_list:
             for single_doc_model in single_doc_model_list:
                 full_multi_doc_model = multi_doc_model_cls(model_backend=single_doc_model, data=get_lxr_train_set(dataset)) if single_doc_model == LexRankModel else multi_doc_model_cls(model_backend=single_doc_model)
-                matching_models.append(full_multi_doc_model)
-        print(matching_models)
+                matching_models.append((full_multi_doc_model, f"{multi_doc_model_cls.model_name} ({single_doc_model.model_name})"))
         return matching_models
     
     if dataset.is_dialogue_based:
-        return dialogue_based_model_instances
+        return list(map(lambda db_model: (db_model, db_model.model_name), dialogue_based_model_instances))
     
-    return single_doc_model_instances
+    return list(map(lambda s_model: (s_model, s_model.model_name), single_doc_model_instances))

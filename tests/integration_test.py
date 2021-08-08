@@ -21,65 +21,66 @@ import re
 
 
 class IntegrationTests(unittest.TestCase):
+
     @staticmethod
     def print_with_color(s: str, color: str):
+        """
+        Print formatted string.
+
+        :param str `s`: String to print.
+        :param str `color`: ANSI color code.
+
+        :see https://gist.github.com/RabaDabaDoba/145049536f815903c79944599c6f952a
+        """
+
         print(f"\033[{color}m{s}\033[0m")
 
-    @staticmethod
-    def flatten_list_to_str(doc: Union[str, List[str]]) -> str:
-        return " ".join(doc) if isinstance(doc, list) else doc
+    def retrieve_test_instances(self, dataset_instances: List[SummInstance], num_instances = 3) -> List[SummInstance]:
+        """
+        Retrieve random test instances from a dataset training set.
 
-    def retrieve_test_instances(self, dataset_instances: List[SummInstance], num_instances = 5) -> List[SummInstance]:
+        :param List[SummInstance] `dataset_instances`: Instances from a dataset `train_set` to pull random examples from.
+        :param int `num_instances`: Number of random instances to pull. Defaults to `3`.
+        :return List of SummInstance to summarize.
+        """
+
         test_instances = []
         for i in range(num_instances):
             test_instances.append(dataset_instances[random.randint(0, len(dataset_instances) - 1)])
         return test_instances
     
     def get_prediction(self, model: SummModel, dataset: SummDataset, test_instances: List[SummInstance]) -> Tuple[Union[List[str], List[List[str]]], Union[List[str], List[List[str]]]]:
+        """
+        Get summary prediction given model and dataset instances.
+
+        :param SummModel `model`: Model for summarization task.
+        :param SummDataset `dataset`: Dataset for summarization task.
+        :param List[SummInstance] `test_instances`: Instances from `dataset` to summarize.
+        :returns Tuple containing summary list of summary predictions and targets corresponding to each instance in `test_instances`.
+        """
+
         src = [ins.source[0] for ins in test_instances] if isinstance(dataset, ScisummnetDataset) else [ins.source for ins in test_instances]
         tgt = [ins.summary for ins in test_instances]
         query = [ins.query for ins in test_instances] if dataset.is_query_based else None
-        # prediction = model.summarize([src] if model.is_multi_document else src, query)
         prediction = model.summarize(src, query)
         return prediction, tgt
     
-    def get_eval_dict(self, model: SummModel, metric: SummMetric, prediction: List[str], tgt: List[str]):
-        # score_dict = metric.evaluate(prediction, [" ".join(tgt)] if model.is_multi_document else tgt)
+    def get_eval_dict(self, metric: SummMetric, prediction: List[str], tgt: List[str]):
+        """
+        Run evaluation metric on summary prediction.
+
+        :param SummMetric `metric`: Evaluation metric.
+        :param List[str] `prediction`: Summary prediction instances.
+        :param List[str] `tgt`: Target prediction instances from dataset.
+        """
         score_dict = metric.evaluate(prediction, tgt)
         return score_dict
 
-    def _test_single_integration(self, dataset: SummDataset, test_instances: List[SummInstance], model: SummModel, metric: SummMetric):
-        """
-        Tests single instantiated triple of dataset + model + metric.
-        Model was result of pipeline assembly, task guaranteed to match.
-        """
-        IntegrationTests.print_with_color(f"{'#' * 20} Testing: {dataset.dataset_name} dataset, {model.model_name} model, {metric.metric_name} evaluation metric {'#' * 20}", "35")
-
-        src = [ins.source[0] for ins in test_instances] if isinstance(dataset, ScisummnetDataset) else [IntegrationTests.flatten_list_to_str(ins.source) for ins in test_instances]
-        tgt = [ins.summary for ins in test_instances]
-        query = [ins.query for ins in test_instances] if dataset.is_query_based else None
-        prediction = model.summarize([src] if model.is_multi_document else src, query)
-        print(prediction)
-        print(tgt)
-        score_dict = metric.evaluate(prediction, [" ".join(tgt)] if model.is_multi_document else tgt)
-        print(score_dict)
-
     def test_all(self):
-        IntegrationTests.print_with_color("\nInitializing all datasets...", "35")
-        # datasets = []
-        # for dataset_cls in SUPPORTED_SUMM_DATASETS:
-        #     print(dataset_cls)
-        #     ds = dataset_cls()
-        #     datasets.append(ds)
-        # lxr_dataset = CnndmDataset()
-        IntegrationTests.print_with_color("\nInitializing all models...", "35")
-        # models = []
-        # for model_cls in SUPPORTED_SUMM_MODELS:
-        #     print(model_cls)
-        #     if model_cls == LexRankModel:
-        #         models.append(model_cls([x.source for x in list(lxr_dataset.train_set)[0:100]]))
-        #     else:
-        #         models.append(model_cls())
+        """
+        Runs integration test on all compatible dataset + model + evaluation metric pipelines supported by SummerTime.
+        """
+
         IntegrationTests.print_with_color("\nInitializing all evaluation metrics...", "35")
         evaluation_metrics = []
         for eval_cls in SUPPORTED_EVALUATION_METRICS:
@@ -98,19 +99,20 @@ class IntegrationTests(unittest.TestCase):
                 IntegrationTests.print_with_color(f"Initializing all matching model pipelines for {dataset.dataset_name} dataset...", "35")
                 # matching_model_instances = assemble_model_pipeline(dataset_cls, list(filter(lambda m: m != PegasusModel, SUPPORTED_SUMM_MODELS)))
                 matching_model_instances = assemble_model_pipeline(dataset_cls, SUPPORTED_SUMM_MODELS)
-                for model in matching_model_instances:
-                    test_instances = self.retrieve_test_instances(dataset_instances, 1 if model.is_dialogue_based else 3)
-                    IntegrationTests.print_with_color(f"{'#' * 20} Testing: {dataset.dataset_name} dataset, {model.model_name} model {'#' * 20}", "35")
+                for model, model_name in matching_model_instances:
+                    test_instances = self.retrieve_test_instances(dataset_instances, num_instances=1)
+                    IntegrationTests.print_with_color(f"{'#' * 20} Testing: {dataset.dataset_name} dataset, {model_name} model {'#' * 20}", "35")
                     prediction, tgt = self.get_prediction(model, dataset, test_instances)
                     print(f"Prediction: {prediction}\nTarget: {tgt}\n")
                     for metric in evaluation_metrics:
+                        # # Skip Rouge/RougeWE metrics to avoid local bug.
                         # if isinstance(metric, (Rouge, RougeWe)):
                         #     continue
                         IntegrationTests.print_with_color(f"{metric.metric_name} metric", "35")
-                        # self._test_single_integration(dataset=dataset, test_instances=test_instances, model=model, metric=metric)
-                        score_dict = self.get_eval_dict(model, metric, prediction, tgt)
+                        score_dict = self.get_eval_dict(metric, prediction, tgt)
                         print(score_dict)
-                    IntegrationTests.print_with_color(f"{'#' * 20} Test for {dataset.dataset_name} dataset, {model.model_name} model COMPLETE {'#' * 20}\n\n", "32")
+
+                    IntegrationTests.print_with_color(f"{'#' * 20} Test for {dataset.dataset_name} dataset, {model_name} model COMPLETE {'#' * 20}\n\n", "32")
 
 
 if __name__ == '__main__':
