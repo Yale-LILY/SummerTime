@@ -1,4 +1,5 @@
 from dataset.st_dataset import SummDataset, SummInstance
+from dataset.non_huggingface_datasets import ScisummnetDataset
 
 import random
 from typing import List, Tuple
@@ -17,7 +18,7 @@ def print_with_color(s: str, color: str):
     print(f"\033[{color}m{s}\033[0m")
 
 
-def retrieve_random_test_instances(dataset: SummDataset, num_instances=3) -> List[SummInstance]:
+def retrieve_random_test_instances(dataset_instances: List[SummInstance], num_instances=3) -> List[SummInstance]:
     """
     Retrieve random test instances from a dataset training set.
 
@@ -26,8 +27,6 @@ def retrieve_random_test_instances(dataset: SummDataset, num_instances=3) -> Lis
     :return List of SummInstance to summarize.
     """
 
-    dataset_instances = list(dataset.train_set)
-    print(f"\n{dataset.dataset_name} has a training set of {len(dataset_instances)} examples")
     test_instances = []
     for i in range(num_instances):
         test_instances.append(dataset_instances[random.randint(0, len(dataset_instances) - 1)])

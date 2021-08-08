@@ -12,10 +12,12 @@ from helpers import print_with_color, get_summarization_set, get_query_based_sum
 
 
 class TestModels(unittest.TestCase):
+
     single_doc_dataset = CnndmDataset()
     multi_doc_dataset = MultinewsDataset()
     query_based_dataset = PubmedqaDataset()
     dialogue_based_dataset = SamsumDataset()
+
 
     def test_list_models(self):
         print_with_color(f"{'#'*10} Testing test_list_models... {'#'*10}", "35")
@@ -25,7 +27,8 @@ class TestModels(unittest.TestCase):
             self.assertTrue(True)
         self.assertEqual(len(all_models), len(SUPPORTED_SUMM_MODELS))
         print_with_color(f"{'#'*10} test_list_models {__name__} test complete {'#'*10}\n\n", "32")
-    
+
+
     def validate_prediction(self, prediction: List[str], src: List):
         """
         Verify that prediction instances match source instances.
@@ -34,6 +37,7 @@ class TestModels(unittest.TestCase):
         self.assertTrue(all([isinstance(ins, str) for ins in prediction]))
         self.assertTrue(len(prediction) == len(src))
         print("Prediction typing and length matches source instances!")
+
 
     def test_model_summarize(self):
         """

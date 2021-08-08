@@ -13,6 +13,8 @@ from dataset import SUPPORTED_SUMM_DATASETS
 from dataset.non_huggingface_datasets import ScisummnetDataset, SummscreenDataset, ArxivDataset
 from dataset.huggingface_datasets import CnndmDataset, MlsumDataset
 
+from helpers import print_with_color, retrieve_random_test_instances
+
 import random
 import time
 from typing import Dict, List, Union, Tuple
@@ -21,35 +23,6 @@ import re
 
 
 class IntegrationTests(unittest.TestCase):
-
-    @staticmethod
-    def print_with_color(s: str, color: str):
-        """
-        Print formatted string.
-
-        :param str `s`: String to print.
-        :param str `color`: ANSI color code.
-
-        :see https://gist.github.com/RabaDabaDoba/145049536f815903c79944599c6f952a
-        """
-
-        print(f"\033[{color}m{s}\033[0m")
-
-    def retrieve_test_instances(self, dataset: SummDataset, num_instances = 3) -> List[SummInstance]:
-        """
-        Retrieve random test instances from a dataset training set.
-
-        :param List[SummInstance] `dataset_instances`: Instances from a dataset `train_set` to pull random examples from.
-        :param int `num_instances`: Number of random instances to pull. Defaults to `3`.
-        :return List of SummInstance to summarize.
-        """
-
-        dataset_instances = list(dataset.train_set)
-        print(f"\n{dataset.dataset_name} has a training set of {len(dataset_instances)} examples")
-        test_instances = []
-        for i in range(num_instances):
-            test_instances.append(dataset_instances[random.randint(0, len(dataset_instances) - 1)])
-        return test_instances
     
     def get_prediction(self, model: SummModel, dataset: SummDataset, test_instances: List[SummInstance]) -> Tuple[Union[List[str], List[List[str]]], Union[List[str], List[List[str]]]]:
         """
@@ -83,7 +56,7 @@ class IntegrationTests(unittest.TestCase):
         Runs integration test on all compatible dataset + model + evaluation metric pipelines supported by SummerTime.
         """
 
-        IntegrationTests.print_with_color("\nInitializing all evaluation metrics...", "35")
+        print_with_color("\nInitializing all evaluation metrics...", "35")
         evaluation_metrics = []
         for eval_cls in SUPPORTED_EVALUATION_METRICS:
             # # TODO: Temporarily skipping Rouge/RougeWE metrics to avoid local bug.
@@ -92,27 +65,29 @@ class IntegrationTests(unittest.TestCase):
             print(eval_cls)
             evaluation_metrics.append(eval_cls())
 
-        IntegrationTests.print_with_color("\n\nBeginning integration tests...", "35")
+        print_with_color("\n\nBeginning integration tests...", "35")
         for dataset_cls in SUPPORTED_SUMM_DATASETS:
             # TODO: Temporarily skipping MLSumm (Gitlab: server-side login gating) and Arxiv (size/time)
             if dataset_cls in [MlsumDataset, ArxivDataset]:
                 continue
             dataset = dataset_cls()
             if dataset.train_set is not None:
-                IntegrationTests.print_with_color(f"Initializing all matching model pipelines for {dataset.dataset_name} dataset...", "35")
+                dataset_instances = list(dataset.train_set)
+                print(f"\n{dataset.dataset_name} has a training set of {len(dataset_instances)} examples")
+                print_with_color(f"Initializing all matching model pipelines for {dataset.dataset_name} dataset...", "35")
                 # matching_model_instances = assemble_model_pipeline(dataset_cls, list(filter(lambda m: m != PegasusModel, SUPPORTED_SUMM_MODELS)))
                 matching_model_instances = assemble_model_pipeline(dataset_cls, SUPPORTED_SUMM_MODELS)
                 for model, model_name in matching_model_instances:
-                    test_instances = self.retrieve_test_instances(dataset=dataset, num_instances=1)
-                    IntegrationTests.print_with_color(f"{'#' * 20} Testing: {dataset.dataset_name} dataset, {model_name} model {'#' * 20}", "35")
+                    test_instances = retrieve_random_test_instances(dataset_instances=dataset_instances, num_instances=1)
+                    print_with_color(f"{'#' * 20} Testing: {dataset.dataset_name} dataset, {model_name} model {'#' * 20}", "35")
                     prediction, tgt = self.get_prediction(model, dataset, test_instances)
                     print(f"Prediction: {prediction}\nTarget: {tgt}\n")
                     for metric in evaluation_metrics:
-                        IntegrationTests.print_with_color(f"{metric.metric_name} metric", "35")
+                        print_with_color(f"{metric.metric_name} metric", "35")
                         score_dict = self.get_eval_dict(metric, prediction, tgt)
                         print(score_dict)
 
-                    IntegrationTests.print_with_color(f"{'#' * 20} Test for {dataset.dataset_name} dataset, {model_name} model COMPLETE {'#' * 20}\n\n", "32")
+                    print_with_color(f"{'#' * 20} Test for {dataset.dataset_name} dataset, {model_name} model COMPLETE {'#' * 20}\n\n", "32")
 
 
 if __name__ == '__main__':
@@ -122,5 +97,5 @@ if __name__ == '__main__':
 
     seed = int(time.time()) if len(sys.argv) == 1 else int(sys.argv.pop())
     random.seed(seed)
-    IntegrationTests.print_with_color(f"(to reproduce) random seeded with {seed}\n", "32")
+    print_with_color(f"(to reproduce) random seeded with {seed}\n", "32")
     unittest.main()
