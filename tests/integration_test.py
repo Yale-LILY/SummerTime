@@ -35,7 +35,7 @@ class IntegrationTests(unittest.TestCase):
 
         print(f"\033[{color}m{s}\033[0m")
 
-    def retrieve_test_instances(self, dataset_instances: List[SummInstance], num_instances = 3) -> List[SummInstance]:
+    def retrieve_test_instances(self, dataset: SummDataset, num_instances = 3) -> List[SummInstance]:
         """
         Retrieve random test instances from a dataset training set.
 
@@ -44,6 +44,8 @@ class IntegrationTests(unittest.TestCase):
         :return List of SummInstance to summarize.
         """
 
+        dataset_instances = list(dataset.train_set)
+        print(f"\n{dataset.dataset_name} has a training set of {len(dataset_instances)} examples")
         test_instances = []
         for i in range(num_instances):
             test_instances.append(dataset_instances[random.randint(0, len(dataset_instances) - 1)])
@@ -94,13 +96,11 @@ class IntegrationTests(unittest.TestCase):
                 continue
             dataset = dataset_cls()
             if dataset.train_set is not None:
-                dataset_instances = list(dataset.train_set)
-                print(f"\n{dataset.dataset_name} has a training set of {len(dataset_instances)} examples")
                 IntegrationTests.print_with_color(f"Initializing all matching model pipelines for {dataset.dataset_name} dataset...", "35")
                 # matching_model_instances = assemble_model_pipeline(dataset_cls, list(filter(lambda m: m != PegasusModel, SUPPORTED_SUMM_MODELS)))
                 matching_model_instances = assemble_model_pipeline(dataset_cls, SUPPORTED_SUMM_MODELS)
                 for model, model_name in matching_model_instances:
-                    test_instances = self.retrieve_test_instances(dataset_instances, num_instances=1)
+                    test_instances = self.retrieve_test_instances(dataset=dataset, num_instances=1)
                     IntegrationTests.print_with_color(f"{'#' * 20} Testing: {dataset.dataset_name} dataset, {model_name} model {'#' * 20}", "35")
                     prediction, tgt = self.get_prediction(model, dataset, test_instances)
                     print(f"Prediction: {prediction}\nTarget: {tgt}\n")
