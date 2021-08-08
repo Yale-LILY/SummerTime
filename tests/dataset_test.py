@@ -24,7 +24,7 @@ class TestDatasets(unittest.TestCase):
         print_with_color(f"{'#' * 10} Testing all datasets... {'#' * 10}\n\n", "35")
 
         for ds_cls in SUPPORTED_SUMM_DATASETS:
-            # TODO: skip MLSumm (Gitlab: server-side login gating) and Arxiv (size/time)
+            # TODO: Temporarily skipping MLSumm (Gitlab: server-side login gating) and Arxiv (size/time)
             if ds_cls in [MlsumDataset, ArxivDataset]:
                 continue
 
