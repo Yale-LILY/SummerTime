@@ -86,12 +86,15 @@ class IntegrationTests(unittest.TestCase):
         IntegrationTests.print_with_color("\nInitializing all evaluation metrics...", "35")
         evaluation_metrics = []
         for eval_cls in SUPPORTED_EVALUATION_METRICS:
+            # # TODO: Skip Rouge/RougeWE metrics to avoid local bug.
+            # if eval_cls in [Rouge, RougeWe]:
+            #     continue
             print(eval_cls)
             evaluation_metrics.append(eval_cls())
 
         IntegrationTests.print_with_color("\n\nBeginning integration tests...", "35")
         for dataset_cls in SUPPORTED_SUMM_DATASETS:
-            # Skip MLSumm (Gitlab: server-side login gating) and Arxiv (size/time)
+            # TODO: skip MLSumm (Gitlab: server-side login gating) and Arxiv (size/time)
             if dataset_cls in [MlsumDataset, ArxivDataset]:
                 continue
             dataset = dataset_cls()
@@ -105,9 +108,6 @@ class IntegrationTests(unittest.TestCase):
                     prediction, tgt = self.get_prediction(model, dataset, test_instances)
                     print(f"Prediction: {prediction}\nTarget: {tgt}\n")
                     for metric in evaluation_metrics:
-                        # # Skip Rouge/RougeWE metrics to avoid local bug.
-                        # if isinstance(metric, (Rouge, RougeWe)):
-                        #     continue
                         IntegrationTests.print_with_color(f"{metric.metric_name} metric", "35")
                         score_dict = self.get_eval_dict(metric, prediction, tgt)
                         print(score_dict)
