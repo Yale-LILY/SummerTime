@@ -41,12 +41,12 @@ class TestDatasets(unittest.TestCase):
 
             if ds.dev_set is not None:
                 dev_set = list(ds.dev_set)
-                print(f"{ds_cls} has a training set of {len(dev_set)} examples")
+                print(f"{ds_cls} has a dev set of {len(dev_set)} examples")
                 self._test_instance(dev_set[0], is_multi_document=ds.is_multi_document, is_dialogue=ds.is_dialogue_based)
 
             if ds.test_set is not None:
                 test_set = list(ds.test_set)
-                print(f"{ds_cls} has a training set of {len(test_set)} examples")
+                print(f"{ds_cls} has a test set of {len(test_set)} examples")
                 self._test_instance(test_set[0], is_multi_document=ds.is_multi_document, is_dialogue=ds.is_dialogue_based)
             
             print_with_color(f"{ds.dataset_name} dataset test complete\n", "32")
