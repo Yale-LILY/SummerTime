@@ -90,7 +90,7 @@ def smart_model_selector(models,
         total_instances += num_instances
         num_instances = num_instances * factor
 
-    return df
+    return table 
 
 
 def visualize_model_selector(output: EvaluationTable):
