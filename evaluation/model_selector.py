@@ -2,9 +2,23 @@ import pandas as pd
 import itertools
 from .plotutils.radar import make_radar_plot
 from typing import List, Tuple, Generator
+from prettytable import PrettyTable
 
 # TODO: figure out how to horizontally import model and data
 # for type annotations
+class EvaluationTable(dict):
+    def __init__(self, *args, **kw):
+        super(EvaluationTable, self).__init__(*args, **kw)
+    def __str__(self):
+        out = PrettyTable()
+        out.field_names = self[self.keys()[0]].keys()
+        for model_name in self:
+            out.add_row([model_name] + [scores[metric] for metric in self[model_name]])
+        return print(out)
+
+
+
+
 def model_selector(models: List,
                    generator: Generator,
                    metrics: List,
