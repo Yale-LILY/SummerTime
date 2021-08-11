@@ -24,10 +24,10 @@ class HMNetModel(SummModel):
     is_extractive = False
     is_neural = True
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         super(HMNetModel, self).__init__()
         self.root_path = self._get_root()
-        self.opt = self._parse_args()
+        self.opt = self._parse_args(kwargs)
         self.model = HMNetTrainer(self.opt)
 
     def _get_root(self):
@@ -37,7 +37,7 @@ class HMNetModel(SummModel):
         root_path = os.path.join(root_path, 'model/dialogue')
         return root_path
 
-    def _parse_args(self):
+    def _parse_args(self, kwargs):
         parser = argparse.ArgumentParser(description='HMNet: Pretrain or fine-tune models for HMNet model.')
         parser.add_argument('--command', default='evaluate', help='Command: train/evaluate')
         parser.add_argument('--conf_file',
@@ -81,6 +81,14 @@ class HMNetModel(SummModel):
             # if val is not None and key not in ['command', 'conf_file']:
             if val is not None:
                 opt[key] = val
+
+        # combine kwargs into opt dictionary (we allow lower case)
+        for key, val in kwargs.items():
+            if key.upper() not in opt.keys():
+                print('WARNING: {} is not a valid key in HMNet.')
+                continue
+            if val is not None:
+                opt[key.upper()] = val
 
         return opt
 
