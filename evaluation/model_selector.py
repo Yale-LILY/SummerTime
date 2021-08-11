@@ -1,4 +1,5 @@
 import pandas as pd
+import math
 import itertools
 from .plotutils.radar import make_radar_plot
 from typing import List, Tuple, Generator
@@ -11,10 +12,15 @@ class EvaluationTable(dict):
         super(EvaluationTable, self).__init__(*args, **kw)
     def __str__(self):
         out = PrettyTable()
-        out.field_names = self[self.keys()[0]].keys()
+        metrics = list(self[list(self.keys())[0]].keys())
+        out.field_names = ['Model'] + metrics
         for model_name in self:
-            out.add_row([model_name] + [scores[metric] for metric in self[model_name]])
-        return print(out)
+            to_add = [model_name] + [self[model_name][metric] for metric in metrics]
+            out.add_row(to_add)
+        out.float_format = f'.3'
+        return out.__str__()
+    def __repr__(self):
+        return self.__str__()
 
 
 
@@ -22,8 +28,8 @@ class EvaluationTable(dict):
 def model_selector(models: List,
                    generator: Generator,
                    metrics: List,
-                   max_instances : int = -1) -> pd.DataFrame:
-    store_data = {} # dictionary to be converted to pd.Dataframe
+                   max_instances : int = -1) -> EvaluationTable:
+    store_data = EvaluationTable() # dictionary to be converted to pd.Dataframe
 
     if max_instances == -1:
         tiny_generator = generator
@@ -54,22 +60,21 @@ def model_selector(models: List,
             for key in avg_score_dict:
                 store_data[model.model_name][key] = avg_score_dict[key]
 
-    df = pd.DataFrame.from_dict(store_data, orient='index')
-    return df
+    return store_data
 
 def smart_model_selector(models,
                          generator,
                          metrics,
                          min_instances: int,
                          max_instances: int,
-                         factor : int = 3) -> pd.DataFrame:
+                         factor : int = 3) -> EvaluationTable:
     total_instances = 0
     # first run with min_instances instances
     num_instances = min_instances
     tiny_generator = itertools.islice(generator, min_instances)
-    df = model_selector(models, tiny_generator, metrics)
+    table = model_selector(models, tiny_generator, metrics)
 
-    models = _remove_bad_model(models, df)
+    models = _remove_bad_model(models, table)
 
     total_instances += num_instances
 
@@ -77,10 +82,10 @@ def smart_model_selector(models,
 
     while (len(models) > 1) and (total_instances <= max_instances):
         tiny_generator = itertools.islice(generator, num_instances)
-        new_df = model_selector(models, tiny_generator, metrics)
-        df = _update_df(df, new_df, total_instances, num_instances)
+        new_table = model_selector(models, tiny_generator, metrics)
+        df = _update_table(table, new_table, total_instances, num_instances)
 
-        models = _remove_bad_model(models, new_df)
+        models = _remove_bad_model(models, new_table)
 
         total_instances += num_instances
         num_instances = num_instances * factor
@@ -88,42 +93,43 @@ def smart_model_selector(models,
     return df
 
 
-def visualize_model_selector(output: pd.DataFrame):
+def visualize_model_selector(output: EvaluationTable):
     # Preprocesses data.
     data = []
-    data.append(list(output.keys()))
+    metrics = list(output[list(output.keys())[0]].keys())
+    data.append(metrics)
     rows = []
     row_names = []
-    for i, row in output.iterrows():
-        rows.append(list(row))
-        row_names.append(i)
+    for model in output:
+        rows.append([output[model][metric] for metric in metrics])
+        row_names.append(model)
     data.append(rows)
 
     return make_radar_plot(data, row_names)
 
 # Merges df1 and df2
-def _update_df(df1: pd.DataFrame,
-               df2: pd.DataFrame,
+def _update_table(table: EvaluationTable,
+               new_table: EvaluationTable,
                total_instances : int,
-               num_instances : int) -> pd.DataFrame:
-    for i, _ in df2.iterrows():
-        for j in df2.keys():
+               num_instances : int) -> EvaluationTable:
+    for model in new_table:
+        for metric in new_table[model]:
             denom = total_instances + num_instances
-            df1.at[i, j] = total_instances / denom * df1.at[i, j] + num_instances / denom * df2.at[i, j]
-    return df1
+            table[model][metric] = total_instances / denom * table[model][metric] + num_instances / denom * new_table[model][metric]
+    return table
 
 # Removes a model's row from the dataframe if it is worse than every other model
 # on every metric
 
 # TODO: figure out how to do horizontal import for type annotations
-def _remove_bad_model(models, df : pd.DataFrame):
+def _remove_bad_model(models, table: EvaluationTable):
     name = None
-    for i, row1 in df.iterrows():
+    for model in table:
         cumulative_and = 1
-        for j, row2 in df.iterrows():
-            cumulative_and *= (row1 <= row2).prod()
+        for other in table:
+            cumulative_and *= math.prod([1 if table[model][metric] <= table[other][metric] else 0 for metric in table[model]])
         if cumulative_and == 1:
-            name = i
+            name = model
     if name:
         for i in range(len(models)):
             if models[i].model_name == name:
