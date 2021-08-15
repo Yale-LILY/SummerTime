@@ -5,8 +5,6 @@ from .plotutils.radar import make_radar_plot
 from typing import List, Tuple, Generator
 from prettytable import PrettyTable
 
-# TODO: figure out how to horizontally import model and data
-# for type annotations
 class EvaluationTable(dict):
     def __init__(self, *args, **kw):
         super(EvaluationTable, self).__init__(*args, **kw)
