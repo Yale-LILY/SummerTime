@@ -16,3 +16,5 @@ sklearn
 gdown
 py7zr==0.16.1
 prettytabel==2.1.0
+py7zr==0.16.1
+tqdm==4.49.0
