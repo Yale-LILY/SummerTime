@@ -98,16 +98,16 @@ def radar_factory(num_vars, frame='circle'):
 Example data format:
 ```
 data = [
-        ['Sulfate', 'Nitrate', 'EC', 'OC1', 'OC2', 'OC3', 'OP', 'CO', 'O3'],
+        ['bleu', 'rouge_1', 'rouge_2', 'rouge_l', 'meteor', 'bert_score'], 
         [
-            [0.88, 0.01, 0.03, 0.03, 0.00, 0.06, 0.01, 0.00, 0.00],
-            [0.07, 0.95, 0.04, 0.05, 0.00, 0.02, 0.01, 0.00, 0.00],
-            [0.01, 0.02, 0.85, 0.19, 0.05, 0.10, 0.00, 0.00, 0.00],
-            [0.02, 0.01, 0.07, 0.01, 0.21, 0.12, 0.98, 0.00, 0.00],
-            [0.01, 0.01, 0.02, 0.71, 0.74, 0.70, 0.00, 0.00, 0.00]]
-    ]
+            [0.88, 0.01, 0.03, 0.03, 0.00, 0.06],
+            [0.07, 0.95, 0.04, 0.05, 0.00, 0.02], 
+            [0.01, 0.02, 0.85, 0.19, 0.05, 0.10], 
+            [0.02, 0.01, 0.07, 0.01, 0.21, 0.12], 
+            [0.01, 0.01, 0.02, 0.71, 0.74, 0.70], 
+        ]
+       ]
 ```
-Right now, only supports up to 5 models.
 """
 def make_radar_plot(data, row_names):
     N = len(data[0])
@@ -119,9 +119,8 @@ def make_radar_plot(data, row_names):
                             subplot_kw=dict(projection='radar'))
     fig.subplots_adjust(wspace=0.25, hspace=0.20, top=0.85, bottom=0.05)
 
-    colors = ['b', 'r', 'g', 'm', 'y']
-    # Plot the four cases from the example data on separate axes
-    #for ax, (title, case_data) in zip(axs, data):
+    colors = ['b', 'r', 'g', 'm', 'y'] * (N%5)
+
     case_data = data[0]
     axs.set_rgrids([0.2, 0.4, 0.6, 0.8])
     for d, color in zip(case_data, colors):
@@ -129,9 +128,6 @@ def make_radar_plot(data, row_names):
         axs.fill(theta, d, facecolor=color, alpha=0.25)
     axs.set_varlabels(spoke_labels)
 
-    #fig.text(0.5, 0.965, '5-Factor Solution Profiles Across Four Scenarios',
-             #horizontalalignment='center', color='black', weight='bold',
-             #size='large')
 
     labels = tuple(row_names)
     legend = axs.legend(labels, loc=(0.9, .95),
