@@ -21,7 +21,8 @@ class EvaluationTable(dict):
         return self.__str__()
 
 class ModelSelector(): 
-	def __init__(models: List, 
+	def __init__(self, 
+                models: List, 
 				 generator: Generator, 
 				 metrics: List, 
 				 max_instances: int = -1): 
@@ -36,11 +37,11 @@ class ModelSelector():
 		self.metrics = metrics 
 	
 	"""Evaluates every model on every metric, returning an EvaluationTable"""
-	def run() -> EvaluationTable: 
+	def run(self) -> EvaluationTable: 
 
 		store_data = EvaluationTable()
 
-		tiny_generators = list(itertools.tee(self.generator, len(models)*len(metrics)))
+		tiny_generators = list(itertools.tee(self.generator, len(self.models)*len(self.metrics)))
 
 		for model in self.models:
 			store_data[model.model_name] = {}
@@ -66,17 +67,17 @@ class ModelSelector():
 
 		return store_data
 
-	def run_halving(min_instances: int, factor: int = 3) -> EvaluationTable: 
+	def run_halving(self, min_instances: int, factor: int = 3) -> EvaluationTable: 
 
 		total_instances = 0
 		# first run with min_instances instances
 		num_instances = min_instances
 		tiny_generator = itertools.islice(self.generator, min_instances)
 
-		temp_selector = ModelSelector(models, tiny_generator, metrics)
+		temp_selector = ModelSelector(self.models, tiny_generator, self.metrics)
 		table = temp_selector.run()
 
-		models = _remove_bad_model(models, table)
+		models = _remove_bad_model(self.models, table)
 
 		total_instances += num_instances
 
