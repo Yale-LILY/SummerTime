@@ -89,8 +89,10 @@ class HMNetModel(SummModel):
 
         # combine kwargs into opt dictionary (we allow lower case)
         for key, val in kwargs.items():
-            if key.upper() not in opt.keys():
-                print('WARNING: {} is not a valid key in HMNet.')
+            valid_keys = [x for x in opt.keys() if x.upper() == x]
+            if key.upper() not in valid_keys:
+                print('WARNING: {} is not a valid key in HMNet.'.format(key))
+                print('The valid keys are:', valid_keys)
                 continue
             if val is not None:
                 opt[key.upper()] = val
