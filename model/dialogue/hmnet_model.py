@@ -24,9 +24,14 @@ class HMNetModel(SummModel):
     is_extractive = False
     is_neural = True
 
-    def __init__(self, **kwargs):
+    def __init__(self, min_gen_length=10, max_gen_length=300, beam_width=6, **kwargs):
         super(HMNetModel, self).__init__()
         self.root_path = self._get_root()
+
+        # we leave the most influential params with prompt and the others as hidden kwargs
+        kwargs['MIN_GEN_LENGTH'] = min_gen_length
+        kwargs['MAX_GEN_LENGTH'] = max_gen_length
+        kwargs['BEAM_WIDTH'] = beam_width
         self.opt = self._parse_args(kwargs)
         self.model = HMNetTrainer(self.opt)
 
@@ -126,7 +131,8 @@ class HMNetModel(SummModel):
 
         print('Decoding current model ... \nSaving folder is {}'.format(save_folder))
         print('Each sample will cost about 10 second.')
-
+        import time
+        start_time = time.time()
         predictions = []  # prediction of tokens from model
         if not isinstance(module.tokenizer, list):
             decoder_tokenizer = module.tokenizer
@@ -152,6 +158,8 @@ class HMNetModel(SummModel):
                     break
 
         top1_predictions = [x[0] for x in predictions]
+
+        print('Total time for inference:', time.time()-start_time)
         return top1_predictions
 
     def _convert_tokens_to_string(self, tokenizer, tokens):
