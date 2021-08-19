@@ -16,11 +16,11 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.optim.lr_scheduler as lr_scheduler
 
-from Models.Trainers.DistributedTrainer import DistributedTrainer
-from Models.Trainers.Tasks import Task
-from Utils.GeneralUtils import AverageMeter, BaseBatchGen, bcolors
+from model.third_party.HMNet.Models.Trainers.DistributedTrainer import DistributedTrainer
+from model.third_party.HMNet.Models.Trainers.Tasks import Task
+from model.third_party.HMNet.Utils.GeneralUtils import AverageMeter, BaseBatchGen, bcolors
 
-from DataLoader import iterators
+from model.third_party.HMNet.DataLoader import iterators
 
 
 class ObjectView(object):
@@ -77,7 +77,7 @@ class HMNetTrainer(DistributedTrainer):
         # instantiate module (tokenizer should be contained in module as self.module.tokenizer)
         try:
             model_module = importlib.import_module(
-                'Models.Networks.' + self.opt['MODEL'])
+                'model.third_party.HMNet.Models.Networks.' + self.opt['MODEL'])
             model_class = getattr(model_module, self.opt['MODEL'])
             self.module = model_class(self.opt)
         except Exception as e:
@@ -92,7 +92,7 @@ class HMNetTrainer(DistributedTrainer):
         # instantiate criterion
         try:
             criterion_module = importlib.import_module(
-                'Models.Criteria.' + self.opt['CRITERION'])
+                'model.third_party.HMNet.Models.Criteria.' + self.opt['CRITERION'])
             criterion_class = getattr(criterion_module, self.opt['CRITERION'])
             self.criterion = criterion_class(self.opt, self.module)
         except Exception as e:
@@ -133,7 +133,7 @@ class HMNetTrainer(DistributedTrainer):
         except:
             try:  # then try custom optimizer inside Models.Optimizers
                 optimizer_module = importlib.import_module(
-                    'Models.Optimizers.' + self.opt['OPTIMIZER'])
+                    'model.third_party.HMNet.Models.Optimizers.' + self.opt['OPTIMIZER'])
                 optimizer_class = getattr(
                     optimizer_module, self.opt['OPTIMIZER'])
                 self.log('Using custom optimizer: {}'.format(
@@ -157,7 +157,7 @@ class HMNetTrainer(DistributedTrainer):
         except:
             try:  # then look for custom lr scheduler inside Models.Optimizers
                 lr_scheduler_module = importlib.import_module(
-                    'Models.Optimizers.' + self.opt['LR_SCHEDULER'])
+                    'model.third_party.HMNet.Models.Optimizers.' + self.opt['LR_SCHEDULER'])
                 lr_scheduler_class = getattr(
                     lr_scheduler_module, self.opt['LR_SCHEDULER'])
                 self.log('Using custom lr scheduler: {}'.format(

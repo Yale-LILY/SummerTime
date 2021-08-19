@@ -49,9 +49,6 @@ class SummDataset:
                  citation: str = None,
                  homepage: str = None,
                  huggingface_page: str = None,
-                 is_query_based: bool = False,
-                 is_dialogue_based: bool = False,
-                 is_multi_document: bool = False,
                  train_set: Optional[Generator[SummInstance, None, None]] = None,
                  dev_set: Optional[Generator[SummInstance, None, None]] = None,
                  test_set: Optional[Generator[SummInstance, None, None]] = None):
@@ -77,9 +74,6 @@ class SummDataset:
         self.citation = citation
         self.homepage = homepage
         self.huggingface_page = huggingface_page
-        self.is_query_based = is_query_based
-        self.is_dialogue_based = is_dialogue_based
-        self.is_multi_document = is_multi_document
         
         self._train_set = train_set
         self._dev_set = dev_set

@@ -8,9 +8,9 @@ import random
 import numpy as np
 
 from pkg_resources import parse_version
-from Models.Trainers.BaseTrainer import BaseTrainer
-from Utils.GeneralUtils import bcolors
-from Utils.distributed import distributed
+from model.third_party.HMNet.Models.Trainers.BaseTrainer import BaseTrainer
+from model.third_party.HMNet.Utils.GeneralUtils import bcolors
+from model.third_party.HMNet.Utils.distributed import distributed
 
 class DistributedTrainer(BaseTrainer):
     def __init__(self, opt):

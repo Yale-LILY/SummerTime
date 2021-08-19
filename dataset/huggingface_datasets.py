@@ -13,9 +13,6 @@ class HuggingfaceDataset(SummDataset):
     def __init__(self,
                  info_set: Dataset,
                  huggingface_page: str,
-                 is_query_based: bool,
-                 is_dialogue_based: bool,
-                 is_multi_document: bool,
                  train_set: Optional[Generator[SummInstance, None, None]] = None,
                  dev_set: Optional[Generator[SummInstance, None, None]] = None,
                  test_set: Optional[Generator[SummInstance, None, None]] = None
@@ -28,9 +25,6 @@ class HuggingfaceDataset(SummDataset):
             citation=info_set.citation,
             homepage=info_set.homepage,
             huggingface_page=huggingface_page,
-            is_query_based=is_query_based,
-            is_dialogue_based=is_dialogue_based,
-            is_multi_document=is_multi_document,
             train_set=train_set,
             dev_set=dev_set,
             test_set=test_set
@@ -41,6 +35,10 @@ class CnndmDataset(HuggingfaceDataset):
     """
     The CNN/DM dataset
     """
+
+    is_query_based = False
+    is_dialogue_based = False
+    is_multi_document = False
     
     huggingface_page = "https://huggingface.co/datasets/cnn_dailymail"
     
@@ -55,9 +53,6 @@ class CnndmDataset(HuggingfaceDataset):
         
         super().__init__(info_set,
                          huggingface_page=CnndmDataset.huggingface_page,
-                         is_query_based=False,
-                         is_dialogue_based=False,
-                         is_multi_document=False,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
@@ -77,6 +72,10 @@ class MultinewsDataset(HuggingfaceDataset):
     """
     The Multi News dataset
     """
+
+    is_query_based = False
+    is_dialogue_based = False
+    is_multi_document = True
     
     huggingface_page = "https://huggingface.co/datasets/multi_news"
     
@@ -91,9 +90,6 @@ class MultinewsDataset(HuggingfaceDataset):
         
         super().__init__(info_set,
                          huggingface_page=MultinewsDataset.huggingface_page,
-                         is_query_based=False,
-                         is_dialogue_based=False,
-                         is_multi_document=True,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
@@ -115,6 +111,10 @@ class SamsumDataset(HuggingfaceDataset):
     """
     The SAMsum Dataset
     """
+
+    is_query_based = False
+    is_dialogue_based = True
+    is_multi_document = False
     
     huggingface_page = "https://huggingface.co/datasets/samsum"
     
@@ -129,9 +129,6 @@ class SamsumDataset(HuggingfaceDataset):
         
         super().__init__(info_set,
                          huggingface_page=SamsumDataset.huggingface_page,
-                         is_query_based=False,
-                         is_dialogue_based=True,
-                         is_multi_document=False,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
@@ -153,6 +150,10 @@ class XsumDataset(HuggingfaceDataset):
     """
     
     huggingface_page = "https://huggingface.co/datasets/xsum"
+
+    is_query_based = False
+    is_dialogue_based = False
+    is_multi_document = False
     
     def __init__(self):
         # Load the train, dev and test set from the huggingface datasets
@@ -165,9 +166,6 @@ class XsumDataset(HuggingfaceDataset):
         
         super().__init__(info_set,
                          huggingface_page=XsumDataset.huggingface_page,
-                         is_query_based=False,
-                         is_dialogue_based=False,
-                         is_multi_document=False,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
@@ -187,6 +185,10 @@ class PubmedqaDataset(HuggingfaceDataset):
     """
     The Pubmed QA dataset
     """
+
+    is_query_based = True
+    is_dialogue_based = False
+    is_multi_document = False
     
     huggingface_page = "https://huggingface.co/datasets/pubmed_qa"
     
@@ -204,9 +206,6 @@ class PubmedqaDataset(HuggingfaceDataset):
         
         super().__init__(info_set,
                          huggingface_page=PubmedqaDataset.huggingface_page,
-                         is_query_based=True,
-                         is_dialogue_based=False,
-                         is_multi_document=False,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
@@ -215,7 +214,7 @@ class PubmedqaDataset(HuggingfaceDataset):
     @staticmethod
     def process_pubmedqa_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
-            context: str = instance["context"]["contexts"]
+            context: str = " ".join(instance["context"]["contexts"])
             answer: str = instance["long_answer"]
             query: str = instance["question"]
             summ_instance = SummInstance(source=context, summary=answer, query=query)
@@ -237,6 +236,10 @@ class MlsumDataset(HuggingfaceDataset):
     "ru" - Russian
     "tu" - Turkish
     """
+
+    is_query_based = False
+    is_dialogue_based = False
+    is_multi_document = False
     
     huggingface_page = "https://huggingface.co/datasets/mlsum"
     supported_languages = ["de", "es", "fr", "ru", "tu"]
@@ -297,9 +300,6 @@ class MlsumDataset(HuggingfaceDataset):
         
         super().__init__(info_set,
                          huggingface_page=MlsumDataset.huggingface_page,
-                         is_query_based=False,
-                         is_dialogue_based=False,
-                         is_multi_document=False,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)

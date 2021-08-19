@@ -8,6 +8,9 @@ from nltk.stem import *
 
 
 class QueryBasedSummModel(SummModel):
+
+    is_query_based = True
+
     def __init__(self,
                  trained_domain: str = None,
                  max_input_length: int = None,
