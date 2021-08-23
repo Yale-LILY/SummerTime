@@ -1,7 +1,7 @@
-
+import sys
 from typing import Dict, List, Optional, Union, Generator
 
-from datasets import Dataset, DatasetDict, DatasetInfo, concatenate_datasets
+from datasets import Dataset, DatasetDict, DatasetInfo, concatenate_datasets, load_dataset
 
 
 class SummInstance:
@@ -152,3 +152,20 @@ def concatenate_dataset_dicts(dataset_dicts: List[DatasetDict]) -> DatasetDict:
 # rtype: DatasetInfo 
 def get_dataset_info(data_dict: DatasetDict) -> DatasetInfo:
     return data_dict["train"].info
+
+
+
+def load_dataset_safe(*args, **kwargs) -> Dataset:
+
+    tries = 3
+    for i in range(tries):
+        try:
+            ds = load_dataset(*args, *kwargs)
+        except :
+            if i < tries - 1: # i is zero indexed
+                continue
+            else:
+                sys.exit("Wait for a mninute and attempt downloading the dataset again. The server hosting the dataset occassionally times out.")
+        break
+
+    return ds

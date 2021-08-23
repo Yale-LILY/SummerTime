@@ -3,7 +3,7 @@ from typing import Optional, List, Tuple, Generator
 
 from datasets import Dataset, load_dataset
 
-from dataset.st_dataset import SummInstance, SummDataset, generate_train_dev_test_splits, concatenate_dataset_dicts
+from dataset.st_dataset import SummInstance, SummDataset, generate_train_dev_test_splits, concatenate_dataset_dicts, load_dataset_safe
 
 
 class HuggingfaceDataset(SummDataset):
@@ -286,7 +286,7 @@ class MlsumDataset(HuggingfaceDataset):
         # Concatenate selected languaeges into one dataset
         language_datasets = []
         for language in selected_languages:
-            dataset = load_dataset("mlsum", language)
+            dataset = load_dataset_safe("mlsum", language)
             language_datasets.append(dataset)
 
         mlsum_dataset = concatenate_dataset_dicts(language_datasets)
