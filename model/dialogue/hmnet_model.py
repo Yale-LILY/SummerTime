@@ -26,7 +26,7 @@ class HMNetModel(SummModel):
 
     def __init__(self, min_gen_length: int = 10, max_gen_length: int = 300, beam_width: int = 6, **kwargs):
         """
-          Create a summarization model with HMNet backbone. In the default setting, the inference speed with be
+          Create a summarization model with HMNet backbone. In the default setting, the inference speed will be
           10s/sample (on one GPU), however, if one can tune these three parameters properly, e.g. min_gen_length=10,
           max_gen_length=100, and beam_width=2, the inference speed will increase to 2s/sample (on one GPU).
 
@@ -36,7 +36,8 @@ class HMNetModel(SummModel):
             beam_width (int): width of the beam when doing beam search in the decoding process
             kwargs: the other valid parameters. The valid parameters can be found in
                 model/dialogue/hmnet/config/dialogue.conf . You can use either lower case or upper case for parameter
-                name. The valid parameter name is one of the following args:
+                name. The valid parameter name is one of the following args, however, we do not encourage you to modify
+                 them, since some unexpected, untested errors might be triggered:
                 ['MODEL', 'TASK', 'CRITERION', 'SEED', 'MAX_NUM_EPOCHS', 'EVAL_PER_UPDATE_NUM'
                 , 'UPDATES_PER_EPOCH', 'OPTIMIZER', 'START_LEARNING_RATE', 'LR_SCHEDULER', 'WARMUP_STEPS',
                 'WARMUP_INIT_LR', 'WARMUP_END_LR', 'GRADIENT_ACCUMULATE_STEP', 'GRAD_CLIPPING', 'USE_REL_DATA_PATH',
