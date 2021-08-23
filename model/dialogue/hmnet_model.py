@@ -24,7 +24,22 @@ class HMNetModel(SummModel):
     is_extractive = False
     is_neural = True
 
-    def __init__(self, min_gen_length=10, max_gen_length=300, beam_width=6, **kwargs):
+    def __init__(self, min_gen_length: int = 10, max_gen_length: int = 300, beam_width: int = 6, **kwargs):
+        """
+          Create a summarization model with HMNet backbone. In the default setting, the inference speed with be
+          10s/sample (on one GPU), however, if one can tune these three parameters properly, e.g. min_gen_length=10,
+          max_gen_length=100, and beam_width=2, the inference speed will increase to 2s/sample (on one GPU).
+
+          Args:
+            min_gen_length (int): minimum generation length of the decoder
+            max_gen_length (int): maximum generation length of the decoder
+            beam_width (int): width of the beam when doing beam search in the decoding process
+            kwargs: the other valid parameters. The valid parameters can be found in
+                model/dialogue/hmnet/config/dialogue.conf you can use either lower case or upper case for the parameter
+                name.
+
+          Return an instance of HMNet model for dialogue summarization.
+        """
         super(HMNetModel, self).__init__()
         self.root_path = self._get_root()
 
