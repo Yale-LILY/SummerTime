@@ -1,9 +1,9 @@
-import datasets
 from tqdm import tqdm
-from datasets import Dataset
+from typing import Optional, List, Tuple, Generator
 
-from typing import Optional, List, Tuple
-from dataset.st_dataset import SummInstance, SummDataset
+from datasets import Dataset, load_dataset
+
+from dataset.st_dataset import SummInstance, SummDataset, generate_train_dev_test_splits, concatenate_dataset_dicts
 
 
 class HuggingfaceDataset(SummDataset):
@@ -13,12 +13,9 @@ class HuggingfaceDataset(SummDataset):
     def __init__(self,
                  info_set: Dataset,
                  huggingface_page: str,
-                 is_query_based: bool,
-                 is_dialogue_based: bool,
-                 is_multi_document: bool,
-                 train_set: Optional[List[SummInstance]] = None,
-                 dev_set: Optional[List[SummInstance]] = None,
-                 test_set: Optional[List[SummInstance]] = None
+                 train_set: Optional[Generator[SummInstance, None, None]] = None,
+                 dev_set: Optional[Generator[SummInstance, None, None]] = None,
+                 test_set: Optional[Generator[SummInstance, None, None]] = None
                  ):
         """ Create dataset information from the huggingface Dataset class """
         
@@ -28,9 +25,6 @@ class HuggingfaceDataset(SummDataset):
             citation=info_set.citation,
             homepage=info_set.homepage,
             huggingface_page=huggingface_page,
-            is_query_based=is_query_based,
-            is_dialogue_based=is_dialogue_based,
-            is_multi_document=is_multi_document,
             train_set=train_set,
             dev_set=dev_set,
             test_set=test_set
@@ -41,12 +35,16 @@ class CnndmDataset(HuggingfaceDataset):
     """
     The CNN/DM dataset
     """
+
+    is_query_based = False
+    is_dialogue_based = False
+    is_multi_document = False
     
     huggingface_page = "https://huggingface.co/datasets/cnn_dailymail"
     
     def __init__(self):
         # Load the train, dev and test set from the huggingface datasets
-        cnn_dataset = datasets.load_dataset('cnn_dailymail', '3.0.0')
+        cnn_dataset = load_dataset('cnn_dailymail', '3.0.0')
         info_set = cnn_dataset['train']
         
         processed_train_set = CnndmDataset.process_cnndm_data(cnn_dataset['train'])
@@ -55,15 +53,12 @@ class CnndmDataset(HuggingfaceDataset):
         
         super().__init__(info_set,
                          huggingface_page=CnndmDataset.huggingface_page,
-                         is_query_based=False,
-                         is_dialogue_based=False,
-                         is_multi_document=False,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
         
     @staticmethod
-    def process_cnndm_data(data: Dataset) -> List[SummInstance]:
+    def process_cnndm_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
             article: str = instance['article']
             highlights: str = instance['highlights']
@@ -77,12 +72,16 @@ class MultinewsDataset(HuggingfaceDataset):
     """
     The Multi News dataset
     """
+
+    is_query_based = False
+    is_dialogue_based = False
+    is_multi_document = True
     
     huggingface_page = "https://huggingface.co/datasets/multi_news"
     
     def __init__(self):
         # Load the train, dev and test set from the huggingface datasets
-        multinews_dataset = datasets.load_dataset("multi_news")
+        multinews_dataset = load_dataset("multi_news")
         info_set = multinews_dataset['train']
         
         processed_train_set = MultinewsDataset.process_multinews_data(multinews_dataset['train'])
@@ -91,15 +90,12 @@ class MultinewsDataset(HuggingfaceDataset):
         
         super().__init__(info_set,
                          huggingface_page=MultinewsDataset.huggingface_page,
-                         is_query_based=False,
-                         is_dialogue_based=False,
-                         is_multi_document=True,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
         
     @staticmethod
-    def process_multinews_data(data: Dataset) -> List[SummInstance]:
+    def process_multinews_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
             
             document: list = [doc for doc in instance['document'].split('|||||') if doc]  # removes the empty string generated
@@ -115,12 +111,16 @@ class SamsumDataset(HuggingfaceDataset):
     """
     The SAMsum Dataset
     """
+
+    is_query_based = False
+    is_dialogue_based = True
+    is_multi_document = False
     
     huggingface_page = "https://huggingface.co/datasets/samsum"
     
     def __init__(self):
         # Load the train, dev and test set from the huggingface datasets
-        samsum_dataset = datasets.load_dataset('samsum')
+        samsum_dataset = load_dataset('samsum')
         info_set = samsum_dataset['train']
         
         processed_train_set = SamsumDataset.process_samsum_data(samsum_dataset['train'])
@@ -129,15 +129,12 @@ class SamsumDataset(HuggingfaceDataset):
         
         super().__init__(info_set,
                          huggingface_page=SamsumDataset.huggingface_page,
-                         is_query_based=False,
-                         is_dialogue_based=True,
-                         is_multi_document=False,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
         
     @staticmethod
-    def process_samsum_data(data: Dataset) -> List[SummInstance]:
+    def process_samsum_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
             dialogue: List = instance['dialogue'].split('\r\n')  # split each dialogue into a list of strings such as
                                                                  # ["speaker1 : utter..", "speaker2 : utter..."]
@@ -153,10 +150,14 @@ class XsumDataset(HuggingfaceDataset):
     """
     
     huggingface_page = "https://huggingface.co/datasets/xsum"
+
+    is_query_based = False
+    is_dialogue_based = False
+    is_multi_document = False
     
     def __init__(self):
         # Load the train, dev and test set from the huggingface datasets
-        xsum_dataset = datasets.load_dataset("xsum")
+        xsum_dataset = load_dataset("xsum")
         info_set = xsum_dataset['train']
         
         processed_train_set = XsumDataset.process_xsum_data(xsum_dataset['train'])
@@ -165,15 +166,12 @@ class XsumDataset(HuggingfaceDataset):
         
         super().__init__(info_set,
                          huggingface_page=XsumDataset.huggingface_page,
-                         is_query_based=False,
-                         is_dialogue_based=False,
-                         is_multi_document=False,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
         
     @staticmethod
-    def process_xsum_data(data: Dataset) -> List[SummInstance]:
+    def process_xsum_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
             document: List = instance['document']
             summary: str = instance['summary']
@@ -187,38 +185,36 @@ class PubmedqaDataset(HuggingfaceDataset):
     """
     The Pubmed QA dataset
     """
+
+    is_query_based = True
+    is_dialogue_based = False
+    is_multi_document = False
     
     huggingface_page = "https://huggingface.co/datasets/pubmed_qa"
     
-    def __init__(self):
+    def __init__(self, seed=None):
         # Load the train, dev and test set from the huggingface datasets
-        pubmedqa_dataset = datasets.load_dataset("pubmed_qa", "pqa_artificial")
+        pubmedqa_dataset = load_dataset("pubmed_qa", "pqa_artificial")
         info_set = pubmedqa_dataset['train']
 
-        # No dev and test splits provided; hence creating these splits from the train set
-        # First split train into: train and test splits
-        # Further split train set int: train and dev sets
-        pubmedqa_traintest_split = pubmedqa_dataset['train'].train_test_split(test_size=0.1)
-        pubmedqa_traindev_split = pubmedqa_traintest_split['train'].train_test_split(test_size=0.1)
+        # No dev and test splits provided; hence creating these splits from the train set 
+        pubmedqa_split_dataset = generate_train_dev_test_splits(pubmedqa_dataset['train'], seed=seed)
 
-        processed_train_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_traindev_split['train'])
-        processed_dev_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_traindev_split['test'])
-        processed_test_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_traintest_split['test'])
+        processed_train_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_split_dataset['train'])
+        processed_dev_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_split_dataset['dev'])
+        processed_test_set = PubmedqaDataset.process_pubmedqa_data(pubmedqa_split_dataset['test'])
         
         super().__init__(info_set,
                          huggingface_page=PubmedqaDataset.huggingface_page,
-                         is_query_based=True,
-                         is_dialogue_based=False,
-                         is_multi_document=False,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
         
         
     @staticmethod
-    def process_pubmedqa_data(data: Dataset) -> List[SummInstance]:
+    def process_pubmedqa_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
-            context: str = instance["context"]["contexts"]
+            context: str = " ".join(instance["context"]["contexts"])
             answer: str = instance["long_answer"]
             query: str = instance["question"]
             summ_instance = SummInstance(source=context, summary=answer, query=query)
@@ -240,9 +236,13 @@ class MlsumDataset(HuggingfaceDataset):
     "ru" - Russian
     "tu" - Turkish
     """
+
+    is_query_based = False
+    is_dialogue_based = False
+    is_multi_document = False
     
     huggingface_page = "https://huggingface.co/datasets/mlsum"
-    languages_supported = ["de", "es", "fr", "ru", "tu"]
+    supported_languages = ["de", "es", "fr", "ru", "tu"]
 
     mlsum_instantiation_guide = '''The languages supported for the Mlsum Dataset are: 
                 de - German
@@ -274,43 +274,38 @@ class MlsumDataset(HuggingfaceDataset):
 
         # Choose languages to download articles
         if languages == "all":
-            download_languages = MlsumDataset.languages_supported
+            selected_languages = MlsumDataset.supported_languages
         elif isinstance(languages, list):
-            for language in languaes:
+            for language in languages:
                 assert(MlsumDataset.is_supported(language))
-            download_languages = languages
+            selected_languages = languages
         else:
             assert(MlsumDataset.is_supported(languages))
-            download_languages = [languages]
+            selected_languages = [languages]
             
-        # Load the train, dev and test set from the huggingface datasets
-        mlsum_dataset = None
-        for language in download_languages:
-            if mlsum_dataset:
-                temp_dataset = datasets.load_dataset("mlsum", language)
-                mlsum_dataset['train'] = datasets.concatenate_datasets([mlsum_dataset['train'], temp_dataset['train']])
-                mlsum_dataset['validation'] = datasets.concatenate_datasets([mlsum_dataset['validation'], temp_dataset['validation']])
-                mlsum_dataset['test'] = datasets.concatenate_datasets([mlsum_dataset['test'], temp_dataset['test']])
-            else:
-                mlsum_dataset = datasets.load_dataset("mlsum", language)
+        # Concatenate selected languaeges into one dataset
+        language_datasets = []
+        for language in selected_languages:
+            dataset = load_dataset("mlsum", language)
+            language_datasets.append(dataset)
+
+        mlsum_dataset = concatenate_dataset_dicts(language_datasets)
 
         info_set = mlsum_dataset['train']
         
+        # Load the train, dev and test set from the huggingface datasets
         processed_train_set = MlsumDataset.process_mlsum_data(mlsum_dataset['train'])
         processed_dev_set = MlsumDataset.process_mlsum_data(mlsum_dataset['validation'])
         processed_test_set = MlsumDataset.process_mlsum_data(mlsum_dataset['test'])
         
         super().__init__(info_set,
                          huggingface_page=MlsumDataset.huggingface_page,
-                         is_query_based=False,
-                         is_dialogue_based=False,
-                         is_multi_document=False,
                          train_set=processed_train_set,
                          dev_set=processed_dev_set,
                          test_set=processed_test_set)
         
     @staticmethod
-    def process_mlsum_data(data: Dataset) -> List[SummInstance]:
+    def process_mlsum_data(data: Dataset) -> Generator[SummInstance, None, None]:
         for instance in tqdm(data):
             article: List = instance['text']
             summary: str = instance['summary']
@@ -320,9 +315,8 @@ class MlsumDataset(HuggingfaceDataset):
 
     @staticmethod
     def is_supported(language: str):
-        if language not in MlsumDataset.languages_supported:
-                print("The language: {", language, "} entered is not supported\n")
+        if language not in MlsumDataset.supported_languages:
                 print(MlsumDataset.mlsum_instantiation_guide)
-                exit(1)
+                raise ValueError(f"The language(s): '{language}' entered is not supported. See above message for usage info")
         else:
             return True

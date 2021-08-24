@@ -24,7 +24,7 @@ class LongformerModel(SingleDocSummModel):
     
     def summarize_single(self, document):
         # Tokenizes document and returns PyTorch torch.Tensor object with length attribute
-        tokenized_sequence = self.tokenizer(document, return_tensors="pt", return_length=True)
+        tokenized_sequence = self.tokenizer(document, return_tensors="pt", return_length=True, truncation=True, max_length=4096)
         print(f"Longformer model: processing document of {tokenized_sequence.length} tokens")
         input_ids = tokenized_sequence.input_ids
         # output_ids is tensor with one layer: output_ids[0] extracts tensor layer for decoding

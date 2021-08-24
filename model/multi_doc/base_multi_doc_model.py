@@ -3,6 +3,9 @@ from typing import List, Union
 
 
 class MultiDocSummModel(SummModel):
+
+    is_multi_document = True
+
     def __init__(self,
                  trained_domain: str = None,
                  max_input_length: int = None,

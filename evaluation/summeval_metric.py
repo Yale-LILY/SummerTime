@@ -17,4 +17,4 @@ class SummEvalMetric(SummMetric):
                  keys: List[str]) -> Dict[str, float]:
         score_dict = self.se_metric.evaluate_batch(
             inputs, targets)
-        return {key: score_dict[key] for key in keys}
+        return {key: score_dict[key] if key in score_dict else None for key in keys}

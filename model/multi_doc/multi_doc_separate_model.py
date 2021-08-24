@@ -6,12 +6,15 @@ from typing import Union, List
 
 class MultiDocSeparateModel(MultiDocSummModel):
 
+    model_name = "Multi-document separate"
+    is_multi_document = True
+
     def __init__(self, model_backend: SummModel = TextRankModel, **kwargs):
         super(MultiDocSeparateModel, self).__init__()
         model = model_backend(**kwargs)
         self.model = model
-    
-    def summarize(self, corpus: Union[List[str], List[List[str]]]) -> List[str]:
+
+    def summarize(self, corpus: Union[List[str], List[List[str]]], query: Union[List[str], List[List[str]]] = None) -> List[str]:
         self.assert_summ_input_type(corpus, None)
         summaries = []
         for instance in corpus:

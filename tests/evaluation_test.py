@@ -1,10 +1,9 @@
 import unittest
 from typing import Tuple, List, Dict
 
-from evaluation import SUPPORTED_EVALUATION_METRICS
-from evaluation.rouge_metric import Rouge
-from evaluation.rougewe_metric import RougeWe
+from evaluation import SUPPORTED_EVALUATION_METRICS, Rouge, RougeWe
 
+from helpers import print_with_color
 
 class TestEvaluationMetrics(unittest.TestCase):
     def get_summary_pairs(self, size: int=1) -> Tuple[List[str]]:
@@ -23,13 +22,18 @@ class TestEvaluationMetrics(unittest.TestCase):
 
 
     def test_evaluate(self):
-        print(f"{'#'*10} test_evaluate STARTS {'#'*10}")
+        print_with_color(f"{'#'*10} Testing all evaluation metrics... {'#'*10}\n\n", "35")
 
         for metric_class in SUPPORTED_EVALUATION_METRICS:
             if metric_class == Rouge or metric_class == RougeWe:
                 # Temporarily skip summ_eval backend metrics
                 continue
-            print(f"Test on {metric_class}")
+
+            # # TODO: Temporarily skipping Rouge/RougeWE metrics to avoid local bug.
+            # if metric_class in [Rouge, RougeWe]:
+            #     continue
+            print_with_color(f"Testing {metric_class.metric_name}...", "35")
+
             metric = metric_class()
 
             test_output, test_target = self.get_summary_pairs()
@@ -38,10 +42,16 @@ class TestEvaluationMetrics(unittest.TestCase):
             print(score_dict)
             self.assertTrue(isinstance(score_dict, Dict))
             self.assertNotEqual(score_dict, {})
-            for key in score_dict:
-                self.assertTrue(type(score_dict[key]) is float)
-                self.assertTrue(0 <= score_dict[key])
-                self.assertTrue(score_dict[key] <= 100)
+
+            for k, v in score_dict.items():
+                self.assertTrue(isinstance(k, str) and isinstance(v, float))
+                # # TODO: add metric score range assertions
+                # self.assertTrue(self.range[0] <= score_dict[k])
+                # self.assertTrue(score_dict[k] <= self.range[1])
+
+            print_with_color(f"{metric_class.metric_name} test complete\n", "32")
+        
+        print_with_color(f"{'#'*10} Evaluation metrics test complete {'#'*10}", "32")
 
 
 if __name__ == '__main__':
