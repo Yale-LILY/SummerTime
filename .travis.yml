@@ -8,6 +8,7 @@ if: (type = push AND branch = master) OR (type = pull_request AND NOT branch =~ 
 
 # Install dependencies
 install:
+  - brew install mpich
   - pip install -r requirements.txt
   - python setup.py develop
   - python download.py
