@@ -6,9 +6,11 @@ python:
 # Only build if pushing to master or on pull requests without /no-ci/ specified
 if: (type = push AND branch = master) OR (type = pull_request AND NOT branch =~ /no-ci/)
 
+before_install:
+  - sudo apt install libopenmpi-dev
+
 # Install dependencies
 install:
-  - brew install mpich
   - pip install -r requirements.txt
   - python setup.py develop
   - python download.py
