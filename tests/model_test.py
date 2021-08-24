@@ -41,14 +41,15 @@ class TestModels(unittest.TestCase):
 
     def test_model_summarize(self):
         """
-        Test all supported models on instances from CNNDM or QMSumm datasets.
+        Test all supported models on instances from datasets.
         """
         print_with_color(f"{'#'*10} Testing all models... {'#'*10}\n", "35")
         all_models = list_all_models()
         for model_class, _ in all_models:
-            if model_class == PegasusModel:
-                # Temporarily skip Pegasus timeout
+            if model_class == PegasusModel or model_class == HMNetModel:
+                # TODO: Temporarily skip Pegasus (times out on Travis) and HMNet (requires large pre-trained model download + GPU)
                 continue
+
             print_with_color(f"Testing {model_class.model_name} model...", "35")
 
             if model_class == LexRankModel:
