@@ -17,3 +17,4 @@ sklearn
 py7zr==0.16.1
 mpi4py==3.0.3
 tqdm==4.49.0
+tensorboard==2.4.1

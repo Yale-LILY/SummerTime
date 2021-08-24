@@ -46,7 +46,7 @@ class TestModels(unittest.TestCase):
         print_with_color(f"{'#'*10} Testing all models... {'#'*10}\n", "35")
         all_models = list_all_models()
         for model_class, _ in all_models:
-            if model_class == PegasusModel or model_class == HMNetModel:
+            if model_class in [PegasusModel, HMNetModel]:
                 # TODO: Temporarily skip Pegasus (times out on Travis) and HMNet (requires large pre-trained model download + GPU)
                 continue
 

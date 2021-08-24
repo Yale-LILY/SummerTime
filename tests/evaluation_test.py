@@ -25,13 +25,10 @@ class TestEvaluationMetrics(unittest.TestCase):
         print_with_color(f"{'#'*10} Testing all evaluation metrics... {'#'*10}\n\n", "35")
 
         for metric_class in SUPPORTED_EVALUATION_METRICS:
-            if metric_class == Rouge or metric_class == RougeWe:
-                # Temporarily skip summ_eval backend metrics
+            if metric_class in [Rouge, RougeWe]:
+                # TODO: Temporarily skipping Rouge/RougeWE metrics to avoid local bug.
                 continue
 
-            # # TODO: Temporarily skipping Rouge/RougeWE metrics to avoid local bug.
-            # if metric_class in [Rouge, RougeWe]:
-            #     continue
             print_with_color(f"Testing {metric_class.metric_name}...", "35")
 
             metric = metric_class()
