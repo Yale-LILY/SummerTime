@@ -24,6 +24,8 @@ class TestEvaluationMetrics(unittest.TestCase):
     def test_evaluate(self):
         print_with_color(f"{'#'*10} Testing all evaluation metrics... {'#'*10}\n\n", "35")
 
+        num_eval_metrics = 0
+
         for metric_class in SUPPORTED_EVALUATION_METRICS:
             if metric_class in [Rouge, RougeWe]:
                 # TODO: Temporarily skipping Rouge/RougeWE metrics to avoid local bug.
@@ -47,8 +49,9 @@ class TestEvaluationMetrics(unittest.TestCase):
                 # self.assertTrue(score_dict[k] <= self.range[1])
 
             print_with_color(f"{metric_class.metric_name} test complete\n", "32")
+            num_eval_metrics += 1
         
-        print_with_color(f"{'#'*10} Evaluation metrics test complete {'#'*10}", "32")
+        print_with_color(f"{'#'*10} Evaluation metrics test complete ({num_eval_metrics} metrics) {'#'*10}", "32")
 
 
 if __name__ == '__main__':

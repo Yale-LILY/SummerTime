@@ -43,8 +43,12 @@ class TestModels(unittest.TestCase):
         """
         Test all supported models on instances from datasets.
         """
+
         print_with_color(f"{'#'*10} Testing all models... {'#'*10}\n", "35")
+
+        num_models = 0
         all_models = list_all_models()
+
         for model_class, _ in all_models:
             if model_class in [PegasusModel, HMNetModel]:
                 # TODO: Temporarily skip Pegasus (times out on Travis) and HMNet (requires large pre-trained model download + GPU)
@@ -80,8 +84,9 @@ class TestModels(unittest.TestCase):
                 self.validate_prediction(prediction, [test_src[0] * 5] if model_class == LongformerModel else test_src)
             
             print_with_color(f"{model_class.model_name} model test complete\n", "32")
+            num_models += 1
 
-        print_with_color(f"{'#'*10} test_model_summarize complete {'#'*10}\n", "32")
+        print_with_color(f"{'#'*10} test_model_summarize complete ({num_models} models) {'#'*10}\n", "32")
 
 
 if __name__ == '__main__':
