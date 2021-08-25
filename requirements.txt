@@ -22,4 +22,3 @@ tensorboard==2.4.1
 flake8
 pytest-flake8
 black
-pytest-black

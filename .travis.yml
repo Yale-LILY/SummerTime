@@ -23,6 +23,7 @@ install:
 
 # Scripts: tests
 script:
+  - pytest --flake8 --ignore=model/third_party/HMNet --ignore=tests --ignore=download.py --ignore=sandbox.py --ignore=setup.py --ignore=summertime.py
   - python tests/model_test.py
   - python tests/dataset_test.py
   - python tests/evaluation_test.py
