@@ -129,16 +129,18 @@ Or if you would like to run lint only on specific files:
 black path/to/specific/file.py
 flake8 path/to/specific/file.py
 ```
-Ensure that `black` reformats all changed files and that `flake8` does not print any warnings. If you would like to override any of the preferences or practices enforced by `black` or `flake8`, please leave a comment in your PR for any lines of code that generate warning or error logs. Do not directly edit linting config files such as `setup.cfg`.
+Ensure that `black` reformats all changed files and that `flake8` does not print any warnings. If you would like to override or ignore any of the preferences or practices enforced by `black` or `flake8`, please leave a comment in your PR for any lines of code that generate warning or error logs. Do not directly edit config files such as `setup.cfg`.
 
 See the [`black` docs](https://black.readthedocs.io/en/stable/index.html) and [`flake8` docs](https://flake8.pycqa.org/en/latest/user/index.html) for documentation on installation and advanced usage. In particular:
 - `black [file.py] --diff` to preview changes as diffs instead of directly making changes
 - `black [file.py] --check` to preview changes with status codes instead of directly making changes
 - `git diff -u | flake8 --diff` to only run `flake8` on working branch changes
 
+Note that our CI system's test suite will include invoking [`pytest --flake8`](https://pypi.org/project/pytest-flake8/) on all non-unittest and non-setup Python files, and zero error-level flake8 output is required for all tests to pass.
+
 
 ### Tests
-Our continuous integration system is provided through [Travis CI](https://travis-ci.org/). When any pull request is created or updated, the repository's unit tests will be run as build jobs on a Travis server for that pull request. Build jobs will either pass or fail within 5-20 minutes, and build statuses are visible on the Github UI and on Travis CI. Please ensure that the most recent commit in pull requests pass all checks (i.e. all Travis builds run to completion) before merging, or request a review. To skip a Travis build on any particular commit, append `[skip travis]` to the commit message (see [here](https://docs.travis-ci.com/user/customizing-the-build/#skipping-a-build)). Note that PRs with the substring `/no-ci/` anywhere in the branch name will not be built.
+Our continuous integration system is provided through [Travis CI](https://travis-ci.org/). When any pull request is created or updated, the repository's unit tests will be run as build jobs on a Travis server for that pull request. Build jobs will either pass or fail within 5-20 minutes, and build statuses are visible on the Github UI and Travis CI's dashboard. Please ensure that the most recent commit in pull requests pass all checks (i.e. all Travis builds run to completion) before merging, or request a review. To skip a Travis build on any particular commit, append `[skip travis]` to the commit message (see [here](https://docs.travis-ci.com/user/customizing-the-build/#skipping-a-build)). Note that PRs with the substring `/no-ci/` anywhere in the branch name will not be built.
 
 
 ## Contributors
