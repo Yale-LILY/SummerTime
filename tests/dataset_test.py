@@ -15,12 +15,13 @@ class TestDatasets(unittest.TestCase):
             self.assertTrue(isinstance(ins.source, list))
         else:
             self.assertTrue(isinstance(ins.source, list) or isinstance(ins.source, str))
-        self.assertTrue(isinstance(ins.summary, str))
         if is_query:
             self.assertTrue(isinstance(ins.query, str))
 
     def test_all_datasets(self):
         print_with_color(f"{'#' * 10} Testing all datasets... {'#' * 10}\n\n", "35")
+
+        num_datasets = 0
 
         for ds_cls in SUPPORTED_SUMM_DATASETS:
             # TODO: Temporarily skipping MLSumm (Gitlab: server-side login gating) and Arxiv (size/time)
@@ -49,8 +50,9 @@ class TestDatasets(unittest.TestCase):
                 self._test_instance(test_set[0], is_multi_document=ds.is_multi_document, is_dialogue=ds.is_dialogue_based)
             
             print_with_color(f"{ds.dataset_name} dataset test complete\n", "32")
+            num_datasets += 1
 
-        print_with_color(f"{'#' * 10} test_all_datasets {__name__} test complete {'#' * 10}", "32")
+        print_with_color(f"{'#' * 10} test_all_datasets {__name__} complete ({num_datasets} datasets) {'#' * 10}", "32")
 
 
 if __name__ == '__main__':
