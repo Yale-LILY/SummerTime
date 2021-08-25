@@ -22,7 +22,7 @@ class TestEvaluationMetrics(unittest.TestCase):
 
 
     def test_evaluate(self):
-        print_with_color(f"{'#'*10} Testing all evaluation metrics... {'#'*10}\n\n", "35")
+        print_with_color(f"{'#'*10} Testing all evaluation metrics... {'#'*10}\n", "35")
 
         num_eval_metrics = 0
 

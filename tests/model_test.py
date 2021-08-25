@@ -16,11 +16,12 @@ class TestModels(unittest.TestCase):
     single_doc_dataset = CnndmDataset()
     multi_doc_dataset = MultinewsDataset()
     query_based_dataset = PubmedqaDataset()
-    dialogue_based_dataset = SamsumDataset()
+    # # TODO: temporarily skipping HMNet, no dialogue-based dataset needed
+    # dialogue_based_dataset = SamsumDataset()
 
 
     def test_list_models(self):
-        print_with_color(f"{'#'*10} Testing test_list_models... {'#'*10}", "35")
+        print_with_color(f"{'#'*10} Testing test_list_models... {'#'*10}\n", "35")
         all_models = list_all_models()
         for model_class, model_description in all_models:
             print(f"{model_class} : {model_description}")
