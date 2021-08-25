@@ -10,7 +10,11 @@ from evaluation import SUPPORTED_EVALUATION_METRICS, Rouge, RougeWe
 
 from dataset.st_dataset import SummInstance, SummDataset
 from dataset import SUPPORTED_SUMM_DATASETS
-from dataset.non_huggingface_datasets import ScisummnetDataset, SummscreenDataset, ArxivDataset
+from dataset.non_huggingface_datasets import (
+    ScisummnetDataset,
+    SummscreenDataset,
+    ArxivDataset,
+)
 from dataset.huggingface_datasets import CnndmDataset, MlsumDataset
 
 from helpers import print_with_color, retrieve_random_test_instances
@@ -23,8 +27,9 @@ import re
 
 
 class IntegrationTests(unittest.TestCase):
-    
-    def get_prediction(self, model: SummModel, dataset: SummDataset, test_instances: List[SummInstance]) -> Tuple[Union[List[str], List[List[str]]], Union[List[str], List[List[str]]]]:
+    def get_prediction(
+        self, model: SummModel, dataset: SummDataset, test_instances: List[SummInstance]
+    ) -> Tuple[Union[List[str], List[List[str]]], Union[List[str], List[List[str]]]]:
         """
         Get summary prediction given model and dataset instances.
 
@@ -34,12 +39,18 @@ class IntegrationTests(unittest.TestCase):
         :returns Tuple containing summary list of summary predictions and targets corresponding to each instance in `test_instances`.
         """
 
-        src = [ins.source[0] for ins in test_instances] if isinstance(dataset, ScisummnetDataset) else [ins.source for ins in test_instances]
+        src = (
+            [ins.source[0] for ins in test_instances]
+            if isinstance(dataset, ScisummnetDataset)
+            else [ins.source for ins in test_instances]
+        )
         tgt = [ins.summary for ins in test_instances]
-        query = [ins.query for ins in test_instances] if dataset.is_query_based else None
+        query = (
+            [ins.query for ins in test_instances] if dataset.is_query_based else None
+        )
         prediction = model.summarize(src, query)
         return prediction, tgt
-    
+
     def get_eval_dict(self, metric: SummMetric, prediction: List[str], tgt: List[str]):
         """
         Run evaluation metric on summary prediction.
@@ -73,24 +84,41 @@ class IntegrationTests(unittest.TestCase):
             dataset = dataset_cls()
             if dataset.train_set is not None:
                 dataset_instances = list(dataset.train_set)
-                print(f"\n{dataset.dataset_name} has a training set of {len(dataset_instances)} examples")
-                print_with_color(f"Initializing all matching model pipelines for {dataset.dataset_name} dataset...", "35")
+                print(
+                    f"\n{dataset.dataset_name} has a training set of {len(dataset_instances)} examples"
+                )
+                print_with_color(
+                    f"Initializing all matching model pipelines for {dataset.dataset_name} dataset...",
+                    "35",
+                )
                 # matching_model_instances = assemble_model_pipeline(dataset_cls, list(filter(lambda m: m != PegasusModel, SUPPORTED_SUMM_MODELS)))
-                matching_model_instances = assemble_model_pipeline(dataset_cls, SUPPORTED_SUMM_MODELS)
+                matching_model_instances = assemble_model_pipeline(
+                    dataset_cls, SUPPORTED_SUMM_MODELS
+                )
                 for model, model_name in matching_model_instances:
-                    test_instances = retrieve_random_test_instances(dataset_instances=dataset_instances, num_instances=1)
-                    print_with_color(f"{'#' * 20} Testing: {dataset.dataset_name} dataset, {model_name} model {'#' * 20}", "35")
-                    prediction, tgt = self.get_prediction(model, dataset, test_instances)
+                    test_instances = retrieve_random_test_instances(
+                        dataset_instances=dataset_instances, num_instances=1
+                    )
+                    print_with_color(
+                        f"{'#' * 20} Testing: {dataset.dataset_name} dataset, {model_name} model {'#' * 20}",
+                        "35",
+                    )
+                    prediction, tgt = self.get_prediction(
+                        model, dataset, test_instances
+                    )
                     print(f"Prediction: {prediction}\nTarget: {tgt}\n")
                     for metric in evaluation_metrics:
                         print_with_color(f"{metric.metric_name} metric", "35")
                         score_dict = self.get_eval_dict(metric, prediction, tgt)
                         print(score_dict)
 
-                    print_with_color(f"{'#' * 20} Test for {dataset.dataset_name} dataset, {model_name} model COMPLETE {'#' * 20}\n\n", "32")
+                    print_with_color(
+                        f"{'#' * 20} Test for {dataset.dataset_name} dataset, {model_name} model COMPLETE {'#' * 20}\n\n",
+                        "32",
+                    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if len(sys.argv) > 2 or (len(sys.argv) == 2 and not re.match("^\d+$", sys.argv[1])):
         print("Usage: python tests/integration_test.py [seed]", file=sys.stderr)
         sys.exit(1)

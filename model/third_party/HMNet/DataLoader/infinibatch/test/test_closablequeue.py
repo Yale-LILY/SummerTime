@@ -4,7 +4,11 @@
 from threading import Thread
 import unittest
 
-from infinibatch.closablequeue import ClosableQueue, ClosedException
+from model.third_party.HMNet.DataLoader.infinibatch.infinibatch.closablequeue import (
+    ClosableQueue,
+    ClosedException,
+)
+
 
 class TestClosableQueue(unittest.TestCase):
     def setUp(self):
@@ -15,7 +19,7 @@ class TestClosableQueue(unittest.TestCase):
             self.queue.put(item)
         if close:
             self.queue.close()
-    
+
     def get_items(self, num_items):
         return [self.queue.get() for _ in range(num_items)]
 

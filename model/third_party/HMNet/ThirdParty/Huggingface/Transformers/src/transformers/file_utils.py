@@ -64,7 +64,9 @@ try:
     torch_cache_home = _get_torch_home()
 except ImportError:
     torch_cache_home = os.path.expanduser(
-        os.getenv("TORCH_HOME", os.path.join(os.getenv("XDG_CACHE_HOME", "~/.cache"), "torch"))
+        os.getenv(
+            "TORCH_HOME", os.path.join(os.getenv("XDG_CACHE_HOME", "~/.cache"), "torch")
+        )
     )
 default_cache_path = os.path.join(torch_cache_home, "transformers")
 
@@ -72,14 +74,20 @@ try:
     from pathlib import Path
 
     PYTORCH_PRETRAINED_BERT_CACHE = Path(
-        os.getenv("PYTORCH_TRANSFORMERS_CACHE", os.getenv("PYTORCH_PRETRAINED_BERT_CACHE", default_cache_path))
+        os.getenv(
+            "PYTORCH_TRANSFORMERS_CACHE",
+            os.getenv("PYTORCH_PRETRAINED_BERT_CACHE", default_cache_path),
+        )
     )
 except (AttributeError, ImportError):
     PYTORCH_PRETRAINED_BERT_CACHE = os.getenv(
-        "PYTORCH_TRANSFORMERS_CACHE", os.getenv("PYTORCH_PRETRAINED_BERT_CACHE", default_cache_path)
+        "PYTORCH_TRANSFORMERS_CACHE",
+        os.getenv("PYTORCH_PRETRAINED_BERT_CACHE", default_cache_path),
     )
 
-PYTORCH_TRANSFORMERS_CACHE = PYTORCH_PRETRAINED_BERT_CACHE  # Kept for backward compatibility
+PYTORCH_TRANSFORMERS_CACHE = (
+    PYTORCH_PRETRAINED_BERT_CACHE  # Kept for backward compatibility
+)
 TRANSFORMERS_CACHE = PYTORCH_PRETRAINED_BERT_CACHE  # Kept for backward compatibility
 
 WEIGHTS_NAME = "pytorch_model.bin"
@@ -116,7 +124,9 @@ def add_start_docstrings(*docstr):
 def add_start_docstrings_to_callable(*docstr):
     def docstring_decorator(fn):
         class_name = ":class:`~transformers.{}`".format(fn.__qualname__.split(".")[0])
-        intro = "   The {} forward method, overrides the :func:`__call__` special method.".format(class_name)
+        intro = "   The {} forward method, overrides the :func:`__call__` special method.".format(
+            class_name
+        )
         note = r"""
 
     .. note::
@@ -125,7 +135,12 @@ def add_start_docstrings_to_callable(*docstr):
         instead of this since the former takes care of running the
         pre and post processing steps while the latter silently ignores them.
         """
-        fn.__doc__ = intro + note + "".join(docstr) + (fn.__doc__ if fn.__doc__ is not None else "")
+        fn.__doc__ = (
+            intro
+            + note
+            + "".join(docstr)
+            + (fn.__doc__ if fn.__doc__ is not None else "")
+        )
         return fn
 
     return docstring_decorator
@@ -258,7 +273,9 @@ def cached_path(
         raise EnvironmentError("file {} not found".format(url_or_filename))
     else:
         # Something unknown
-        raise ValueError("unable to parse {} as a URL or as a local path".format(url_or_filename))
+        raise ValueError(
+            "unable to parse {} as a URL or as a local path".format(url_or_filename)
+        )
 
     if extract_compressed_file:
         if not is_zipfile(output_path) and not tarfile.is_tarfile(output_path):
@@ -270,7 +287,11 @@ def cached_path(
         output_extract_dir_name = output_file.replace(".", "-") + "-extracted"
         output_path_extracted = os.path.join(output_dir, output_extract_dir_name)
 
-        if os.path.isdir(output_path_extracted) and os.listdir(output_path_extracted) and not force_extract:
+        if (
+            os.path.isdir(output_path_extracted)
+            and os.listdir(output_path_extracted)
+            and not force_extract
+        ):
             return output_path_extracted
 
         # Prevent parallel extractions
@@ -287,7 +308,9 @@ def cached_path(
                 tar_file.extractall(output_path_extracted)
                 tar_file.close()
             else:
-                raise EnvironmentError("Archive format of {} could not be identified".format(output_path))
+                raise EnvironmentError(
+                    "Archive format of {} could not be identified".format(output_path)
+                )
 
         return output_path_extracted
 
@@ -408,7 +431,9 @@ def get_from_cache(
             etag = s3_etag(url, proxies=proxies)
         else:
             try:
-                response = requests.head(url, allow_redirects=True, proxies=proxies, timeout=etag_timeout)
+                response = requests.head(
+                    url, allow_redirects=True, proxies=proxies, timeout=etag_timeout
+                )
                 if response.status_code == 200:
                     etag = response.headers.get("ETag")
             except (EnvironmentError, requests.exceptions.Timeout):
@@ -467,21 +492,35 @@ def get_from_cache(
             else:
                 resume_size = 0
         else:
-            temp_file_manager = partial(tempfile.NamedTemporaryFile, dir=cache_dir, delete=False)
+            temp_file_manager = partial(
+                tempfile.NamedTemporaryFile, dir=cache_dir, delete=False
+            )
             resume_size = 0
 
         # Download to temporary file, then copy to cache dir once finished.
         # Otherwise you get corrupt cache entries if the download gets interrupted.
         with temp_file_manager() as temp_file:
-            logger.info("%s not found in cache or force_download set to True, downloading to %s", url, temp_file.name)
+            logger.info(
+                "%s not found in cache or force_download set to True, downloading to %s",
+                url,
+                temp_file.name,
+            )
 
             # GET file object
             if url.startswith("s3://"):
                 if resume_download:
-                    logger.warn('Warning: resumable downloads are not implemented for "s3://" urls')
+                    logger.warn(
+                        'Warning: resumable downloads are not implemented for "s3://" urls'
+                    )
                 s3_get(url, temp_file, proxies=proxies)
             else:
-                http_get(url, temp_file, proxies=proxies, resume_size=resume_size, user_agent=user_agent)
+                http_get(
+                    url,
+                    temp_file,
+                    proxies=proxies,
+                    resume_size=resume_size,
+                    user_agent=user_agent,
+                )
 
         logger.info("storing %s in cache at %s", url, cache_path)
         os.rename(temp_file.name, cache_path)

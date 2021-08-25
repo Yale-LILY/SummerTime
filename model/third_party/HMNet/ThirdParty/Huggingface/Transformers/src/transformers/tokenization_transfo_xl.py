@@ -45,7 +45,10 @@ if is_torch_available():
 logger = logging.getLogger(__name__)
 
 VOCAB_FILES_NAMES = {"pretrained_vocab_file": "vocab.bin", "vocab_file": "vocab.txt"}
-VOCAB_FILES_NAMES_FAST = {"pretrained_vocab_file": "vocab.json", "vocab_file": "vocab.json"}
+VOCAB_FILES_NAMES_FAST = {
+    "pretrained_vocab_file": "vocab.json",
+    "vocab_file": "vocab.json",
+}
 
 PRETRAINED_VOCAB_FILES_MAP = {
     "pretrained_vocab_file": {
@@ -97,7 +100,10 @@ class TransfoXLTokenizer(PreTrainedTokenizer):
         **kwargs
     ):
         super().__init__(
-            unk_token=unk_token, eos_token=eos_token, additional_special_tokens=additional_special_tokens, **kwargs
+            unk_token=unk_token,
+            eos_token=eos_token,
+            additional_special_tokens=additional_special_tokens,
+            **kwargs,
         )
 
         self.max_len_single_sentence = (
@@ -120,8 +126,12 @@ class TransfoXLTokenizer(PreTrainedTokenizer):
         self.vocab_file = vocab_file
         self.never_split = never_split
         self.punctuation_symbols = '!"#$%&()*+,-./\:;<=>?@[\\]^_`{|}~'  # noqa: W605
-        self.punction_without_space_before_pattern = re.compile(r"[^\s][{}]".format(self.punctuation_symbols))
-        self.punctuation_with_space_around_pattern = self._compile_space_around_punctuation_pattern()
+        self.punction_without_space_before_pattern = re.compile(
+            r"[^\s][{}]".format(self.punctuation_symbols)
+        )
+        self.punctuation_with_space_around_pattern = (
+            self._compile_space_around_punctuation_pattern()
+        )
 
         try:
             if pretrained_vocab_file is not None:
@@ -147,7 +157,9 @@ class TransfoXLTokenizer(PreTrainedTokenizer):
     def _compile_space_around_punctuation_pattern(self):
         look_ahead_for_special_token = "(?=[{}])".format(self.punctuation_symbols)
         look_ahead_to_match_all_except_space = "(?=[^\s])"  # noqa: W605
-        return re.compile(r"" + look_ahead_for_special_token + look_ahead_to_match_all_except_space)
+        return re.compile(
+            r"" + look_ahead_for_special_token + look_ahead_to_match_all_except_space
+        )
 
     def count_file(self, path, verbose=False, add_eos=False):
         if verbose:
@@ -167,7 +179,7 @@ class TransfoXLTokenizer(PreTrainedTokenizer):
 
     def count_sents(self, sents, verbose=False):
         """
-            sents : a list of sentences, each a list of tokenized symbols
+        sents : a list of sentences, each a list of tokenized symbols
         """
         if verbose:
             logger.info("counting {} sents ...".format(len(sents)))
@@ -209,7 +221,9 @@ class TransfoXLTokenizer(PreTrainedTokenizer):
         )
 
         if os.path.isdir(vocab_path):
-            vocab_file = os.path.join(vocab_path, VOCAB_FILES_NAMES["pretrained_vocab_file"])
+            vocab_file = os.path.join(
+                vocab_path, VOCAB_FILES_NAMES["pretrained_vocab_file"]
+            )
         else:
             vocab_file = vocab_path
         torch.save(self.__dict__, vocab_file)
@@ -221,7 +235,11 @@ class TransfoXLTokenizer(PreTrainedTokenizer):
             self._build_from_file(self.vocab_file)
             logger.info("final vocab size {}".format(len(self)))
         else:
-            logger.info("building vocab with min_freq={}, max_size={}".format(self.min_freq, self.max_size))
+            logger.info(
+                "building vocab with min_freq={}, max_size={}".format(
+                    self.min_freq, self.max_size
+                )
+            )
             self.idx2sym = []
             self.sym2idx = OrderedDict()
 
@@ -233,9 +251,15 @@ class TransfoXLTokenizer(PreTrainedTokenizer):
                     break
                 self.add_symbol(sym)
 
-            logger.info("final vocab size {} from {} unique tokens".format(len(self), len(self.counter)))
+            logger.info(
+                "final vocab size {} from {} unique tokens".format(
+                    len(self), len(self.counter)
+                )
+            )
 
-    def encode_file(self, path, ordered=False, verbose=False, add_eos=True, add_double_eos=False):
+    def encode_file(
+        self, path, ordered=False, verbose=False, add_eos=True, add_double_eos=False
+    ):
         if verbose:
             logger.info("encoding file {} ...".format(path))
         assert os.path.exists(path)
@@ -244,7 +268,9 @@ class TransfoXLTokenizer(PreTrainedTokenizer):
             for idx, line in enumerate(f):
                 if verbose and idx > 0 and idx % 500000 == 0:
                     logger.info("    line {}".format(idx))
-                symbols = self.tokenize(line, add_eos=add_eos, add_double_eos=add_double_eos)
+                symbols = self.tokenize(
+                    line, add_eos=add_eos, add_double_eos=add_double_eos
+                )
                 encoded.append(self.convert_to_tensor(symbols))
 
         if ordered:
@@ -283,7 +309,7 @@ class TransfoXLTokenizer(PreTrainedTokenizer):
         return self.idx2sym[idx]
 
     def _convert_token_to_id(self, sym):
-        """ Converts a token (str) in an id using the vocab. """
+        """Converts a token (str) in an id using the vocab."""
         if sym in self.sym2idx:
             return self.sym2idx[sym]
         else:
@@ -297,10 +323,12 @@ class TransfoXLTokenizer(PreTrainedTokenizer):
             elif "<UNK>" in self.sym2idx:
                 return self.sym2idx["<UNK>"]
             else:
-                raise ValueError("Token not in vocabulary and no <unk> token in vocabulary for replacement")
+                raise ValueError(
+                    "Token not in vocabulary and no <unk> token in vocabulary for replacement"
+                )
 
     def convert_tokens_to_string(self, tokens):
-        """ Converts a sequence of tokens (string) in a single string. """
+        """Converts a sequence of tokens (string) in a single string."""
         out_string = " ".join(tokens).strip()
         return out_string
 
@@ -336,7 +364,7 @@ class TransfoXLTokenizer(PreTrainedTokenizer):
     def prepare_for_tokenization(self, text, **kwargs):
         # add spaces before punctuation symbols as should be done in transfo-xl
         text = self.punctuation_with_space_around_pattern.sub(r" ", text)
-        
+
         # if "add_space_before_punct_symbol" in kwargs and kwargs["add_space_before_punct_symbol"]:
         #     text = self.punctuation_with_space_around_pattern.sub(r" ", text)
         # elif self.punction_without_space_before_pattern.search(text):
@@ -383,14 +411,19 @@ class _TransfoXLDelimiterLookupTokenizer(BaseTokenizer):
             normalizer += [Lowercase()]
 
         if len(normalizer) > 0:
-            tokenizer.normalizer = Sequence(normalizer) if len(normalizer) > 1 else normalizer[0]
+            tokenizer.normalizer = (
+                Sequence(normalizer) if len(normalizer) > 1 else normalizer[0]
+            )
 
         # Setup the splitter
-        tokenizer.pre_tokenizer = CharDelimiterSplit(delimiter) if delimiter else WhitespaceSplit()
+        tokenizer.pre_tokenizer = (
+            CharDelimiterSplit(delimiter) if delimiter else WhitespaceSplit()
+        )
 
         if add_double_eos:
             tokenizer.post_processor = BertProcessing(
-                (eos_token, tokenizer.token_to_id(eos_token)), (eos_token, tokenizer.token_to_id(eos_token))
+                (eos_token, tokenizer.token_to_id(eos_token)),
+                (eos_token, tokenizer.token_to_id(eos_token)),
             )
 
         parameters = {
@@ -405,9 +438,16 @@ class _TransfoXLDelimiterLookupTokenizer(BaseTokenizer):
 
         super().__init__(tokenizer, parameters)
 
-    def encode_batch(self, sequences: List[Union[str, Tuple[str, str]]]) -> List[Encoding]:
+    def encode_batch(
+        self, sequences: List[Union[str, Tuple[str, str]]]
+    ) -> List[Encoding]:
         return super().encode_batch(
-            [seq.strip() if isinstance(seq, str) else (seq[0].strip(), seq[1].strip()) for seq in sequences]
+            [
+                seq.strip()
+                if isinstance(seq, str)
+                else (seq[0].strip(), seq[1].strip())
+                for seq in sequences
+            ]
         )
 
     def encode(self, sequence: str, pair: Optional[str] = None) -> Encoding:
@@ -468,7 +508,7 @@ class TransfoXLTokenizerFast(PreTrainedTokenizerFast):
 class LMOrderedIterator(object):
     def __init__(self, data, bsz, bptt, device="cpu", ext_len=None):
         """
-            data -- LongTensor -- the LongTensor is strictly ordered
+        data -- LongTensor -- the LongTensor is strictly ordered
         """
         self.bsz = bsz
         self.bptt = bptt
@@ -527,7 +567,7 @@ class LMOrderedIterator(object):
 class LMShuffledIterator(object):
     def __init__(self, data, bsz, bptt, device="cpu", ext_len=None, shuffle=False):
         """
-            data -- list[LongTensor] -- there is no order among the LongTensors
+        data -- list[LongTensor] -- there is no order among the LongTensors
         """
         self.data = data
 
@@ -540,7 +580,11 @@ class LMShuffledIterator(object):
 
     def get_sent_stream(self):
         # index iterator
-        epoch_indices = np.random.permutation(len(self.data)) if self.shuffle else np.array(range(len(self.data)))
+        epoch_indices = (
+            np.random.permutation(len(self.data))
+            if self.shuffle
+            else np.array(range(len(self.data)))
+        )
 
         # sentence iterator
         for idx in epoch_indices:
@@ -572,8 +616,12 @@ class LMShuffledIterator(object):
                         # number of new tokens to fill in
                         n_new = min(len(streams[i]) - 1, self.bptt - n_filled)
                         # first n_retain tokens are retained from last batch
-                        data[n_retain + n_filled : n_retain + n_filled + n_new, i] = streams[i][:n_new]
-                        target[n_filled : n_filled + n_new, i] = streams[i][1 : n_new + 1]
+                        data[
+                            n_retain + n_filled : n_retain + n_filled + n_new, i
+                        ] = streams[i][:n_new]
+                        target[n_filled : n_filled + n_new, i] = streams[i][
+                            1 : n_new + 1
+                        ]
                         streams[i] = streams[i][n_new:]
                         n_filled += n_new
                 except StopIteration:
@@ -602,7 +650,9 @@ class LMShuffledIterator(object):
 
 
 class LMMultiFileIterator(LMShuffledIterator):
-    def __init__(self, paths, vocab, bsz, bptt, device="cpu", ext_len=None, shuffle=False):
+    def __init__(
+        self, paths, vocab, bsz, bptt, device="cpu", ext_len=None, shuffle=False
+    ):
 
         self.paths = paths
         self.vocab = vocab
@@ -635,11 +685,15 @@ class LMMultiFileIterator(LMShuffledIterator):
 
 class TransfoXLCorpus(object):
     @classmethod
-    def from_pretrained(cls, pretrained_model_name_or_path, cache_dir=None, *inputs, **kwargs):
+    def from_pretrained(
+        cls, pretrained_model_name_or_path, cache_dir=None, *inputs, **kwargs
+    ):
         """
         Instantiate a pre-processed corpus.
         """
-        vocab = TransfoXLTokenizer.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
+        vocab = TransfoXLTokenizer.from_pretrained(
+            pretrained_model_name_or_path, *inputs, **kwargs
+        )
         if pretrained_model_name_or_path in PRETRAINED_CORPUS_ARCHIVE_MAP:
             corpus_file = PRETRAINED_CORPUS_ARCHIVE_MAP[pretrained_model_name_or_path]
         else:
@@ -662,7 +716,11 @@ class TransfoXLCorpus(object):
         if resolved_corpus_file == corpus_file:
             logger.info("loading corpus file {}".format(corpus_file))
         else:
-            logger.info("loading corpus file {} from cache at {}".format(corpus_file, resolved_corpus_file))
+            logger.info(
+                "loading corpus file {} from cache at {}".format(
+                    corpus_file, resolved_corpus_file
+                )
+            )
 
         # Instantiate tokenizer.
         corpus = cls(*inputs, **kwargs)
@@ -707,17 +765,33 @@ class TransfoXLCorpus(object):
         self.vocab.build_vocab()
 
         if self.dataset in ["ptb", "wt2", "wt103"]:
-            self.train = self.vocab.encode_file(os.path.join(path, "train.txt"), ordered=True)
-            self.valid = self.vocab.encode_file(os.path.join(path, "valid.txt"), ordered=True)
-            self.test = self.vocab.encode_file(os.path.join(path, "test.txt"), ordered=True)
+            self.train = self.vocab.encode_file(
+                os.path.join(path, "train.txt"), ordered=True
+            )
+            self.valid = self.vocab.encode_file(
+                os.path.join(path, "valid.txt"), ordered=True
+            )
+            self.test = self.vocab.encode_file(
+                os.path.join(path, "test.txt"), ordered=True
+            )
         elif self.dataset in ["enwik8", "text8"]:
-            self.train = self.vocab.encode_file(os.path.join(path, "train.txt"), ordered=True, add_eos=False)
-            self.valid = self.vocab.encode_file(os.path.join(path, "valid.txt"), ordered=True, add_eos=False)
-            self.test = self.vocab.encode_file(os.path.join(path, "test.txt"), ordered=True, add_eos=False)
+            self.train = self.vocab.encode_file(
+                os.path.join(path, "train.txt"), ordered=True, add_eos=False
+            )
+            self.valid = self.vocab.encode_file(
+                os.path.join(path, "valid.txt"), ordered=True, add_eos=False
+            )
+            self.test = self.vocab.encode_file(
+                os.path.join(path, "test.txt"), ordered=True, add_eos=False
+            )
         elif self.dataset == "lm1b":
             self.train = train_paths
-            self.valid = self.vocab.encode_file(os.path.join(path, "valid.txt"), ordered=False, add_double_eos=True)
-            self.test = self.vocab.encode_file(os.path.join(path, "test.txt"), ordered=False, add_double_eos=True)
+            self.valid = self.vocab.encode_file(
+                os.path.join(path, "valid.txt"), ordered=False, add_double_eos=True
+            )
+            self.test = self.vocab.encode_file(
+                os.path.join(path, "test.txt"), ordered=False, add_double_eos=True
+            )
 
     def get_iterator(self, split, *args, **kwargs):
         if split == "train":

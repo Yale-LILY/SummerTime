@@ -1,7 +1,14 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT license.
 
-from .iterators import create_source_iterator, SelectManyIterator, PrefetchIterator, BufferedShuffleIterator, BlockwiseShuffleIterator, MapIterator
+from .iterators import (
+    create_source_iterator,
+    SelectManyIterator,
+    PrefetchIterator,
+    BufferedShuffleIterator,
+    BlockwiseShuffleIterator,
+    MapIterator,
+)
 from typing import List, Union, Iterable, Iterator, Callable, Any, Optional, Dict
 import os, sys
 
@@ -10,19 +17,26 @@ This module contains common datasets, which are implemented as convenience funct
 """
 
 
-def bump_seed(seed: Optional[int], step = 1):
+def bump_seed(seed: Optional[int], step=1):
     """
     Helper to bump a random seed if not None.
     """
     return None if seed is None else seed + 1
 
 
-def chunked_dataset_iterator(chunk_refs: List, read_chunk_fn: Callable[[Any], Iterator], buffer_size: int,
-                             train: bool=True,
-                             seed: Optional[int]=None, shuffle: bool=True, use_windowed: bool=False,
-                             transform: Callable[[Any],Any]=None,
-                             prefetch: bool=True,
-                             num_instances: int=1, instance_rank: int=0):
+def chunked_dataset_iterator(
+    chunk_refs: List,
+    read_chunk_fn: Callable[[Any], Iterator],
+    buffer_size: int,
+    train: bool = True,
+    seed: Optional[int] = None,
+    shuffle: bool = True,
+    use_windowed: bool = False,
+    transform: Callable[[Any], Any] = None,
+    prefetch: bool = True,
+    num_instances: int = 1,
+    instance_rank: int = 0,
+):
     """
     Dataset reading data from gzipped chunks.
 
@@ -48,11 +62,20 @@ def chunked_dataset_iterator(chunk_refs: List, read_chunk_fn: Callable[[Any], It
         use_windowed: temporary option to switch back to the WindowedShuffleIterator (default False). Will go away once shown that we don't need it anymore.
     """
     if not train and shuffle:
-        raise ValueError('shuffling is not supported when train=False')
+        raise ValueError("shuffling is not supported when train=False")
     # set up the chunk reader
-    chunk_refs = create_source_iterator(chunk_refs, train=train, seed=seed, shuffle=shuffle, num_instances=num_instances, instance_rank=instance_rank)
+    chunk_refs = create_source_iterator(
+        chunk_refs,
+        train=train,
+        seed=seed,
+        shuffle=shuffle,
+        num_instances=num_instances,
+        instance_rank=instance_rank,
+    )
     # set up the item reader
-    samples = SelectManyIterator(source_iterator=chunk_refs, collection_selector=read_chunk_fn)
+    samples = SelectManyIterator(
+        source_iterator=chunk_refs, collection_selector=read_chunk_fn
+    )
     # wrap the I/O operation in a prefetch iterator
     if prefetch:
         samples = PrefetchIterator(samples, buffer_size)

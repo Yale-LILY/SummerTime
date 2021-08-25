@@ -1,4 +1,6 @@
 README.md
+pyproject.toml
+setup.cfg
 setup.py
 summertime.py
 SummerTime.egg-info/PKG-INFO
@@ -38,9 +40,11 @@ model/single_doc/lexrank_model.py
 model/single_doc/longformer_model.py
 model/single_doc/pegasus_model.py
 model/single_doc/textrank_model.py
+pipeline/__init__.py
 tests/__init__.py
 tests/dataset_test.py
 tests/demo_test.py
 tests/evaluation_test.py
+tests/helpers.py
 tests/integration_test.py
 tests/model_test.py

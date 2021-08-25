@@ -21,7 +21,8 @@ class ClosableQueue:
         - put always raises a ClosedException
         - get returns an item if the queue is not empty and otherwise raises a ClosedException
     """
-    def __init__(self, maxsize: int=1000):
+
+    def __init__(self, maxsize: int = 1000):
         self._maxsize = maxsize
         self._queue = deque()
         self._mutex = Lock()
@@ -32,26 +33,34 @@ class ClosableQueue:
     def put(self, item):
         with self._not_full:
             if self._closed:
-                raise ClosedException('This queue has been closed, no more items can be added.')
+                raise ClosedException(
+                    "This queue has been closed, no more items can be added."
+                )
             while len(self._queue) >= self._maxsize:
                 self._not_full.wait()
                 if self._closed:
-                    raise ClosedException('This queue has been closed, no more items can be added.')
+                    raise ClosedException(
+                        "This queue has been closed, no more items can be added."
+                    )
             self._queue.append(item)
             self._not_empty.notify()
-        
+
     def get(self):
         with self._not_empty:
             if self._closed and len(self._queue) == 0:
-                raise ClosedException('This queue has been closed and is empty, no more items can be retrieved.')
+                raise ClosedException(
+                    "This queue has been closed and is empty, no more items can be retrieved."
+                )
             while len(self._queue) == 0:
                 self._not_empty.wait()
                 if self._closed and len(self._queue) == 0:
-                    raise ClosedException('This queue has been closed and is empty, no more items can be retrieved.')
+                    raise ClosedException(
+                        "This queue has been closed and is empty, no more items can be retrieved."
+                    )
             item = self._queue.popleft()
             self._not_full.notify()
         return item
-            
+
     def close(self):
         with self._mutex:
             self._closed = True

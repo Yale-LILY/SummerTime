@@ -9,8 +9,13 @@ please replicate the `addTests` call for the iterators module below.
 """
 
 import doctest
-import infinibatch.iterators
+import model.third_party.HMNet.DataLoader.infinibatch.infinibatch.iterators
+
 
 def load_tests(loader, tests, ignore):
-    tests.addTests(doctest.DocTestSuite(infinibatch.iterators))
+    tests.addTests(
+        doctest.DocTestSuite(
+            model.third_party.HMNet.DataLoader.infinibatch.infinibatch.iterators
+        )
+    )
     return tests
