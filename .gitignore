@@ -140,5 +140,11 @@ cython_debug/
 # defined by Ansong
 .idea
 
-# cfg
+# # cfg
 # setup.cfg
+
+# HMNet run confs
+model/dialogue/hmnet/config/dialogue.conf_conf~/run_*/*
+model/dialogue/hmnet/ExampleRawData/meeting_summarization/**/*.jsonl.gz
+
+sandbox.py

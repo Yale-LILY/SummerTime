@@ -1,0 +1,98 @@
+##################
+# Trainer settings
+##################
+
+MODEL	MeetingNet_Transformer
+TASK	HMNet
+CRITERION MLECriterion
+
+SEED    1033
+
+MAX_NUM_EPOCHS	20
+EVAL_PER_UPDATE_NUM	10
+UPDATES_PER_EPOCH 20
+
+# The actuall learning rate will be multiplied with the number of GPUs
+OPTIMIZER	RAdam
+START_LEARNING_RATE	1e-3
+LR_SCHEDULER	LnrWrmpInvSqRtDcyScheduler
+WARMUP_STEPS	16000
+WARMUP_INIT_LR  1e-4
+WARMUP_END_LR 1e-3
+
+# The actuall start learning rate equals START_LEARNING_RATE * GRADIENT_ACCUMULATE_STEP
+# Model will be updated after every MINI_BATCH * GRADIENT_ACCUMULATE_STEP samples
+GRADIENT_ACCUMULATE_STEP	5
+
+GRAD_CLIPPING    2
+
+##################
+# Task settings
+##################
+
+# This is the relative path to the directory where this conf file locates
+# not a good idea to put data with code
+# Are we able to provide a list of dir paths in TRAIN_FILE?
+USE_REL_DATA_PATH
+TRAIN_FILE	../ExampleRawData/meeting_summarization/ICSI_proprec/train_icsi.json
+DEV_FILE	../ExampleRawData/meeting_summarization/ICSI_proprec/valid_icsi.json
+TEST_FILE	../ExampleRawData/meeting_summarization/ICSI_proprec/test_icsi.json
+ROLE_DICT_FILE  ../ExampleRawData/meeting_summarization/role_dict_ext.json
+
+MINI_BATCH	1
+MAX_PADDING_RATIO	1
+BATCH_READ_AHEAD	10
+DOC_SHUFFLE_BUF_SIZE	10
+SAMPLE_SHUFFLE_BUFFER_SIZE	10
+BATCH_SHUFFLE_BUFFER_SIZE	10
+
+MAX_TRANSCRIPT_WORD 8300
+MAX_SENT_LEN 30
+MAX_SENT_NUM 300
+
+##################
+# Model settings
+##################
+
+DROPOUT	0.1
+VOCAB_DIM	512
+ROLE_SIZE   32
+ROLE_DIM	16
+POS_DIM 16
+ENT_DIM 16
+
+USE_ROLE
+USE_POSENT
+
+USE_BOS_TOKEN
+USE_EOS_TOKEN
+
+TRANSFORMER_EMBED_DROPOUT	0.1
+TRANSFORMER_RESIDUAL_DROPOUT	0.1
+TRANSFORMER_ATTENTION_DROPOUT	0.1
+TRANSFORMER_LAYER	6
+TRANSFORMER_HEAD	8
+TRANSFORMER_POS_DISCOUNT	80
+
+PRE_TOKENIZER	TransfoXLTokenizer
+PRE_TOKENIZER_PATH  ../ExampleInitModel/transfo-xl-wt103
+PYLEARN_MODEL <relative_path_to_pretrained_model_folder>
+# e.g. PYLEARN_MODEL conf_hmnet_ICSI_conf~/run_1/26800
+# PYLEARN_MODEL ../ExampleInitModel/ICSI-finetuned
+
+##################
+# Tokenizer settings
+##################
+
+EXTRA_IDS	1000
+
+##################
+# Decoding settings
+##################
+
+BEAM_WIDTH      6
+EVAL_TOKENIZED
+EVAL_LOWERCASE
+MAX_GEN_LENGTH  512
+MIN_GEN_LENGTH  280
+NO_REPEAT_NGRAM_SIZE 3

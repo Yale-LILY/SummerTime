@@ -108,6 +108,7 @@ import dataset.stdatasets as st_data
 
 
 ## For contributors
+
 ### Pull requests
 Create a pull request and name it `[your_gh_username]/[your_branch_name]`. If needed, resolve your own branch's merge conflicts with `main`. Do not push directly to `main`.
 
@@ -134,3 +135,11 @@ See the [`black` docs](https://black.readthedocs.io/en/stable/index.html) and [`
 - `black [file.py] --diff` to preview changes as diffs instead of directly making changes
 - `black [file.py] --check` to preview changes with status codes instead of directly making changes
 - `git diff -u | flake8 --diff` to only run `flake8` on working branch changes
+
+
+### Tests
+Our continuous integration system is provided through [Travis CI](https://travis-ci.org/). When any pull request is created or updated, the repository's unit tests will be run as build jobs on a Travis server for that pull request. Build jobs will either pass or fail within 5-20 minutes, and build statuses are visible on the Github UI and on Travis CI. Please ensure that the most recent commit in pull requests pass all checks (i.e. all Travis builds run to completion) before merging, or request a review. To skip a Travis build on any particular commit, append `[skip travis]` to the commit message (see [here](https://docs.travis-ci.com/user/customizing-the-build/#skipping-a-build)). Note that PRs with the substring `/no-ci/` anywhere in the branch name will not be built.
+
+
+## Contributors
+This repository is built by the [LILY Lab](https://yale-lily.github.io/) at Yale University, led by Prof. [Dragomir Radev](https://cpsc.yale.edu/people/dragomir-radev). The main contributors are [Ansong Ni](https://niansong1996.github.io), Zhangir Azerbayev, Troy Feng, Murori Mutuma and Yusen Zhang (Penn State). For comments and question, please open an issue.

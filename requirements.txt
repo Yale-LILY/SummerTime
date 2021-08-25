@@ -11,3 +11,10 @@ sentencepiece==0.1.95
 summ_eval
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0-py3-none-any.whl
 jupyter
+gdown
+gensim==3.8.3
+sklearn
+py7zr==0.16.1
+mpi4py==3.0.3
+tqdm==4.49.0
+tensorboard==2.4.1

@@ -1,0 +1,10 @@
+[
+    {
+        "source":
+        {
+            "dataset": "../ExampleRawData/meeting_summarization/ICSI_proprec/dev/"
+        },
+        "task": "meeting",
+        "name": "icsi"
+    }
+]

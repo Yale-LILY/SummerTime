@@ -1,0 +1,10 @@
+[
+    {
+        "source":
+        {
+            "dataset": "../ExampleRawData/meeting_summarization/AMI_proprec/dev/"
+        },
+        "task": "meeting",
+        "name": "ami"
+    }
+]
