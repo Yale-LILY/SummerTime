@@ -18,7 +18,7 @@ conda activate summertime
 ```bash
 pip install -r requirements.txt
 ```
-# Setup ROUGE
+#### Setup ROUGE
 ```bash
 !export ROUGE_HOME=/usr/local/lib/python3.7/dist-packages/summ_eval/ROUGE-1.5.5/
 !pip install -U  git+https://github.com/bheinzerling/pyrouge.git
@@ -52,11 +52,17 @@ jupyter notebook demo.ipynb
 ### Supported Models
 SummerTime supports different models (e.g., TextRank, BART, Longformer) as well as model wrappers for more complex summariztion tasks (e.g., JointModel for multi-doc summarzation, BM25 retrieval for query-based summarization).
 
+
 Single doc models - BartModel, LexRankModel, LongformerModel, PegasusModel, TextRankModel
+
 Multi doc models - MultiDocJointModel, MultiDocSeparateModel
+
 Dialogue model - HMNetModel
+
 Query based model - TFIDFSummModel, BM25SummModel
+
 Default model - summarizer
+
 
 Import and initialization:
 ```python
