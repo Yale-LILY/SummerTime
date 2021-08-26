@@ -51,7 +51,6 @@ def radar_factory(num_vars, frame='circle'):
 
         def _close_line(self, line):
             x, y = line.get_data()
-            # FIXME: markers at x[0], y[0] get doubled-up
             if x[0] != x[-1]:
                 x = np.append(x, x[0])
                 y = np.append(y, y[0])
@@ -94,22 +93,11 @@ def radar_factory(num_vars, frame='circle'):
 
 
 
-"""
-Example data format:
-```
-data = [
-        ['bleu', 'rouge_1', 'rouge_2', 'rouge_l', 'meteor', 'bert_score'], 
-        [
-            [0.88, 0.01, 0.03, 0.03, 0.00, 0.06],
-            [0.07, 0.95, 0.04, 0.05, 0.00, 0.02], 
-            [0.01, 0.02, 0.85, 0.19, 0.05, 0.10], 
-            [0.02, 0.01, 0.07, 0.01, 0.21, 0.12], 
-            [0.01, 0.01, 0.02, 0.71, 0.74, 0.70], 
-        ]
-       ]
-```
-"""
 def make_radar_plot(data, row_names):
+    """
+    Format data as a two-item list, consisting of a list of metric names 
+    and a list of entries for each metric. 
+    """
     N = len(data[0])
     theta = radar_factory(N, frame='polygon')
 
