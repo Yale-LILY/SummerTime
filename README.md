@@ -1,8 +1,8 @@
-# SummerTime
+# SummerTime - A summarization library
 
 A library to help users choose appropriate summarization tools based on their specific tasks or needs. Includes models, evaluation metrics, and datasets.
 
-Check out our midway showcase on Colab  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Yale-LILY/SummerTime/blob/murori/midway-notebook/SummerTime_midway_showcase.ipynb)
+Check out our midway showcase notebook on Colab to give SummerTime a try        [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Yale-LILY/SummerTime/blob/murori/midway-notebook/SummerTime_midway_showcase.ipynb)
 
 
 
@@ -10,15 +10,19 @@ Check out our midway showcase on Colab  [![Open In Colab](https://colab.research
 
 #### Create and activate a new `conda` environment:
 ```bash
-conda create -n st python=3.7
-conda activate st
+conda create -n summertime python=3.7
+conda activate summertime
 ```
 
 #### `pip` dependencies for local demo:
 ```bash
 pip install -r requirements.txt
 ```
-
+# Setup ROUGE
+```bash
+!export ROUGE_HOME=/usr/local/lib/python3.7/dist-packages/summ_eval/ROUGE-1.5.5/
+!pip install -U  git+https://github.com/bheinzerling/pyrouge.git
+```
 
 
 ## Quick Start
@@ -45,15 +49,34 @@ jupyter notebook demo.ipynb
 
 
 ## Models
+### Supported Models
+SummerTime supports different models (e.g., TextRank, BART, Longformer) as well as model wrappers for more complex summariztion tasks (e.g., JointModel for multi-doc summarzation, BM25 retrieval for query-based summarization).
+
+Single doc models - BartModel, LexRankModel, LongformerModel, PegasusModel, TextRankModel
+Multi doc models - MultiDocJointModel, MultiDocSeparateModel
+Dialogue model - HMNetModel
+Query based model - TFIDFSummModel, BM25SummModel
+Default model - summarizer
+
 Import and initialization:
 ```python
 import model as st_model
 
-default_model = std_model.summarizer()
-bart_model = std_model.bart_model.BartModel()
-pegasus_model = std_model.pegasus_model.PegasusModel()
-lexrank_model = std_model.lexrank_model.LexRankModel()
-textrank_model = st_model.textrank_model.TextRankModel()
+# To use a default model
+default_model = st_model.summarizer()    
+
+# Or a specific model
+bart_model = st_model.BartModel()
+pegasus_model = st_model.PegasusModel()
+lexrank_model = st_model.LexRankModel()
+textrank_model = st_model.TextRankModel()
+```
+
+Users can easily access documentation to assist with model selection
+```python
+sample_model.show_capability()
+pegasus_model.show_capability()
+textrank_model.show_capability()
 ```
 
 All models can be initialized with the following optional options:
