@@ -53,6 +53,7 @@ jupyter notebook demo.ipynb
 SummerTime supports different models (e.g., TextRank, BART, Longformer) as well as model wrappers for more complex summariztion tasks (e.g., JointModel for multi-doc summarzation, BM25 retrieval for query-based summarization).
 
 
+
 Single doc models - BartModel, LexRankModel, LongformerModel, PegasusModel, TextRankModel
 
 Multi doc models - MultiDocJointModel, MultiDocSeparateModel
@@ -62,6 +63,8 @@ Dialogue model - HMNetModel
 Query based model - TFIDFSummModel, BM25SummModel
 
 Default model - summarizer
+
+
 
 
 Import and initialization:
