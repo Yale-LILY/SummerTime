@@ -18,7 +18,7 @@ conda activate summertime
 ```bash
 pip install -r requirements.txt
 ```
-#### Setup ROUGE
+##### Setup ROUGE
 ```bash
 !export ROUGE_HOME=/usr/local/lib/python3.7/dist-packages/summ_eval/ROUGE-1.5.5/
 !pip install -U  git+https://github.com/bheinzerling/pyrouge.git
@@ -43,8 +43,7 @@ model.summarize(documents)
 
 Also, please run our colab notebook for a more hands-on demo and more examples. 
 
-
-Check out our midway showcase notebook on Colab to give SummerTime a try        [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Yale-LILY/SummerTime/blob/murori/midway-notebook/SummerTime_midway_showcase.ipynb)
+ [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Yale-LILY/SummerTime/blob/murori/midway-notebook/SummerTime_midway_showcase.ipynb)
 
 
 
@@ -53,19 +52,26 @@ Check out our midway showcase notebook on Colab to give SummerTime a try        
 ### Supported Models
 SummerTime supports different models (e.g., TextRank, BART, Longformer) as well as model wrappers for more complex summariztion tasks (e.g., JointModel for multi-doc summarzation, BM25 retrieval for query-based summarization).
 
-```python
-# Single doc models - BartModel, LexRankModel, LongformerModel, PegasusModel, TextRankModel
-# Multi doc models - MultiDocJointModel, MultiDocSeparateModel
-# Dialogue model - HMNetModel
-# Query based model - TFIDFSummModel, BM25SummModel
 
-# Default model - summarizer
-```
+| Models                    | Single-doc           | Multi-doc            | Dialogue-based       | Query-based          |
+| ---------                 | :------------------: | :------------------: | :------------------: | :------------------: |
+| BartModel                 | :heavy_check_mark:   |                      |                      |                      |
+| LexRankModel              | :heavy_check_mark:   |                      |                      |                      |
+| LongformerModel           | :heavy_check_mark:   |                      |                      |                      |
+| PegasusModel              | :heavy_check_mark:   |                      |                      |                      |
+| TextRankModel             | :heavy_check_mark:   |                      |                      |                      |
+| MultiDocJointModel        |                      | :heavy_check_mark:   |                      |                      |
+| MultiDocSeparateModel     |                      | :heavy_check_mark:   |                      |                      |
+| HMNetModel                |                      |                      | :heavy_check_mark:   |                      |
+| TFIDFSummModel            |                      |                      |                      | :heavy_check_mark:   |     
+| BM25SummModel             |                      |                      |                      | :heavy_check_mark:   |                   |
+
+
 
 To see all supported models, run:
 
-from model import SUPPORTED_SUMM_MODELS
 ```python
+from model import SUPPORTED_SUMM_MODELS
 print(SUPPORTED_SUMM_MODELS)
 ```
 
@@ -127,29 +133,92 @@ def show_capability(cls) -> None:
 SummerTime supports different summarization datasets across different domains (e.g., CNNDM dataset - news article corpus, Samsum - dialogue corpus, QM-Sum - query-based dialogue corpus, MultiNews - multi-document corpus, ML-sum - multi-lingual corpus, PubMedQa - Medical domain, Arxiv - Science papers domain, among others.
 
 
-```python
-News article summary datasets - CNNDM corpus, XSum corpus 
-Dialogue-based dataset - Samsum corpus, QM-Sum - 
-Query-based dialogue corpus, MultiNews - 
-multi-document corpus, ML-sum - 
-multi-lingual corpus, PubMedQa - 
-Medical domain, Arxiv - 
-Science papers
-```
 | Datasets      | Single doc    | Multi doc |  Dialogue-based |  Query-based |  Multi-lingual  | News articles | Scientific papers  |   Medical papers |   TV transcripts   | Meetings domain    |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
+| ------------- |:-------------:| :-----:| :-------------: |:-------------:| :-----:| :-------------: |:-------------:| :-----:| :-------------: |:-------------:|
+| CnndmDataset      | :heavy_check_mark:    |       |        |        |         | :heavy_check_mark: |        |         |           |          |
+| MultinewsDataset    |                    | :heavy_check_mark:  |                  |                  |                   | :heavy_check_mark:  |                  |                   |                     |                    |
+| SamsumDataset     | :heavy_check_mark:     |                 |  :heavy_check_mark:  |                  |                   |                 |                  |                   |                     |                    |
+| XsumDataset      | :heavy_check_mark:     |                 |                  |                  |                   | :heavy_check_mark:  |                  |                   |                     |                    |
+| PubmedqaDataset    |    :heavy_check_mark:    |                 |                  |  :heavy_check_mark:  |                   |                 |                  |   :heavy_check_mark:  |                     |                    |
+| MlsumDataset'     | :heavy_check_mark:     |                 |                  |                  | German, Spanish, French, Russian, Turkish   | :heavy_check_mark:  |                  |                   |                     |                    |
+| ScisummnetDataset      | :heavy_check_mark:     |                 |                  |                  |                   |                 | :heavy_check_mark:   |                   |                     |                    |
+| SummscreenDataset    | :heavy_check_mark:    |                 |  :heavy_check_mark:  |                  |                   |                 |                  |                   |   :heavy_check_mark:    |                    |
+| QMsumDataset    | :heavy_check_mark:     |                 |  :heavy_check_mark:  |   :heavy_check_mark:          |                   |                 |                  |                   |                     | :heavy_check_mark:     |
+| ArxivDataset     | :heavy_check_mark:     |                 |                  |                  |                   |                 | :heavy_check_mark:   |                   |                     |                    |
 
+
+
+
+To see all supported datasets, run:
+
+```python
+from dataset import SUPPORTED_SUMM_DATASETS
+print(SUPPORTED_SUMM_DATASETS)
+``` 
 
 
 ### Import and initialization:
 ```python
-import dataset.stdatasets as st_data
+import dataset
+```
+
+### Dataset Initialization
+```python
+import dataset
+
+cnn_dataset = dataset.CnndmDataset()
+# or 
+xsum_dataset = dataset.XsumDataset()
+# ..etc
 ```
 
 
+### Loading and using data instances
+Data is loaded using a generator to save on space and time
+
+To get a single instance
+```python
+data_instance = next(cnn_dataset.train_set)
+print(data_instance)
+```
+
+To get a slice of the dataset
+```python
+import itertools
+
+# Get a slice of the train set - first 5 instances
+train_set = itertools.islice(cnn_dataset.train_set, 5)
+
+corpus = [instance.source for instance in train_set]
+print(corpus)
+```
+
+## Using the datasets with the models - Examples
+```python
+import itertools
+import dataset
+import model
+
+cnn_dataset = dataset.CnndmDataset()
+
+
+# Get a slice of the train set - first 5 instances
+train_set = itertools.islice(cnn_dataset.train_set, 5)
+
+corpus = [instance.source for instance in train_set]
+
+# Example 1
+# LexRank model
+lexrank_model = model.LexRankModel(corpus)
+lexrank_summary = trad_model.summarize(text)
+print(lexrank_summary)
+
+# Example 2
+# TextRank model
+textrank = model.TextRankModel()
+textrank_summary = textrank.summarize(text[0:1])
+print(textrank_summary)
+```
 
 
 ## Evaluation
