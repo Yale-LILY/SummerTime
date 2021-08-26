@@ -55,9 +55,7 @@ SummerTime supports different models (e.g., TextRank, BART, Longformer) as well 
 
 
 Single doc models - BartModel, LexRankModel, LongformerModel, PegasusModel, TextRankModel
-
 Multi doc models - MultiDocJointModel, MultiDocSeparateModel
-
 Dialogue model - HMNetModel
 
 Query based model - TFIDFSummModel, BM25SummModel
