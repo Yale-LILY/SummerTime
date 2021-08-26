@@ -41,10 +41,11 @@ model.summarize(documents)
 # ["California's largest electricity provider has turned off power to hundreds of thousands of customers."]
 ```
 
-Also, please run `demo.ipynb` demo Jupyter notebook for more examples. To start demo Jupyter notebook on localhost:
-```bash
-jupyter notebook demo.ipynb
-```
+Also, please run our colab notebook for a more hands-on demo and more examples. 
+
+
+Check out our midway showcase notebook on Colab to give SummerTime a try        [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Yale-LILY/SummerTime/blob/murori/midway-notebook/SummerTime_midway_showcase.ipynb)
+
 
 
 
@@ -53,16 +54,22 @@ jupyter notebook demo.ipynb
 SummerTime supports different models (e.g., TextRank, BART, Longformer) as well as model wrappers for more complex summariztion tasks (e.g., JointModel for multi-doc summarzation, BM25 retrieval for query-based summarization).
 
 ```python
-#Single doc models - BartModel, LexRankModel, LongformerModel, PegasusModel, TextRankModel
-#Multi doc models - MultiDocJointModel, MultiDocSeparateModel
-#Dialogue model - HMNetModel
-#Query based model - TFIDFSummModel, BM25SummModel
+# Single doc models - BartModel, LexRankModel, LongformerModel, PegasusModel, TextRankModel
+# Multi doc models - MultiDocJointModel, MultiDocSeparateModel
+# Dialogue model - HMNetModel
+# Query based model - TFIDFSummModel, BM25SummModel
 
-#Default model - summarizer
+# Default model - summarizer
 ```
 
+To see all supported models, run:
 
-Import and initialization:
+from model import SUPPORTED_SUMM_MODELS
+```python
+print(SUPPORTED_SUMM_MODELS)
+```
+
+### Import and initialization:
 ```python
 import model as st_model
 
@@ -83,6 +90,19 @@ pegasus_model.show_capability()
 textrank_model.show_capability()
 ```
 
+To use a model for summarization, simply run:
+```python
+documents = [
+    """ PG&E stated it scheduled the blackouts in response to forecasts for high winds amid dry conditions. 
+    The aim is to reduce the risk of wildfires. Nearly 800 thousand customers were scheduled to be affected 
+    by the shutoffs which were expected to last through at least midday tomorrow."""
+]
+
+sample_model.summarize(documents)
+# or 
+pegasus_model.summarize(documents)
+```
+
 All models can be initialized with the following optional options:
 ```python
 def __init__(self,
@@ -99,9 +119,36 @@ def summarize(self,
   queries: List[str]=None) -> List[str]:
 
 def show_capability(cls) -> None:
-
-def generate_basic_description(cls) -> str:
 ```
+
+
+## Datasets
+### Datasets supported
+SummerTime supports different summarization datasets across different domains (e.g., CNNDM dataset - news article corpus, Samsum - dialogue corpus, QM-Sum - query-based dialogue corpus, MultiNews - multi-document corpus, ML-sum - multi-lingual corpus, PubMedQa - Medical domain, Arxiv - Science papers domain, among others.
+
+
+```python
+News article summary datasets - CNNDM corpus, XSum corpus 
+Dialogue-based dataset - Samsum corpus, QM-Sum - 
+Query-based dialogue corpus, MultiNews - 
+multi-document corpus, ML-sum - 
+multi-lingual corpus, PubMedQa - 
+Medical domain, Arxiv - 
+Science papers
+```
+| Datasets      | Single doc    | Multi doc |  Dialogue-based |  Query-based |  Multi-lingual  | News articles | Scientific papers  |   Medical papers |   TV transcripts   | Meetings domain    |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+
+
+
+### Import and initialization:
+```python
+import dataset.stdatasets as st_data
+```
+
 
 
 
@@ -129,11 +176,6 @@ def get_dict(self, keys):
 ```
 
 
-## Datasets
-Import and initialization:
-```python
-import dataset.stdatasets as st_data
-```
 
 ## Contributors
 This repository is built by the [LILY Lab](https://yale-lily.github.io/) at Yale University, led by Prof. [Dragomir Radev](https://cpsc.yale.edu/people/dragomir-radev). The main contributors are [Ansong Ni](https://niansong1996.github.io), Zhangir Azerbayev, Troy Feng, Murori Mutuma and Yusen Zhang (Penn State). For comments and question, please open an issue.
