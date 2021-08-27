@@ -231,6 +231,7 @@ train_set = itertools.islice(cnn_dataset.train_set, 5)
 
 corpus = [instance.source for instance in train_set]
 
+
 # Example 1 - traditional non-neural model
 # LexRank model
 lexrank = model.LexRankModel(corpus)
@@ -261,16 +262,27 @@ print(longformer_summary)
 
 
 ## Evaluation
-Import and initialization:
+SummerTime supports different evaluation metrics including: BertScore, Bleu, Meteor, Rouge, RougeWe
+
+To print all supported metrics:
 ```python
-import eval as st_eval
+from evaluation import SUPPORTED_EVALUATION_METRICS
+
+pprint(SUPPORTED_EVALUATION_METRICS)
+```
+
+### Import and initialization:
+```python
+import evaluation as st_eval
 
 bert_eval = st_eval.bertscore()
 bleu_eval = st_eval.bleu_eval()
+meteor_eval = st_eval.bleu_eval()
 rouge_eval = st_eval.rouge()
 rougewe_eval = st_eval.rougewe()
 ```
 
+### Evaluation Class
 All evaluation metrics can be initialized with the following optional arguments:
 ```python
 def __init__(self, metric_name):
@@ -282,6 +294,48 @@ def evaluate(self, model, data):
 
 def get_dict(self, keys):
 ```
+
+### Using evaluation metrics
+Get sample summary data
+```python
+from evaluation.base_metric import SummMetric
+from evaluation import Rouge, RougeWe, BertScore
+
+import itertools
+
+# Initializes a bertscore metric object
+metric = BertScore()
+
+# Evaluates model on subset of cnn_dailymail
+# Get a slice of the train set - first 5 instances
+train_set = itertools.islice(cnn_dataset.train_set, 5)
+
+corpus = [instance for instance in train_set]
+pprint(corpus)
+
+articles = [instance.source for instance in corpus]
+
+summaries = sample_model.summarize(articles)
+targets = [instance.summary for instance in corpus]
+```
+
+Evaluate the data on different metrics
+```python
+from evaluation import  BertScore, Rouge, RougeWe,
+
+# Calculate BertScore
+metric = BertScore()
+metric.evaluate(summaries, targets)
+
+# Calculate Rouge
+metric = Rouge()
+metric.evaluate(summaries, targets)
+
+# Calculate RougeWe
+metric = RougeWe()
+metric.evaluate(summaries, targets)
+```
+
 
 
 
