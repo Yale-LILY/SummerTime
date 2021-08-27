@@ -4,6 +4,12 @@ A library to help users choose appropriate summarization tools based on their sp
 
 Check out our midway showcase notebook on Colab to give SummerTime a try.        [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/19tPdBgaJ4_QjSiFyoxtpnFGW4OG1gTec?usp=sharing)
 
+The library architecture is as follows:
+<object data="https://docs.conda.io/projects/conda/en/4.6.0/_downloads/52a95608c49671267e40c689e0bc00ca/conda-cheatsheet.pdf" type="application/pdf" width="700px" height="700px">
+    <embed src="https://docs.conda.io/projects/conda/en/4.6.0/_downloads/52a95608c49671267e40c689e0bc00ca/conda-cheatsheet.pdf">
+        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="http://yoursite.com/the.pdf">Download PDF</a>.</p>
+    </embed>
+</object>
 
 NOTE: Although, most of the library functionality is up and running, there are some features that are still in progress and will soon be added. We are updating the library weekly, please bear with us as we finalize the library. Any helpful comments are highly encouraged, please feel free to reach out to any of our team members.
 
@@ -135,18 +141,18 @@ def show_capability(cls) -> None:
 ### Datasets supported
 SummerTime supports different summarization datasets across different domains (e.g., CNNDM dataset - news article corpus, Samsum - dialogue corpus, QM-Sum - query-based dialogue corpus, MultiNews - multi-document corpus, ML-sum - multi-lingual corpus, PubMedQa - Medical domain, Arxiv - Science papers domain, among others.
 
-| Datasets         | Single doc         | Multi doc          |  Dialogue-based    |  Query-based       |  Multi-lingual     | News articles      | Scientific papers  | Medical papers  | TV transcripts     | Meetings domain    |
-| ---------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
-| ArxivDataset     | :heavy_check_mark: |                    |                    |                    |                    |                    | :heavy_check_mark: |                     |                    |                    |
-| CnndmDataset     | :heavy_check_mark: |                    |                    |                    |                    | :heavy_check_mark: |                    |                     |                    |                    |
-| MlsumDataset     | :heavy_check_mark: |                    |                    |                    | German, Spanish, French, Russian, Turkish                    | :heavy_check_mark: |                    |                    |                    |                    |
-| MultinewsDataset |                    | :heavy_check_mark: |                    |                    |                    | :heavy_check_mark: |                    |                     |                    |                    |
-| PubmedqaDataset  | :heavy_check_mark: |                    |                    | :heavy_check_mark: |                    |                    |                    | :heavy_check_mark: |                    |                    |
-| QMsumDataset     | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |                    |                    |                    |                     |                    | :heavy_check_mark: |
-| SamsumDataset    | :heavy_check_mark: |                    | :heavy_check_mark: |                    |                    |                    |                    |                     |                    |                    |
-| ScisummnetDataset| :heavy_check_mark: |                    |                    |                    |                    |                    | :heavy_check_mark: |                     |                    |                    |
-| SummscreenDataset| :heavy_check_mark: |                    | :heavy_check_mark: |                    |                    |                    |                    |                     | :heavy_check_mark: |                    |
-| XsumDataset      | :heavy_check_mark: |                    |                    |                    |                    | :heavy_check_mark: |                    |                     |                    |                    |
+| Dataset         | Domain              | \# Examples | Src. length | Tgt. length | Query              | Multi-doc          | Dialogue           | Multi-lingual                             |
+|-----------------|---------------------|-------------|-------------|-------------|--------------------|--------------------|--------------------|-------------------------------------------|
+| ArXiv           | Scientific papers   | 215k        | 4.9k        | 220         |                    |                    |                    |                                           |
+| CNN/DM(3.0.0)   | News                | 300k        | 781         | 56          |                    |                    |                    |                                           |
+| MlsumDataset    | Multi-lingual News  | 1.5M+       | 632         | 34          |                    | :heavy_check_mark: |                    | German, Spanish, French, Russian, Turkish |
+| Multi-News      | News                | 56k         | 2.1k        | 263.8       |                    | :heavy_check_mark: |                    |                                           |
+| SAMSum          | Open-domain         | 16k         | 94          | 20          |                    |                    | :heavy_check_mark: |                                           |
+| PubmedqaDataset | Medical             | 272k        | 244         | 32          | :heavy_check_mark: |                    |                    |                                           |
+| QMSum           | Meetings            | 1k          | 9.0k        | 69.6        | :heavy_check_mark: |                    | :heavy_check_mark: |                                           |
+| ScisummNet      | Scientific articles | 1k          | 4.7k        | 150         |                    |                    |                    |                                           |
+| SummScreen      | TV shows            | 26.9k       | 6.6k        | 337.4       |                    |                    | :heavy_check_mark: |                                           |
+| XSum            | News                | 226k        | 431         | 23.3        |                    |                    |                    |                                           |
 
 To see all supported datasets, run:
 
