@@ -155,9 +155,9 @@ def get_dataset_info(data_dict: DatasetDict) -> DatasetInfo:
 
 
 
-def load_dataset_safe(*args, **kwargs) -> Dataset:
+def load_dataset_safe(*args, **kwargs, numtries=3) -> Dataset:
 
-    tries = 3
+    tries = numtries
     for i in range(tries):
         try:
             ds = load_dataset(*args, *kwargs)
@@ -165,7 +165,7 @@ def load_dataset_safe(*args, **kwargs) -> Dataset:
             if i < tries - 1: # i is zero indexed
                 continue
             else:
-                sys.exit("Wait for a mninute and attempt downloading the dataset again. The server hosting the dataset occassionally times out.")
+                raise RuntimeError("Wait for a mninute and attempt downloading the dataset again. The server hosting the dataset occassionally times out.")
         break
 
     return ds
