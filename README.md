@@ -188,15 +188,6 @@ dataset = dataset.CnndmDataset()
 dataset.show_description()
 ```
 
-### Loading and using data instances
-Data is loaded using a generator to save on space and time
-
-#### To get a single instance
-```python
-data_instance = next(cnn_dataset.train_set)
-print(data_instance)
-```
-
 ##### Data instance
 The data in all datasets is contained in a `SummInstance` class object, which has the following properties:
 ```python
@@ -205,6 +196,15 @@ data_instance.summary = summary  # a string summary that serves as ground truth
 data_instance.query = query      # Optional, applies when a string query is present
 
 print(data_instance)             # to print the data instance in its entirety
+```
+
+### Loading and using data instances
+Data is loaded using a generator to save on space and time
+
+#### To get a single instance
+```python
+data_instance = next(cnn_dataset.train_set)
+print(data_instance)
 ```
 
 #### To get a slice of the dataset
