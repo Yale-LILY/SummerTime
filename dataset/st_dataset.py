@@ -109,7 +109,6 @@ class SummDataset:
         tries = NUMBER_OF_RETRIES_ALLOWED
         for i in range(tries):
             try:
-                print(*args)
                 ds = load_dataset(*args, *kwargs)
             except :
                 if i < tries - 1: # i is zero indexed
