@@ -25,12 +25,19 @@ class SummInstance:
         self.summary = summary
         self.query = query
 
-    def __str__(self):
+    def __repr__(self):
         instance_str = {"source": self.source, "summary":self.summary}
         if self.query:
             instance_str["query"] = self.query
 
         return str(instance_str)
+
+    def __str__(self):
+        instance_str = {"source": self.source, "summary":self.summary}
+        if self.query:
+            instance_str["query"] = self.query
+
+        return "\n".join("{}\t{}".format(k, v) for k, v in instance_str.items())
 
 
 class SummDataset:
