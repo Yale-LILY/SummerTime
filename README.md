@@ -270,7 +270,7 @@ To print all supported metrics:
 ```python
 from evaluation import SUPPORTED_EVALUATION_METRICS
 
-pprint(SUPPORTED_EVALUATION_METRICS)
+print(SUPPORTED_EVALUATION_METRICS)
 ```
 
 ### Import and initialization:
@@ -313,7 +313,7 @@ metric = BertScore()
 train_set = itertools.islice(cnn_dataset.train_set, 5)
 
 corpus = [instance for instance in train_set]
-pprint(corpus)
+print(corpus)
 
 articles = [instance.source for instance in corpus]
 
