@@ -18,7 +18,7 @@ conda activate summertime
 ```bash
 pip install -r requirements.txt
 ```
-##### Setup ROUGE
+##### Setup `ROUGE`
 ```bash
 !export ROUGE_HOME=/usr/local/lib/python3.7/dist-packages/summ_eval/ROUGE-1.5.5/
 !pip install -U  git+https://github.com/bheinzerling/pyrouge.git
@@ -54,17 +54,17 @@ SummerTime supports different models (e.g., TextRank, BART, Longformer) as well 
 
 
 | Models                    | Single-doc           | Multi-doc            | Dialogue-based       | Query-based          |
-| ---------                 | :------------------: | :------------------: | :------------------: | :------------------: |
-| BartModel                 | :heavy_check_mark:   |                      |                      |                      |
+| ---------                 | :------------------: | :------------------: | :------------------: | :------------------: | 
+| BartModel                 | :heavy_check_mark:   |                      |                      |                      |   
+| BM25SummModel             |                      |                      |                      | :heavy_check_mark:   | 
+| HMNetModel                |                      |                      | :heavy_check_mark:   |                      |
 | LexRankModel              | :heavy_check_mark:   |                      |                      |                      |
 | LongformerModel           | :heavy_check_mark:   |                      |                      |                      |
-| PegasusModel              | :heavy_check_mark:   |                      |                      |                      |
-| TextRankModel             | :heavy_check_mark:   |                      |                      |                      |
 | MultiDocJointModel        |                      | :heavy_check_mark:   |                      |                      |
 | MultiDocSeparateModel     |                      | :heavy_check_mark:   |                      |                      |
-| HMNetModel                |                      |                      | :heavy_check_mark:   |                      |
-| TFIDFSummModel            |                      |                      |                      | :heavy_check_mark:   |     
-| BM25SummModel             |                      |                      |                      | :heavy_check_mark:   |                   |
+| PegasusModel              | :heavy_check_mark:   |                      |                      |                      |
+| TextRankModel             | :heavy_check_mark:   |                      |                      |                      |
+| TFIDFSummModel            |                      |                      |                      | :heavy_check_mark:   |                   |
 
 
 
@@ -133,18 +133,18 @@ def show_capability(cls) -> None:
 SummerTime supports different summarization datasets across different domains (e.g., CNNDM dataset - news article corpus, Samsum - dialogue corpus, QM-Sum - query-based dialogue corpus, MultiNews - multi-document corpus, ML-sum - multi-lingual corpus, PubMedQa - Medical domain, Arxiv - Science papers domain, among others.
 
 
-| Datasets      | Single doc    | Multi doc |  Dialogue-based |  Query-based |  Multi-lingual  | News articles | Scientific papers  |   Medical papers |   TV transcripts   | Meetings domain    |
-| ------------- |:-------------:| :-----:| :-------------: |:-------------:| :-----:| :-------------: |:-------------:| :-----:| :-------------: |:-------------:|
-| CnndmDataset      | :heavy_check_mark:    |       |        |        |         | :heavy_check_mark: |        |         |           |          |
-| MultinewsDataset    |                    | :heavy_check_mark:  |                  |                  |                   | :heavy_check_mark:  |                  |                   |                     |                    |
-| SamsumDataset     | :heavy_check_mark:     |                 |  :heavy_check_mark:  |                  |                   |                 |                  |                   |                     |                    |
-| XsumDataset      | :heavy_check_mark:     |                 |                  |                  |                   | :heavy_check_mark:  |                  |                   |                     |                    |
-| PubmedqaDataset    |    :heavy_check_mark:    |                 |                  |  :heavy_check_mark:  |                   |                 |                  |   :heavy_check_mark:  |                     |                    |
-| MlsumDataset'     | :heavy_check_mark:     |                 |                  |                  | German, Spanish, French, Russian, Turkish   | :heavy_check_mark:  |                  |                   |                     |                    |
-| ScisummnetDataset      | :heavy_check_mark:     |                 |                  |                  |                   |                 | :heavy_check_mark:   |                   |                     |                    |
-| SummscreenDataset    | :heavy_check_mark:    |                 |  :heavy_check_mark:  |                  |                   |                 |                  |                   |   :heavy_check_mark:    |                    |
-| QMsumDataset    | :heavy_check_mark:     |                 |  :heavy_check_mark:  |   :heavy_check_mark:          |                   |                 |                  |                   |                     | :heavy_check_mark:     |
-| ArxivDataset     | :heavy_check_mark:     |                 |                  |                  |                   |                 | :heavy_check_mark:   |                   |                     |                    |
+| Datasets         | Single doc         | Multi doc          |  Dialogue-based    |  Query-based       |  Multi-lingual     | News articles      | Scientific papers  | Medical papers  | TV transcripts     | Meetings domain    |
+| ---------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| ArxivDataset     | :heavy_check_mark: |                    |                    |                    |                    |                    | :heavy_check_mark: |                     |                    |                    |
+| CnndmDataset     | :heavy_check_mark: |                    |                    |                    |                    | :heavy_check_mark: |                    |                     |                    |                    |
+| MlsumDataset     | :heavy_check_mark: |                    |                    |                    | German, Spanish, French, Russian, Turkish                    | :heavy_check_mark: |                    |                    |                    |                    |
+| MultinewsDataset |                    | :heavy_check_mark: |                    |                    |                    | :heavy_check_mark: |                    |                     |                    |                    |
+| PubmedqaDataset  | :heavy_check_mark: |                    |                    | :heavy_check_mark: |                    |                    |                    | :heavy_check_mark: |                    |                    |
+| QMsumDataset     | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |                    |                    |                    |                     |                    | :heavy_check_mark: |
+| SamsumDataset    | :heavy_check_mark: |                    | :heavy_check_mark: |                    |                    |                    |                    |                     |                    |                    |
+| ScisummnetDataset| :heavy_check_mark: |                    |                    |                    |                    |                    | :heavy_check_mark: |                     |                    |                    |
+| SummscreenDataset| :heavy_check_mark: |                    | :heavy_check_mark: |                    |                    |                    |                    |                     | :heavy_check_mark: |                    |
+| XsumDataset      | :heavy_check_mark: |                    |                    |                    |                    | :heavy_check_mark: |                    |                     |                    |                    |
 
 
 
