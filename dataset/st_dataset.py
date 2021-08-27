@@ -3,6 +3,7 @@ from typing import Dict, List, Optional, Union, Generator
 
 from datasets import Dataset, DatasetDict, DatasetInfo, concatenate_datasets, load_dataset
 
+NUMBER_OF_RETRIES_ALLOWED = 3
 
 class SummInstance:
     """
@@ -103,6 +104,22 @@ class SummDataset:
             print(f"{self.dataset_name} does not contain a test set, empty list returned")
             return list()
 
+    def load_dataset_safe(self, *args, **kwargs) -> Dataset:
+
+        tries = NUMBER_OF_RETRIES_ALLOWED
+        for i in range(tries):
+            try:
+                print(*args)
+                ds = load_dataset(*args, *kwargs)
+            except :
+                if i < tries - 1: # i is zero indexed
+                    continue
+                else:
+                    raise RuntimeError("Wait for a mninute and attempt downloading the dataset again. The server hosting the dataset occassionally times out.")
+            break
+
+        return ds
+
 
 # Creating the train, dev and test splits from a dataset
 # the generated sets are 'train: ~.80', 'dev: ~.10', and 'test: ~10' in size
@@ -155,17 +172,4 @@ def get_dataset_info(data_dict: DatasetDict) -> DatasetInfo:
 
 
 
-def load_dataset_safe(*args, **kwargs, numtries=3) -> Dataset:
 
-    tries = numtries
-    for i in range(tries):
-        try:
-            ds = load_dataset(*args, *kwargs)
-        except :
-            if i < tries - 1: # i is zero indexed
-                continue
-            else:
-                raise RuntimeError("Wait for a mninute and attempt downloading the dataset again. The server hosting the dataset occassionally times out.")
-        break
-
-    return ds
