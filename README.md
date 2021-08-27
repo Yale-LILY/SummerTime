@@ -342,6 +342,9 @@ print(rougewe_score)
 ```
 
 
+## Tests
+Our continuous integration system is provided through [Travis CI](https://travis-ci.org/). When any pull request is created or updated, the repository's unit tests will be run as build jobs on a Travis server for that pull request. Build jobs will either pass or fail within 5-20 minutes, and build statuses are visible on the Github UI and on Travis CI. Please ensure that the most recent commit in pull requests pass all checks (i.e. all Travis builds run to completion) before merging, or request a review. To skip a Travis build on any particular commit, append `[skip travis]` to the commit message (see [here](https://docs.travis-ci.com/user/customizing-the-build/#skipping-a-build)). Note that PRs with the substring `/no-ci/` anywhere in the branch name will not be built.
+
 
 
 ## Contributors

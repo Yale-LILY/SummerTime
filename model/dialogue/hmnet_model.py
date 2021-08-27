@@ -25,10 +25,42 @@ class HMNetModel(SummModel):
     is_neural = True
     is_dialogue_based = True
 
-    def __init__(self):
+    def __init__(self, min_gen_length: int = 10, max_gen_length: int = 300, beam_width: int = 6, **kwargs):
+        """
+          Create a summarization model with HMNet backbone. In the default setting, the inference speed will be
+          10s/sample (on one GPU), however, if one can tune these three parameters properly, e.g. min_gen_length=10,
+          max_gen_length=100, and beam_width=2, the inference speed will increase to 2s/sample (on one GPU).
+
+          Args:
+            min_gen_length (int): minimum generation length of the decoder
+            max_gen_length (int): maximum generation length of the decoder
+            beam_width (int): width of the beam when doing beam search in the decoding process
+            kwargs: the other valid parameters. The valid parameters can be found in
+                model/dialogue/hmnet/config/dialogue.conf . You can use either lower case or upper case for parameter
+                name. The valid parameter name is one of the following args, however, we do not encourage you to modify
+                 them, since some unexpected, untested errors might be triggered:
+                ['MODEL', 'TASK', 'CRITERION', 'SEED', 'MAX_NUM_EPOCHS', 'EVAL_PER_UPDATE_NUM'
+                , 'UPDATES_PER_EPOCH', 'OPTIMIZER', 'START_LEARNING_RATE', 'LR_SCHEDULER', 'WARMUP_STEPS',
+                'WARMUP_INIT_LR', 'WARMUP_END_LR', 'GRADIENT_ACCUMULATE_STEP', 'GRAD_CLIPPING', 'USE_REL_DATA_PATH',
+                'TRAIN_FILE', 'DEV_FILE', 'TEST_FILE', 'ROLE_DICT_FILE', 'MINI_BATCH', 'MAX_PADDING_RATIO',
+                'BATCH_READ_AHEAD', 'DOC_SHUFFLE_BUF_SIZE', 'SAMPLE_SHUFFLE_BUFFER_SIZE', 'BATCH_SHUFFLE_BUFFER_SIZE',
+                'MAX_TRANSCRIPT_WORD', 'MAX_SENT_LEN', 'MAX_SENT_NUM', 'DROPOUT', 'VOCAB_DIM', 'ROLE_SIZE', 'ROLE_DIM',
+                'POS_DIM', 'ENT_DIM', 'USE_ROLE', 'USE_POSENT', 'USE_BOS_TOKEN', 'USE_EOS_TOKEN',
+                'TRANSFORMER_EMBED_DROPOUT', 'TRANSFORMER_RESIDUAL_DROPOUT', 'TRANSFORMER_ATTENTION_DROPOUT',
+                'TRANSFORMER_LAYER', 'TRANSFORMER_HEAD', 'TRANSFORMER_POS_DISCOUNT', 'PRE_TOKENIZER',
+                'PRE_TOKENIZER_PATH', 'PYLEARN_MODEL', 'EXTRA_IDS', 'BEAM_WIDTH', 'EVAL_TOKENIZED', 'EVAL_LOWERCASE',
+                'MAX_GEN_LENGTH', 'MIN_GEN_LENGTH', 'NO_REPEAT_NGRAM_SIZE']
+
+          Return an instance of HMNet model for dialogue summarization.
+        """
         super(HMNetModel, self).__init__()
         self.root_path = self._get_root()
-        self.opt = self._parse_args()
+
+        # we leave the most influential params with prompt and the others as hidden kwargs
+        kwargs['MIN_GEN_LENGTH'] = min_gen_length
+        kwargs['MAX_GEN_LENGTH'] = max_gen_length
+        kwargs['BEAM_WIDTH'] = beam_width
+        self.opt = self._parse_args(kwargs)
         self.model = HMNetTrainer(self.opt)
 
     def _get_root(self):
@@ -38,7 +70,7 @@ class HMNetModel(SummModel):
         root_path = os.path.join(root_path, 'model/dialogue')
         return root_path
 
-    def _parse_args(self):
+    def _parse_args(self, kwargs):
         parser = argparse.ArgumentParser(description='HMNet: Pretrain or fine-tune models for HMNet model.')
         parser.add_argument('--command', default='evaluate', help='Command: train/evaluate')
         parser.add_argument('--conf_file',
@@ -83,6 +115,16 @@ class HMNetModel(SummModel):
             if val is not None:
                 opt[key] = val
 
+        # combine kwargs into opt dictionary (we allow lower case)
+        for key, val in kwargs.items():
+            valid_keys = [x for x in opt.keys() if x.upper() == x]
+            if key.upper() not in valid_keys:
+                print('WARNING: {} is not a valid key in HMNet.'.format(key))
+                print('The valid keys are:', valid_keys)
+                continue
+            if val is not None:
+                opt[key.upper()] = val
+
         return opt
 
     def summarize(self, corpus, queries=None):
@@ -119,7 +161,8 @@ class HMNetModel(SummModel):
 
         print('Decoding current model ... \nSaving folder is {}'.format(save_folder))
         print('Each sample will cost about 10 second.')
-
+        import time
+        start_time = time.time()
         predictions = []  # prediction of tokens from model
         if not isinstance(module.tokenizer, list):
             decoder_tokenizer = module.tokenizer
@@ -145,6 +188,8 @@ class HMNetModel(SummModel):
                     break
 
         top1_predictions = [x[0] for x in predictions]
+
+        print('Total time for inference:', time.time()-start_time)
         return top1_predictions
 
     def _convert_tokens_to_string(self, tokenizer, tokens):
