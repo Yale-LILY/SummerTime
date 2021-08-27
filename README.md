@@ -12,13 +12,13 @@ NOTE: Although, most of the library functionality is up and running, there are s
 
 #### Create and activate a new `conda` environment:
 ```bash
-conda create -n summertime python=3.7
-conda activate summertime
+!conda create -n summertime python=3.7
+!conda activate summertime
 ```
 
 #### `pip` dependencies for local demo:
 ```bash
-pip install -r requirements.txt
+!pip install -r requirements.txt
 ```
 ##### Setup `ROUGE`
 ```bash
