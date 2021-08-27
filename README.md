@@ -326,16 +326,19 @@ Evaluate the data on different metrics
 from evaluation import  BertScore, Rouge, RougeWe,
 
 # Calculate BertScore
-metric = BertScore()
-metric.evaluate(summaries, targets)
+bert_metric = BertScore()
+bert_score = bert_metric.evaluate(summaries, targets)
+print(bert_score)
 
 # Calculate Rouge
-metric = Rouge()
-metric.evaluate(summaries, targets)
+rouge_metric = Rouge()
+rouge_score = metric.evaluate(summaries, targets)
+print(rouge_score)
 
 # Calculate RougeWe
-metric = RougeWe()
-metric.evaluate(summaries, targets)
+rougewe_metric = RougeWe()
+rougewe_metric.evaluate(summaries, targets)
+print(rougewe_score)
 ```
 
 
