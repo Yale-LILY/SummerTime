@@ -332,12 +332,12 @@ print(bert_score)
 
 # Calculate Rouge
 rouge_metric = Rouge()
-rouge_score = metric.evaluate(summaries, targets)
+rouge_score = rouge_metric.evaluate(summaries, targets)
 print(rouge_score)
 
 # Calculate RougeWe
 rougewe_metric = RougeWe()
-rougewe_metric.evaluate(summaries, targets)
+rougwe_score = rougewe_metric.evaluate(summaries, targets)
 print(rougewe_score)
 ```
 
