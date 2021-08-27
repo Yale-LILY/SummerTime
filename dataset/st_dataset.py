@@ -37,7 +37,7 @@ class SummInstance:
         if self.query:
             instance_str["query"] = self.query
 
-        return "\n".join("{}\t{}".format(k, v) for k, v in instance_str.items())
+        return "\n".join("\"{}\":\t{}".format(k, v) for k, v in instance_str.items())
 
 
 class SummDataset:
