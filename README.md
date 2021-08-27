@@ -2,7 +2,7 @@
 
 A library to help users choose appropriate summarization tools based on their specific tasks or needs. Includes models, evaluation metrics, and datasets.
 
-Check out our midway showcase notebook on Colab to give SummerTime a try.        [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Yale-LILY/SummerTime/blob/murori/midway-notebook/SummerTime_midway_showcase.ipynb)
+Check out our midway showcase notebook on Colab to give SummerTime a try.        [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/19tPdBgaJ4_QjSiFyoxtpnFGW4OG1gTec?usp=sharing)
 
 
 NOTE: Although, most of the library functionality is up and running, there are some features that are still in progress and will soon be added. We are updating the library weekly, please bear with us as we finalize the library. Any helpful comments are highly encouraged, please feel free to reach out to any of our team members.
@@ -46,7 +46,7 @@ model.summarize(documents)
 
 Also, please run our colab notebook for a more hands-on demo and more examples. 
 
- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Yale-LILY/SummerTime/blob/murori/midway-notebook/SummerTime_midway_showcase.ipynb)
+ [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/19tPdBgaJ4_QjSiFyoxtpnFGW4OG1gTec?usp=sharing)
 
 
 
