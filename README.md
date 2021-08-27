@@ -25,6 +25,7 @@ pip install -r requirements.txt
 ```
 
 
+
 ## Quick Start
 Imports model, initializes default model, and summarizes sample documents.
 ```python
@@ -47,11 +48,10 @@ Also, please run our colab notebook for a more hands-on demo and more examples.
 
 
 
-
 ## Models
+
 ### Supported Models
 SummerTime supports different models (e.g., TextRank, BART, Longformer) as well as model wrappers for more complex summariztion tasks (e.g., JointModel for multi-doc summarzation, BM25 retrieval for query-based summarization).
-
 
 | Models                    | Single-doc           | Multi-doc            | Dialogue-based       | Query-based          |
 | ---------                 | :------------------: | :------------------: | :------------------: | :------------------: | 
@@ -66,14 +66,13 @@ SummerTime supports different models (e.g., TextRank, BART, Longformer) as well 
 | TextRankModel             | :heavy_check_mark:   |                      |                      |                      |
 | TFIDFSummModel            |                      |                      |                      | :heavy_check_mark:   |                   |
 
-
-
 To see all supported models, run:
 
 ```python
 from model import SUPPORTED_SUMM_MODELS
 print(SUPPORTED_SUMM_MODELS)
 ```
+
 
 ### Import and initialization:
 ```python
@@ -118,7 +117,7 @@ def __init__(self,
          ):
 ```
 
-All models implement the following methods:
+All models will implement the following methods:
 ```python
 def summarize(self,
   corpus: Union[List[str], List[List[str]]],
@@ -128,10 +127,11 @@ def show_capability(cls) -> None:
 ```
 
 
+
 ## Datasets
+
 ### Datasets supported
 SummerTime supports different summarization datasets across different domains (e.g., CNNDM dataset - news article corpus, Samsum - dialogue corpus, QM-Sum - query-based dialogue corpus, MultiNews - multi-document corpus, ML-sum - multi-lingual corpus, PubMedQa - Medical domain, Arxiv - Science papers domain, among others.
-
 
 | Datasets         | Single doc         | Multi doc          |  Dialogue-based    |  Query-based       |  Multi-lingual     | News articles      | Scientific papers  | Medical papers  | TV transcripts     | Meetings domain    |
 | ---------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
@@ -146,9 +146,6 @@ SummerTime supports different summarization datasets across different domains (e
 | SummscreenDataset| :heavy_check_mark: |                    | :heavy_check_mark: |                    |                    |                    |                    |                     | :heavy_check_mark: |                    |
 | XsumDataset      | :heavy_check_mark: |                    |                    |                    |                    | :heavy_check_mark: |                    |                     |                    |                    |
 
-
-
-
 To see all supported datasets, run:
 
 ```python
@@ -162,6 +159,7 @@ print(SUPPORTED_SUMM_DATASETS)
 import dataset
 ```
 
+
 ### Dataset Initialization
 ```python
 import dataset
@@ -172,26 +170,52 @@ xsum_dataset = dataset.XsumDataset()
 # ..etc
 ```
 
+##### Dataset Object
+All datasets are implementations of the `SummDataset` class. Their data splits can be accessed as follows:
+```python
+dataset = dataset.CnndmDataset()
+
+train_data = dataset.train_set  
+dev_data = dataset.dev_set  
+test_data = dataset.test_set        
+```
+Users will be able to see the details of the datasets including size, domain, recommended models, LICENSE, etc. by:
+```python
+dataset = dataset.CnndmDataset()
+
+dataset.show_description()
+```
 
 ### Loading and using data instances
 Data is loaded using a generator to save on space and time
 
-To get a single instance
+#### To get a single instance
 ```python
 data_instance = next(cnn_dataset.train_set)
 print(data_instance)
 ```
 
-To get a slice of the dataset
+##### Data instance
+The data in all datasets is contained in a `SummInstance` class object, which has the following properties:
+```python
+data_instance.source = source    # either `List[str]` or `str`, depending on the dataset itself, string joining may needed to fit into specific models.
+data_instance.summary = summary  # a string summary that serves as ground truth
+data_instance.query = query      # Optional, applies when a string query is present
+
+print(data_instance)             # to print the data instance in its entirety
+```
+
+#### To get a slice of the dataset
 ```python
 import itertools
 
-# Get a slice of the train set - first 5 instances
+# Get a slice from the train set generator - first 5 instances
 train_set = itertools.islice(cnn_dataset.train_set, 5)
 
 corpus = [instance.source for instance in train_set]
 print(corpus)
 ```
+
 
 ## Using the datasets with the models - Examples
 ```python
@@ -207,18 +231,33 @@ train_set = itertools.islice(cnn_dataset.train_set, 5)
 
 corpus = [instance.source for instance in train_set]
 
-# Example 1
+# Example 1 - traditional non-neural model
 # LexRank model
-lexrank_model = model.LexRankModel(corpus)
-lexrank_summary = trad_model.summarize(text)
+lexrank = model.LexRankModel(corpus)
+print(lexrank.show_capability())
+
+lexrank_summary = lexrank.summarize(corpus)
 print(lexrank_summary)
 
-# Example 2
+
+# Example 2 - A spaCy pipeline for TextRank (another non-neueral extractive summarization model)
 # TextRank model
 textrank = model.TextRankModel()
-textrank_summary = textrank.summarize(text[0:1])
+print(textrank.show_capability())
+
+textrank_summary = textrank.summarize(corpus)
 print(textrank_summary)
+
+
+# Example 3 - A neural model to handle large texts
+# LongFormer Model
+longformer = model.LongFormerModel()
+longformer.show_capability()
+
+longformer_summary = longformer.summarize(corpus)
+print(longformer_summary)
 ```
+
 
 
 ## Evaluation
