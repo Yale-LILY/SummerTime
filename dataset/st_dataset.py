@@ -1,4 +1,4 @@
-
+import json
 from typing import Dict, List, Optional, Union, Generator
 
 from datasets import Dataset, DatasetDict, DatasetInfo, concatenate_datasets
@@ -26,18 +26,18 @@ class SummInstance:
         self.query = query
 
     def __repr__(self):
-        instance_str = {"source": self.source, "summary":self.summary}
+        instance_dict = {"source": self.source, "summary":self.summary}
         if self.query:
-            instance_str["query"] = self.query
+            instance_dict["query"] = self.query
 
-        return str(instance_str)
+        return str(instance_dict)
 
     def __str__(self):
-        instance_str = {"source": self.source, "summary":self.summary}
+        instance_dict = {"source": self.source, "summary":self.summary}
         if self.query:
-            instance_str["query"] = self.query
+            instance_dict["query"] = self.query
 
-        return "\n".join("\"{}\":\t{}".format(k, v) for k, v in instance_str.items())
+        return json.dumps(instance_dict, indent=1)
 
 
 class SummDataset:
