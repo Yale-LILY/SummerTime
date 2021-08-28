@@ -13,7 +13,7 @@ jobs:
     runs-on: self-hosted
     env:
       ROUGE_HOME: /data/lily/ttf5/ci-test/actions-runner/_work/SummerTime/SummerTime/.venv/lib/python3.9/site-packages/summ_eval/ROUGE-1.5.5/
-      TMPDIR: ${{ env.HOME }}/tmp
+      TMPDIR: $HOME/tmp
     steps:
       - uses: actions/checkout@v2
 
