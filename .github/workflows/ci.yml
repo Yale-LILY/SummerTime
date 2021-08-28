@@ -11,6 +11,8 @@ jobs:
   TESTS:
     name: TESTS
     runs-on: self-hosted
+    env:
+      ROUGE_HOME: /data/lily/ttf5/ci-test/actions-runner/_work/SummerTime/SummerTime/.venv/lib/python3.9/site-packages/summ_eval/ROUGE-1.5.5/
     steps:
       - uses: actions/checkout@v2
 
@@ -35,6 +37,7 @@ jobs:
         run: |
           . .venv/bin/activate
           pip install -r requirements.txt
+          pip install -U  git+https://github.com/bheinzerling/pyrouge.git
 
       - name: Setup scripts
         run: |
