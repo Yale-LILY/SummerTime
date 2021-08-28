@@ -1,5 +1,5 @@
 name: test-gh-actions
-on: [push]
+on: [push, pull_request]
 jobs:
   check-bats-version:
     runs-on: self-hosted
