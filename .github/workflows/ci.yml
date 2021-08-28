@@ -22,9 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Echo
-        run: echo "Tangra test"
-
       - name: Set up virtual environment
         run: |
           python -m venv .venv

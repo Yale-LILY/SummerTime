@@ -1,4 +1,4 @@
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from typing import Optional, List, Tuple, Generator
 
 from datasets import Dataset, load_dataset
