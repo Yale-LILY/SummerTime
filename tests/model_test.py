@@ -4,7 +4,7 @@ from typing import Tuple, List
 from dataset.huggingface_datasets import CnndmDataset, MultinewsDataset, PubmedqaDataset, SamsumDataset
 from dataset.non_huggingface_datasets import QMsumDataset
 from model import SUPPORTED_SUMM_MODELS, list_all_models
-from model.single_doc import LexRankModel, LongformerModel, PegasusModel
+from model.single_doc import LexRankModel, LongformerModel
 from model.multi_doc import MultiDocJointModel, MultiDocSeparateModel
 from model.dialogue import HMNetModel
 
@@ -51,8 +51,8 @@ class TestModels(unittest.TestCase):
         all_models = list_all_models()
 
         for model_class, _ in all_models:
-            if model_class in [PegasusModel, HMNetModel]:
-                # TODO: Temporarily skip Pegasus (times out on Travis) and HMNet (requires large pre-trained model download + GPU)
+            if model_class in [HMNetModel]:
+                # TODO: Temporarily skip HMNet (requires large pre-trained model download + GPU)
                 continue
 
             print_with_color(f"Testing {model_class.model_name} model...", "35")
