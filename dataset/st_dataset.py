@@ -1,9 +1,11 @@
 import sys
+import time
 from typing import Dict, List, Optional, Union, Generator
 
 from datasets import Dataset, DatasetDict, DatasetInfo, concatenate_datasets, load_dataset
 
-NUMBER_OF_RETRIES_ALLOWED = 3
+DEFAULT_NUMBER_OF_RETRIES_ALLOWED = 5
+DEFAULT_WAIT_SECONDS_BEFORE_RETRY = 5
 
 class SummInstance:
     """
@@ -40,8 +42,6 @@ class SummDataset:
         * Single document summarization
         * Multi-document/Dialogue summarization
         * Query-based summarization
-        
-        
     """
     
     def __init__(self,
@@ -104,30 +104,46 @@ class SummDataset:
             print(f"{self.dataset_name} does not contain a test set, empty list returned")
             return list()
 
+    
     def load_dataset_safe(self, *args, **kwargs) -> Dataset:
+        """
+        This method creates a wrapper around the huggingface 'load_dataset()' function for a more robust download function,
+            the original 'load_dataset()' function occassionally fails when it cannot reach a server especially after multiple requests.
+            This method tackles this problem by attempting the download multiple times with a wait time before each retry
         
-        ## TODO: Add wait time before retry
+        The wrapper method passes all arguments and keyword arguments to the 'load_dataset' function with no alteration.
+        """
 
-        tries = NUMBER_OF_RETRIES_ALLOWED
+        tries = DEFAULT_NUMBER_OF_RETRIES_ALLOWED
+        wait_time = DEFAULT_WAIT_SECONDS_BEFORE_RETRY
+
         for i in range(tries):
             try:
-                ds = load_dataset(*args, **kwargs)
+                dataset = load_dataset(*args, **kwargs)
             except :
                 if i < tries - 1: # i is zero indexed
+                    time.sleep(wait_time)
                     continue
                 else:
-                    raise RuntimeError("Wait for a mninute and attempt downloading the dataset again. The server hosting the dataset occassionally times out.")
+                    raise RuntimeError("Wait for a mninute and attempt downloading the dataset again. \
+                                        The server hosting the dataset occassionally times out.")
             break
 
-        return ds
+        return dataset
 
 
-# Creating the train, dev and test splits from a dataset
-# the generated sets are 'train: ~.80', 'dev: ~.10', and 'test: ~10' in size
-# the splits are randomized for each object unless a seed is provided for the random generator
-# Param: Arrow Dataset, seed for the random generator to shuffle the dataset
-# rtype: Arrow DatasetDict containing the three splits
+
+
 def generate_train_dev_test_splits(dataset: Dataset, seed: int) -> DatasetDict:
+    """
+    Creating the train, dev and test splits from a dataset
+        the generated sets are 'train: ~.80', 'dev: ~.10', and 'test: ~10' in size
+        the splits are randomized for each object unless a seed is provided for the random generator
+    
+    :param dataset: Arrow Dataset with containing, usually the train set
+    :param seed: seed for the random generator to shuffle the dataset
+    :rtype: Arrow DatasetDict containing the three splits
+    """
     
     # First split train into: train and test splits
     # Further split the remaining train set into: train and dev sets
@@ -142,12 +158,16 @@ def generate_train_dev_test_splits(dataset: Dataset, seed: int) -> DatasetDict:
 
     return DatasetDict(temp_dict)
 
-    
 
-# Concatenate two dataset dicts with similar splits and columns tinto one
-# Param: A list of DatasetDicts
-# rtype: DatasetDict containing the combined data
+
+
 def concatenate_dataset_dicts(dataset_dicts: List[DatasetDict]) -> DatasetDict:    
+    """
+    Concatenate two dataset dicts with similar splits and columns tinto one
+
+    :param dataset_dicts: A list of DatasetDicts
+    :rtype: DatasetDict containing the combined data
+    """
 
     # Ensure all dataset dicts have the same splits
     setsofsplits = set(tuple(dataset_dict.keys()) for dataset_dict in dataset_dicts)
@@ -170,7 +190,3 @@ def concatenate_dataset_dicts(dataset_dicts: List[DatasetDict]) -> DatasetDict:
 # rtype: DatasetInfo 
 def get_dataset_info(data_dict: DatasetDict) -> DatasetInfo:
     return data_dict["train"].info
-
-
-
-
