@@ -8,8 +8,8 @@ on:
 
 jobs:
 
-  SETUP:
-    name: SETUP
+  TESTS:
+    name: TESTS
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
@@ -22,21 +22,6 @@ jobs:
           rm -rf .venv
           test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
           . .venv/bin/activate
-
-      - name: Debug info
-        run: |
-          . .venv/bin/activate
-          pwd
-          which pip
-          which python
-          pip freeze
-
-  TESTS:
-    name: TESTS
-    needs: [SETUP]
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
 
       - name: Debug info
         run: |
