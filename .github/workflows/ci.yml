@@ -9,3 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: echo "Setup"
+  TANGRA_TEST:
+    name: TANGRA_TEST
+    runs-on: self-hosted
+    
