@@ -1,17 +1,52 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
+
   SETUP:
     name: SETUP
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: echo "Setup"
+      - name: Echo
+        run: echo "Setup"
+
   TANGRA_TEST:
     name: TANGRA_TEST
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - run: echo "Tangra test"
+
+      - name: Echo
+        run: echo "Tangra test"
+
+      - name: Set up virtual environment
+        run: |
+          python -m venv .venv
+          . .venv/bin/activate
+
+      - name: Debug info
+        run: |
+          pwd
+          which pip
+          which python
+          pip freeze
+
+      - name: Installation
+        run: pip install -r requirements.txt
+
+      - name: Setup scripts
+        run: |
+          python setup.py develop --user
+          python download.py
+
+      - name: Tests
+        run: |
+          python tests/model_test.py
+          python tests/dataset_test.py
+          python tests/evaluation_test.py
