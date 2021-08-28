@@ -10,21 +10,16 @@ jobs:
 
   SETUP:
     name: SETUP
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Echo
-        run: echo "Setup"
-
-  TANGRA_TEST:
-    name: TANGRA_TEST
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
 
+			- name: Set up installation
+				run: pip install --upgrade pip virtualenv
+
       - name: Set up virtual environment
         run: |
-          python -m venv .venv
+					test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
           . .venv/bin/activate
 
       - name: Debug info
@@ -34,6 +29,18 @@ jobs:
           which python
           pip freeze
 
+	TESTS:
+		name: TESTS
+		needs: [SETUP]
+		runs-on: self-hosted
+		steps:
+			- name: Debug info
+				run: |
+					pwd
+					which pip
+					which python
+					pip freeze
+
       - name: Installation
         run: pip install -r requirements.txt
 
@@ -42,8 +49,11 @@ jobs:
           python setup.py develop --user
           python download.py
 
-      - name: Tests
-        run: |
-          python tests/model_test.py
-          python tests/dataset_test.py
-          python tests/evaluation_test.py
+      - name: Test models
+        run: python tests/model_test.py
+			
+			- name: Test datasets
+        run: python tests/dataset_test.py
+      
+			- name: Test evaluation metrics
+				run: python tests/evaluation_test.py
