@@ -34,6 +34,7 @@ jobs:
       - name: Installation
         run: |
           . .venv/bin/activate
+          pip install numpy
           pip install -r requirements.txt
 
       - name: Setup scripts
