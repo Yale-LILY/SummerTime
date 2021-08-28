@@ -19,6 +19,7 @@ jobs:
 
       - name: Set up virtual environment
         run: |
+          rm -rf .venv
           test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
           . .venv/bin/activate
 
