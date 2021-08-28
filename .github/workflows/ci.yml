@@ -25,6 +25,7 @@ jobs:
 
       - name: Debug info
         run: |
+          . .venv/bin/activate
           pwd
           which pip
           which python
@@ -39,24 +40,34 @@ jobs:
 
       - name: Debug info
         run: |
+          . .venv/bin/activate
           pwd
           which pip
           which python
           pip freeze
 
       - name: Installation
-        run: pip install -r requirements.txt
+        run: |
+          . .venv/bin/activate
+          pip install -r requirements.txt
 
       - name: Setup scripts
         run: |
+          . .venv/bin/activate
           python setup.py develop --user
           python download.py
 
       - name: Test models
-        run: python tests/model_test.py
+        run: |
+          . .venv/bin/activate
+          python tests/model_test.py
 
       - name: Test datasets
-        run: python tests/dataset_test.py
+        run: |
+          . .venv/bin/activate
+          python tests/dataset_test.py
       
       - name: Test evaluation metrics
-        run: python tests/evaluation_test.py
+        run: |
+          . .venv/bin/activate
+          python tests/evaluation_test.py
