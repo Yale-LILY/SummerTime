@@ -1,3 +1,4 @@
+numpy==1.19.5
 transformers==4.5.1
 torch==1.8.1
 torchvision==0.9.1
@@ -5,7 +6,7 @@ torchaudio==0.8.1
 lexrank==0.1.0
 nltk==3.6.2
 spacy==3.0.6
-pytextrank
+pytextrank==3.1.1
 datasets==1.6.2
 sentencepiece==0.1.95
 summ_eval
