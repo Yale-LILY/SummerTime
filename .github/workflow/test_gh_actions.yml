@@ -2,7 +2,7 @@ name: test-gh-actions
 on: [push, pull_request]
 jobs:
   check-bats-version:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: echo "testing 1 2 ..."
