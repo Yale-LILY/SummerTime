@@ -125,7 +125,7 @@ class SummDataset:
                     time.sleep(wait_time)
                     continue
                 else:
-                    raise RuntimeError("Wait for a mninute and attempt downloading the dataset again. \
+                    raise RuntimeError("Wait for a minute and attempt downloading the dataset again. \
                                         The server hosting the dataset occassionally times out.")
             break
 
