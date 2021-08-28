@@ -40,7 +40,7 @@ jobs:
           which python
           python --version
           pip freeze
-          echo ${{ env.TMPDIR }}
+          df -h
 
       - name: Installation
         run: |
