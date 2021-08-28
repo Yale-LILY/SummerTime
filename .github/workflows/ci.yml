@@ -12,3 +12,6 @@ jobs:
   TANGRA_TEST:
     name: TANGRA_TEST
     runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - run: echo "Tangra test"
