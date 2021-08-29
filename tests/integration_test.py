@@ -10,8 +10,7 @@ from evaluation import SUPPORTED_EVALUATION_METRICS
 
 from dataset.st_dataset import SummInstance, SummDataset
 from dataset import SUPPORTED_SUMM_DATASETS
-from dataset.non_huggingface_datasets import ScisummnetDataset, ArxivDataset
-from dataset.huggingface_datasets import MlsumDataset
+from dataset.dataset_loaders import ScisummnetDataset, ArxivDataset, MlsumDataset
 
 from helpers import print_with_color, retrieve_random_test_instances
 
