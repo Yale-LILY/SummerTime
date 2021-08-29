@@ -7,6 +7,8 @@ on:
   pull_request:
 
 jobs:
+
+  # Code style and linting
   STYLE:
     name: STYLE
     runs-on: self-hosted
@@ -39,6 +41,7 @@ jobs:
       - name: Run flake8
         run: flake8 --count .
 
+  # Unit tests
   TESTS:
     name: TESTS
     runs-on: self-hosted
@@ -47,6 +50,7 @@ jobs:
       TMPDIR: /data/lily/ttf5/tmp
       TRANSFORMERS_CACHE: /data/lily/ttf5/cache/
       HF_HOME: /data/lily/ttf5/cache/
+
     steps:
       - uses: actions/checkout@v2
 
@@ -80,7 +84,7 @@ jobs:
           . .venv/bin/activate
           pip install numpy
           pip install -r requirements.txt
-          pip install -U  git+https://github.com/bheinzerling/pyrouge.git
+          pip install -U git+https://github.com/bheinzerling/pyrouge.git
 
       - name: Setup scripts
         run: |
