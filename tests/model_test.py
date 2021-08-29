@@ -1,7 +1,7 @@
 import unittest
 from typing import List
 
-from dataset.huggingface_datasets import CnndmDataset, MultinewsDataset, PubmedqaDataset
+from dataset.dataset_loaders import CnndmDataset, MultinewsDataset, PubmedqaDataset
 from model import SUPPORTED_SUMM_MODELS, list_all_models
 from model.single_doc import LexRankModel, LongformerModel
 from model.dialogue import HMNetModel
