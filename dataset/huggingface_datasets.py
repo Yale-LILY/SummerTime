@@ -1,7 +1,7 @@
 from tqdm import tqdm
 from typing import Optional, List, Tuple, Generator
 
-from datasets import Dataset, load_dataset
+from datasets import Dataset
 
 from dataset.st_dataset import SummInstance, SummDataset, generate_train_dev_test_splits, concatenate_dataset_dicts
 
@@ -44,7 +44,7 @@ class CnndmDataset(HuggingfaceDataset):
     
     def __init__(self):
         # Load the train, dev and test set from the huggingface datasets
-        cnn_dataset = load_dataset('cnn_dailymail', '3.0.0')
+        cnn_dataset = self.load_dataset_safe('cnn_dailymail', '3.0.0')
         info_set = cnn_dataset['train']
         
         processed_train_set = CnndmDataset.process_cnndm_data(cnn_dataset['train'])
@@ -81,7 +81,7 @@ class MultinewsDataset(HuggingfaceDataset):
     
     def __init__(self):
         # Load the train, dev and test set from the huggingface datasets
-        multinews_dataset = load_dataset("multi_news")
+        multinews_dataset = self.load_dataset_safe("multi_news")
         info_set = multinews_dataset['train']
         
         processed_train_set = MultinewsDataset.process_multinews_data(multinews_dataset['train'])
@@ -120,7 +120,7 @@ class SamsumDataset(HuggingfaceDataset):
     
     def __init__(self):
         # Load the train, dev and test set from the huggingface datasets
-        samsum_dataset = load_dataset('samsum')
+        samsum_dataset = self.load_dataset_safe('samsum')
         info_set = samsum_dataset['train']
         
         processed_train_set = SamsumDataset.process_samsum_data(samsum_dataset['train'])
@@ -157,7 +157,7 @@ class XsumDataset(HuggingfaceDataset):
     
     def __init__(self):
         # Load the train, dev and test set from the huggingface datasets
-        xsum_dataset = load_dataset("xsum")
+        xsum_dataset = self.load_dataset_safe("xsum")
         info_set = xsum_dataset['train']
         
         processed_train_set = XsumDataset.process_xsum_data(xsum_dataset['train'])
@@ -194,7 +194,7 @@ class PubmedqaDataset(HuggingfaceDataset):
     
     def __init__(self, seed=None):
         # Load the train, dev and test set from the huggingface datasets
-        pubmedqa_dataset = load_dataset("pubmed_qa", "pqa_artificial")
+        pubmedqa_dataset = self.load_dataset_safe("pubmed_qa", "pqa_artificial")
         info_set = pubmedqa_dataset['train']
 
         # No dev and test splits provided; hence creating these splits from the train set 
@@ -220,8 +220,6 @@ class PubmedqaDataset(HuggingfaceDataset):
             summ_instance = SummInstance(source=context, summary=answer, query=query)
             
             yield summ_instance
-
-
 
 
 
@@ -286,7 +284,7 @@ class MlsumDataset(HuggingfaceDataset):
         # Concatenate selected languaeges into one dataset
         language_datasets = []
         for language in selected_languages:
-            dataset = load_dataset("mlsum", language)
+            dataset = self.load_dataset_safe("mlsum", language)
             language_datasets.append(dataset)
 
         mlsum_dataset = concatenate_dataset_dicts(language_datasets)

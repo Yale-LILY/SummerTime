@@ -2,7 +2,7 @@ import os
 from tqdm import tqdm
 from typing import Optional, List, Tuple, Generator
 
-from datasets import Dataset, load_dataset
+from datasets import Dataset
 
 from dataset.st_dataset import SummInstance, SummDataset, generate_train_dev_test_splits
 
@@ -33,7 +33,7 @@ class ScisummnetDataset(SummDataset):
     def __init__(self, seed=None):   
 
         # Load dataset
-        scisummnet_dataset = load_dataset(path=ScisummnetDataset.builder_script_path)
+        scisummnet_dataset = self.load_dataset_safe(path=ScisummnetDataset.builder_script_path)
         
         # No dev and test splits provided; hence creating these splits from the train set 
         scisummnet_split_dataset = generate_train_dev_test_splits(scisummnet_dataset['train'], seed=seed)
@@ -76,7 +76,7 @@ class SummscreenDataset(SummDataset):
     def __init__(self):
         
         # Load dataset
-        summscreen_dataset = load_dataset(path=SummscreenDataset.builder_script_path)
+        summscreen_dataset = self.load_dataset_safe(path=SummscreenDataset.builder_script_path)
         
         #  Process the train, dev and test se
         processed_train_set = SummscreenDataset.process_summscreen_data(summscreen_dataset["train"])
@@ -128,7 +128,7 @@ class QMsumDataset(SummDataset):
     def __init__(self):
         
         # Load dataset
-        qmsum_dataset = load_dataset(path=QMsumDataset.builder_script_path)
+        qmsum_dataset = self.load_dataset_safe(path=QMsumDataset.builder_script_path)
 
         # Extract the dataset entries from folders and load into dataset
         processed_train_set = QMsumDataset.process_qmsum_data(qmsum_dataset["train"])
@@ -186,7 +186,7 @@ class ArxivDataset(SummDataset):
               "*****************", sep="\n")
         
         # Load dataset
-        arxiv_dataset = load_dataset(path=ArxivDataset.builder_script_path)
+        arxiv_dataset = self.load_dataset_safe(path=ArxivDataset.builder_script_path)
 
         # Extract the dataset entries from folders and load into dataset
         processed_train_set = ArxivDataset.process_arxiv_data(arxiv_dataset["train"])
