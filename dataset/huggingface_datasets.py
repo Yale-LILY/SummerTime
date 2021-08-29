@@ -59,7 +59,7 @@ class CnndmDataset(HuggingfaceDataset):
         
     @staticmethod
     def process_cnndm_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True):
+        for instance in tqdm(data, position=0, leave=True, ascii=True):
             article: str = instance['article']
             highlights: str = instance['highlights']
             summ_instance = SummInstance(source=article, summary=highlights)
@@ -96,7 +96,7 @@ class MultinewsDataset(HuggingfaceDataset):
         
     @staticmethod
     def process_multinews_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True):
+        for instance in tqdm(data, position=0, leave=True, ascii=True):
             
             document: list = [doc for doc in instance['document'].split('|||||') if doc]  # removes the empty string generated
                                                                                           # since each doc ends with the delimiting token '|||||'
@@ -135,7 +135,7 @@ class SamsumDataset(HuggingfaceDataset):
         
     @staticmethod
     def process_samsum_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True):
+        for instance in tqdm(data, position=0, leave=True, ascii=True):
             dialogue: List = instance['dialogue'].split('\r\n')  # split each dialogue into a list of strings such as
                                                                  # ["speaker1 : utter..", "speaker2 : utter..."]
             summary: str = instance['summary']
@@ -172,7 +172,7 @@ class XsumDataset(HuggingfaceDataset):
         
     @staticmethod
     def process_xsum_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True):
+        for instance in tqdm(data, position=0, leave=True, ascii=True):
             document: List = instance['document']
             summary: str = instance['summary']
             summ_instance = SummInstance(source=document, summary=summary)
@@ -213,7 +213,7 @@ class PubmedqaDataset(HuggingfaceDataset):
         
     @staticmethod
     def process_pubmedqa_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True):
+        for instance in tqdm(data, position=0, leave=True, ascii=True):
             context: str = " ".join(instance["context"]["contexts"])
             answer: str = instance["long_answer"]
             query: str = instance["question"]
@@ -306,7 +306,7 @@ class MlsumDataset(HuggingfaceDataset):
         
     @staticmethod
     def process_mlsum_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True):
+        for instance in tqdm(data, position=0, leave=True, ascii=True):
             article: List = instance['text']
             summary: str = instance['summary']
             summ_instance = SummInstance(source=article, summary=summary)

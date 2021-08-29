@@ -51,7 +51,7 @@ class ScisummnetDataset(SummDataset):
 
     @staticmethod
     def process_scisummnet_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True):
+        for instance in tqdm(data, position=0, leave=True, ascii=True):
             docs: List = [instance['document_xml'], instance['citing_sentences_annotated.json']]
             summary: str = instance['summary']
             summ_instance = SummInstance(source=docs, summary=summary)
@@ -98,7 +98,7 @@ class SummscreenDataset(SummDataset):
     
     @staticmethod
     def process_summscreen_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True):
+        for instance in tqdm(data, position=0, leave=True, ascii=True):
             transcript: List = instance['transcript']   #convert string into a list of string dialogues
             recap: str = instance['recap']
             summ_instance = SummInstance(source=transcript, summary=recap)
@@ -147,7 +147,7 @@ class QMsumDataset(SummDataset):
 
     @staticmethod
     def process_qmsum_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True):
+        for instance in tqdm(data, position=0, leave=True, ascii=True):
             for query_set in instance['general_query_list'] + instance['specific_query_list']:
                 meeting: List = [utterance['speaker'] + " : " + utterance['content']\
                                 for utterance in instance['meeting_transcripts']]
@@ -204,7 +204,7 @@ class ArxivDataset(SummDataset):
 
     @staticmethod
     def process_arxiv_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True):
+        for instance in tqdm(data, position=0, leave=True, ascii=True):
             article: List = instance['article_text']
             abstract: str = " ".join(instance['abstract_text'])
             summ_instance = SummInstance(source=article, summary=abstract)
