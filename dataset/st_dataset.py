@@ -154,7 +154,7 @@ class SummDataset:
                 else:
                     raise RuntimeError(
                         "Wait for a minute and attempt downloading the dataset again. \
-                                        The server hosting the dataset occassionally times out."
+                         The server hosting the dataset occassionally times out."
                     )
             break
 

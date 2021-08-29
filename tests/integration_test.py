@@ -10,7 +10,7 @@ from evaluation import SUPPORTED_EVALUATION_METRICS
 
 from dataset.st_dataset import SummInstance, SummDataset
 from dataset import SUPPORTED_SUMM_DATASETS
-from dataset.dataset_loaders import ScisummnetDataset, ArxivDataset, MlsumDataset
+from dataset.dataset_loaders import ScisummnetDataset, ArxivDataset
 
 from helpers import print_with_color, retrieve_random_test_instances
 
@@ -73,8 +73,8 @@ class IntegrationTests(unittest.TestCase):
 
         print_with_color("\n\nBeginning integration tests...", "35")
         for dataset_cls in SUPPORTED_SUMM_DATASETS:
-            # TODO: Temporarily skipping MLSumm (Gitlab: server-side login gating) and Arxiv (size/time)
-            if dataset_cls in [MlsumDataset, ArxivDataset]:
+            # TODO: Temporarily skipping Arxiv (size/time)
+            if dataset_cls in [ArxivDataset]:
                 continue
             dataset = dataset_cls()
             if dataset.train_set is not None:
