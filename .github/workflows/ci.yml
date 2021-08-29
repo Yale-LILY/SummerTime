@@ -7,6 +7,37 @@ on:
   pull_request:
 
 jobs:
+  STYLE:
+    name: STYLE
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Installation
+        run: |
+          pip install black
+          pip install flake8
+
+      - name: Debug info
+        run: |
+          which pip
+          pip --version
+          which python
+          python --version
+          pip freeze
+          df -h
+
+      - name: Run black
+        run: black --check .
+
+      - name: Run flake8
+        run: flake8 --count .
 
   TESTS:
     name: TESTS

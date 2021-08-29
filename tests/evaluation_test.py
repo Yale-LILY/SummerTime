@@ -1,25 +1,35 @@
 import unittest
 from typing import Tuple, List, Dict
 
-from evaluation import SUPPORTED_EVALUATION_METRICS, Rouge, RougeWe
+from evaluation import SUPPORTED_EVALUATION_METRICS
 
 from helpers import print_with_color
 
+
 class TestEvaluationMetrics(unittest.TestCase):
-    def get_summary_pairs(self, size: int=1) -> Tuple[List[str]]:
-        test_output = [ """
+    def get_summary_pairs(self, size: int = 1) -> Tuple[List[str]]:
+        test_output = (
+            [
+                """
         Glowing letters that had been hanging above
         the Yankee stadium from 1976 to 2008 were placed for auction at
         Sotheby’s on Wednesday, but were not sold, The current owner
-        of the sign is Reggie Jackson, a Yankee hall-of-famer."""] * size
-        test_target = ["""
+        of the sign is Reggie Jackson, a Yankee hall-of-famer."""
+            ]
+            * size
+        )
+        test_target = (
+            [
+                """
         An auction for the lights from Yankee Stadium failed to
         produce any bids on Wednesday at Sotheby’s. The lights,
         currently owned by former Yankees player Reggie Jackson,
-        lit the stadium from 1976 until 2008."""] * size 
+        lit the stadium from 1976 until 2008."""
+            ]
+            * size
+        )
 
         return test_output, test_target
-
 
     def test_evaluate(self):
         print_with_color(f"{'#'*10} Testing all evaluation metrics... {'#'*10}\n", "35")
@@ -50,9 +60,12 @@ class TestEvaluationMetrics(unittest.TestCase):
 
             print_with_color(f"{metric_class.metric_name} test complete\n", "32")
             num_eval_metrics += 1
-        
-        print_with_color(f"{'#'*10} Evaluation metrics test complete ({num_eval_metrics} metrics) {'#'*10}", "32")
+
+        print_with_color(
+            f"{'#'*10} Evaluation metrics test complete ({num_eval_metrics} metrics) {'#'*10}",
+            "32",
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

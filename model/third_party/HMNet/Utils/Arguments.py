@@ -3,6 +3,7 @@
 
 import os
 
+
 class Arguments:
     def __init__(self, confFile):
         if not os.path.exists(confFile):
@@ -24,7 +25,7 @@ class Arguments:
             return False
 
     def is_bool(self, s):
-        return s.lower() == 'true' or s.lower() == 'false'
+        return s.lower() == "true" or s.lower() == "false"
 
     # def readHyperDriveArguments(self, arguments):
     #     hyperdrive_opts = {}
@@ -46,9 +47,9 @@ class Arguments:
             elif self.is_float(value):
                 opt[key] = float(value)
             elif self.is_bool(value):
-                opt[key] = value.lower() == 'true'
+                opt[key] = value.lower() == "true"
         else:
-            print('Warning: Option key %s already exists' % key)
+            print("Warning: Option key %s already exists" % key)
 
     def readArguments(self):
         """
@@ -61,18 +62,18 @@ class Arguments:
          - multiple values are white-space separated, hence no spaces allowed in keys or values
         """
         opt = {}
-        with open(self.confFile, encoding='utf-8') as f:
-            prev_line = ''  # allow multi-line arguments
+        with open(self.confFile, encoding="utf-8") as f:
+            prev_line = ""  # allow multi-line arguments
             for line in f:
                 # concatenate previous line if it ended in backslash
                 line = prev_line + line.strip()
-                if line.endswith('\\'):
-                    prev_line = line[:-1] + ' '
+                if line.endswith("\\"):
+                    prev_line = line[:-1] + " "
                     continue
-                prev_line = ''
-                l = line.replace('\t', ' ')
+                prev_line = ""
+                l = line.replace("\t", " ")
                 # strip comments
-                pos = l.find('#')
+                pos = l.find("#")
                 if pos >= 0:
                     l = l[:pos]
                 parts = l.split()
@@ -84,7 +85,7 @@ class Arguments:
                         opt[key] = True
                 else:
                     key = parts[0]
-                    value = ' '.join(parts[1:])
+                    value = " ".join(parts[1:])
                     self.add_opt(opt, key, value)
             assert not prev_line, "Config file must not end with a backslash"
         return opt
