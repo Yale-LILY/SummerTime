@@ -1,5 +1,4 @@
 from dataset.st_dataset import SummDataset, SummInstance
-from dataset.non_huggingface_datasets import ScisummnetDataset
 
 import random
 from typing import List, Tuple
