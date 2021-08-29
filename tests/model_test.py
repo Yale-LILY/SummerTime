@@ -6,7 +6,11 @@ from model import SUPPORTED_SUMM_MODELS, list_all_models
 from model.single_doc import LexRankModel, LongformerModel
 from model.dialogue import HMNetModel
 
-from helpers import print_with_color, get_summarization_setget_query_based_summarization_set
+from helpers import (
+    print_with_color,
+    get_summarization_set,
+    get_query_based_summarization_set,
+)
 
 
 class TestModels(unittest.TestCase):
