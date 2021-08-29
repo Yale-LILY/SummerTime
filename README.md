@@ -347,8 +347,46 @@ print(rougewe_score)
 ```
 
 
-## Tests
-Our continuous integration system is provided through [Github actions](https://docs.github.com/en/actions). When any pull request is created or updated or whenever `main` is updated, the repository's unit tests will be run as build jobs on tangra for that pull request. Build jobs will either pass or fail within a few minutes, and build statuses are visible under [Actions](https://github.com/Yale-LILY/SummerTime/actions). Please ensure that the most recent commit in pull requests pass all checks (i.e. all steps in all jobs run to completion) before merging, or request a review. To skip a build on any particular commit, append `[skip ci]` to the commit message. Note that PRs with the substring `/no-ci/` anywhere in the branch name will not be built.
+## To contribute
+
+### Pull requests
+Create a pull request and name it [`your_gh_username`]/[`your_branch_name`]. If needed, resolve your own branch's merge conflicts with main. Do not push directly to main.
+
+### Code formatting
+If you haven't already, install `black` and `flake8`:
+
+```bash
+pip install black
+pip install flake8
+```
+
+Before pushing commits or merging branches, run the following commands from the project root. Note that `black` will write to files, and that you should add and commit changes made by `black` before pushing:
+
+```bash
+black .
+flake8 .
+```
+
+Or if you would like to lint specific files:
+
+```bash
+black path/to/specific/file.py
+flake8 path/to/specific/file.py
+```
+
+Ensure that `black` does not reformat any files and that `flake8` does not print any errors. If you would like to override or ignore any of the preferences or practices enforced by `black` or `flake8`, please leave a comment in your PR for any lines of code that generate warning or error logs. Do not directly edit config files such as `setup.cfg`.
+
+See the [`black` docs](https://black.readthedocs.io/en/stable/index.html) and [`flake8` docs](https://flake8.pycqa.org/en/latest/user/index.html) for documentation on installation, ignoring files/lines, and advanced usage. In addition, the following may be useful:
+
+- `black [file.py] --diff` to preview changes as diffs instead of directly making changes
+- `black [file.py] --check` to preview changes with status codes instead of directly making changes
+- `git diff -u | flake8 --diff` to only run flake8 on working branch changes
+
+
+Note that our CI test suite will include invoking `black --check .` and `flake8 --count .` on all non-unittest and non-setup Python files, and zero error-level output is required for all tests to pass.
+
+### Tests
+Our continuous integration system is provided through [Github actions](https://docs.github.com/en/actions). When any pull request is created or updated or whenever `main` is updated, the repository's unit tests will be run as build jobs on tangra for that pull request. Build jobs will either pass or fail within a few minutes, and build statuses and logs are visible under [Actions](https://github.com/Yale-LILY/SummerTime/actions). Please ensure that the most recent commit in pull requests passes all checks (i.e. all steps in all jobs run to completion) before merging, or request a review. To skip a build on any particular commit, append `[skip ci]` to the commit message. Note that PRs with the substring `/no-ci/` anywhere in the branch name will not be included in CI.
 
 
 
