@@ -143,5 +143,6 @@ cython_debug/
 # HMNet run confs
 model/dialogue/hmnet/config/dialogue.conf_conf~/run_*/*
 model/dialogue/hmnet/ExampleRawData/meeting_summarization/**/*.jsonl.gz
+model/third_party/HMNet/ExampleInitModel/AMI-finetuned/model.pt
 
 sandbox.py

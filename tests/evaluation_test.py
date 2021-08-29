@@ -27,9 +27,9 @@ class TestEvaluationMetrics(unittest.TestCase):
         num_eval_metrics = 0
 
         for metric_class in SUPPORTED_EVALUATION_METRICS:
-            if metric_class in [Rouge, RougeWe]:
-                # TODO: Temporarily skipping Rouge/RougeWE metrics to avoid local bug.
-                continue
+            # if metric_class in [Rouge, RougeWe]:
+            #     # TODO: Temporarily skipping Rouge/RougeWE metrics to avoid local bug.
+            #     continue
 
             print_with_color(f"Testing {metric_class.metric_name}...", "35")
 

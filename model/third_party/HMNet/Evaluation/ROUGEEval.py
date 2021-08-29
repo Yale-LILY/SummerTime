@@ -5,7 +5,7 @@ import os
 import re
 import shutil
 from string import ascii_uppercase
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from model.third_party.HMNet.Evaluation.OldROUGEEval import rouge
 from model.third_party.HMNet.ThirdParty.ROUGE import pyrouge
 from shutil import copyfile
