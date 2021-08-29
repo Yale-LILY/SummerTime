@@ -1,8 +1,7 @@
 import abc
-import sys
 import time
 import json
-from typing import Dict, List, Optional, Union, Generator
+from typing import List, Optional, Union, Generator
 
 from datasets import (
     Dataset,
@@ -148,7 +147,7 @@ class SummDataset:
         for i in range(tries):
             try:
                 dataset = load_dataset(*args, **kwargs)
-            except:
+            except ConnectionError:
                 if i < tries - 1:  # i is zero indexed
                     time.sleep(wait_time)
                     continue
@@ -214,8 +213,8 @@ class SummDataset:
             dataset_trainval_split = dataset_dict["train"].train_test_split(
                 test_size=TEST_OR_VAL_SPLIT_RATIO, seed=seed
             )
-            dataset_dict["train"] = dataset_traintest_split["train"]
-            dataset_dict["validation"] = dataset_traintest_split["test"]
+            dataset_dict["train"] = dataset_trainval_split["train"]
+            dataset_dict["validation"] = dataset_trainval_split["test"]
 
         return dataset_dict
 

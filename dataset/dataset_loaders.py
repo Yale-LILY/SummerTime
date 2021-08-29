@@ -1,8 +1,8 @@
 import os
 from tqdm import tqdm
-from typing import Optional, List, Tuple, Generator
+from typing import List, Generator
 
-from datasets import Dataset, DatasetInfo
+from datasets import Dataset
 
 from dataset.st_dataset import SummInstance, SummDataset
 
@@ -173,13 +173,13 @@ class MlsumDataset(SummDataset):
     huggingface_page = "https://huggingface.co/datasets/mlsum"
     supported_languages = ["de", "es", "fr", "ru", "tu"]
 
-    mlsum_instantiation_guide = """The languages supported for the Mlsum Dataset are: 
+    mlsum_instantiation_guide = """The languages supported for the Mlsum Dataset are:
                 de - German
                 es - Spanish
                 fr - French
                 ru - Russian
                 tu - Turkish
-                    
+
                 Examples to instantiate the dataset:
                 1. Dataset with only one language
                    dataset = MlsumDataset({language_token})
@@ -193,8 +193,7 @@ class MlsumDataset(SummDataset):
 
                 3. Dataset with all supported languages (default)
                    dataset = MlsumDataset(all)
-                   dataset = MlsumDataset() 
-                   
+                   dataset = MlsumDataset()
                 """
 
     def __init__(self, languages="all"):
@@ -367,8 +366,8 @@ class ArxivDataset(SummDataset):
 
     dataset_name = "Arxiv_longsummarization"
     description = """
-    A summarization dataset comprised of pairs of scientific papers. 
-    The dataset provides a challenging testbed for abstractive summarization. 
+    A summarization dataset comprised of pairs of scientific papers.
+    The dataset provides a challenging testbed for abstractive summarization.
     It contains papers and their abstracts.
     """
 
