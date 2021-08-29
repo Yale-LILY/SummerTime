@@ -56,7 +56,7 @@ jobs:
       TMPDIR: /data/lily/ttf5/tmp
       TRANSFORMERS_CACHE: /data/lily/ttf5/cache/
       HF_HOME: /data/lily/ttf5/cache/
-    needs: [STYLE]
+    # needs: [STYLE]
 
     steps:
       - uses: actions/checkout@v2
