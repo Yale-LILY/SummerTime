@@ -1,7 +1,7 @@
 from evaluation.summeval_metric import SummEvalMetric
 from typing import List, Dict
 
-# import nltk
+import nltk
 
 
 class RougeWe(SummEvalMetric):
@@ -13,7 +13,7 @@ class RougeWe(SummEvalMetric):
     def __init__(self):
         from summ_eval.rouge_we_metric import RougeWeMetric
 
-        # nltk.download("stopwords")
+        nltk.download("stopwords")
         se_metric = RougeWeMetric()
         super(RougeWe, self).__init__(se_metric)
 
