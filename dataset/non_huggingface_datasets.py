@@ -68,7 +68,7 @@ class ScisummnetDataset(SummDataset):
 
     @staticmethod
     def process_scisummnet_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True, ascii=True):
+        for instance in tqdm(data, position=0, leave=True):
             docs: List = [
                 instance["document_xml"],
                 instance["citing_sentences_annotated.json"],
@@ -129,7 +129,7 @@ class SummscreenDataset(SummDataset):
 
     @staticmethod
     def process_summscreen_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True, ascii=True):
+        for instance in tqdm(data, position=0, leave=True):
             transcript: List = instance[
                 "transcript"
             ]  # convert string into a list of string dialogues
@@ -179,7 +179,7 @@ class QMsumDataset(SummDataset):
 
     @staticmethod
     def process_qmsum_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True, ascii=True):
+        for instance in tqdm(data, position=0, leave=True):
             for query_set in (
                 instance["general_query_list"] + instance["specific_query_list"]
             ):
@@ -246,7 +246,7 @@ class ArxivDataset(SummDataset):
 
     @staticmethod
     def process_arxiv_data(data: Dataset) -> Generator[SummInstance, None, None]:
-        for instance in tqdm(data, position=0, leave=True, ascii=True):
+        for instance in tqdm(data, position=0, leave=True):
             article: List = instance["article_text"]
             abstract: str = " ".join(instance["abstract_text"])
             summ_instance = SummInstance(source=article, summary=abstract)

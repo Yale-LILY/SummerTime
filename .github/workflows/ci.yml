@@ -16,10 +16,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - name: Setup Python
-      #   uses: actions/setup-python@v2
-      #   with:
-      #     python-version: 3.8
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        env:
+          # Log useful debugging information.
+          ACTIONS_STEP_DEBUG: 'true'
+        with:
+          python-version: 3.8
 
       - name: Installation
         run: |
@@ -50,6 +53,7 @@ jobs:
       TMPDIR: /data/lily/ttf5/tmp
       TRANSFORMERS_CACHE: /data/lily/ttf5/cache/
       HF_HOME: /data/lily/ttf5/cache/
+    needs: [STYLE]
 
     steps:
       - uses: actions/checkout@v2
