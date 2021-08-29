@@ -21,8 +21,8 @@ _CITATION = """
 """
 
 _DESCRIPTION = """
-A summary of scientific papers should ideally incorporate the impact of the papers on the research community 
-reflected by citations. To facilitate research in citation-aware scientific paper summarization (Scisumm), 
+A summary of scientific papers should ideally incorporate the impact of the papers on the research community
+reflected by citations. To facilitate research in citation-aware scientific paper summarization (Scisumm),
 the CL-Scisumm shared task has been organized since 2014 for papers in the computational linguistics and NLP domain.
 """
 
@@ -64,35 +64,42 @@ class SummertimeScisummnet(datasets.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         my_urls = _URLs
         path = dl_manager.download_and_extract(my_urls)
-        trainpath = os.path.join(path, 'scisummnet_release1.1__20190413', 'top1000_complete')
+        trainpath = os.path.join(
+            path, "scisummnet_release1.1__20190413", "top1000_complete"
+        )
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs = {"extraction_path": trainpath, "split": "train"}
+                gen_kwargs={"extraction_path": trainpath, "split": "train"},
             )
         ]
 
-    def _generate_examples(self,  extraction_path, split):
+    def _generate_examples(self, extraction_path, split):
         """Yields examples."""
 
         for folder in os.listdir(extraction_path):
 
             entry = {}
-            
-            entry['entry_number'] = folder
 
-            doc_xml_path = os.path.join(extraction_path, folder, 'Documents_xml', folder + ".xml")
-            with open (doc_xml_path, "r", encoding='utf-8') as f:
-                entry['document_xml'] = f.read()
+            entry["entry_number"] = folder
 
-            cite_annot_path = os.path.join(extraction_path, folder, 'citing_sentences_annotated.json')
-            with open (cite_annot_path, "r", encoding='utf-8') as f:
-                entry['citing_sentences_annotated.json'] = f.read()
+            doc_xml_path = os.path.join(
+                extraction_path, folder, "Documents_xml", folder + ".xml"
+            )
+            with open(doc_xml_path, "r", encoding="utf-8") as f:
+                entry["document_xml"] = f.read()
 
-            summary_path = os.path.join(extraction_path, folder, 'summary', folder + ".gold.txt")
-            with open (summary_path, "r", encoding='utf-8') as f:
-                entry['summary'] = f.read()
+            cite_annot_path = os.path.join(
+                extraction_path, folder, "citing_sentences_annotated.json"
+            )
+            with open(cite_annot_path, "r", encoding="utf-8") as f:
+                entry["citing_sentences_annotated.json"] = f.read()
 
-            yield entry['entry_number'], entry
-            
+            summary_path = os.path.join(
+                extraction_path, folder, "summary", folder + ".gold.txt"
+            )
+            with open(summary_path, "r", encoding="utf-8") as f:
+                entry["summary"] = f.read()
+
+            yield entry["entry_number"], entry

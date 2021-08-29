@@ -8,6 +8,46 @@ on:
 
 jobs:
 
+  # Code style and linting
+  STYLE:
+    name: STYLE
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # - name: Test SSL workaround
+      #   run: python -m pip install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org --upgrade pip
+
+      # - name: Setup Python
+      #   uses: actions/setup-python@v2
+      #   env:
+      #     # Log useful debugging information.
+      #     ACTIONS_STEP_DEBUG: 'true'
+      #   with:
+      #     python-version: 3.8
+
+      - name: Installation
+        run: |
+          pip install black
+          pip install flake8
+
+      - name: Debug info
+        run: |
+          which pip
+          pip --version
+          which python
+          python --version
+          pip freeze
+          df -h
+
+      - name: Run black
+        run: black --check .
+
+      - name: Run flake8
+        run: flake8 --count .
+
+  # Unit tests
   TESTS:
     name: TESTS
     runs-on: self-hosted
@@ -16,6 +56,8 @@ jobs:
       TMPDIR: /data/lily/ttf5/tmp
       TRANSFORMERS_CACHE: /data/lily/ttf5/cache/
       HF_HOME: /data/lily/ttf5/cache/
+    # needs: [STYLE]
+
     steps:
       - uses: actions/checkout@v2
 
@@ -49,7 +91,7 @@ jobs:
           . .venv/bin/activate
           pip install numpy
           pip install -r requirements.txt
-          pip install -U  git+https://github.com/bheinzerling/pyrouge.git
+          pip install -U git+https://github.com/bheinzerling/pyrouge.git
 
       - name: Setup scripts
         run: |
