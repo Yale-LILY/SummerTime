@@ -30,6 +30,5 @@ def list_all_datasets():
     all_datasets = []
     for ds in SUPPORTED_SUMM_DATASETS:
         all_datasets.append(ds.__name__)
-    
+
     return all_datasets
-    
