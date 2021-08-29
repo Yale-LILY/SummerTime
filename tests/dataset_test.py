@@ -1,7 +1,7 @@
 import unittest
 
 from dataset.dataset_loaders import ArxivDataset
-from dataset import SUPPORTED_SUMM_DATASETS, list_all_datasets, list_all_datasets_detailed
+from dataset import SUPPORTED_SUMM_DATASETS, list_all_datasets
 from dataset.st_dataset import SummDataset, SummInstance
 
 from helpers import print_with_color
@@ -21,7 +21,6 @@ class TestDatasets(unittest.TestCase):
         print_with_color(f"{'#' * 10} Testing all datasets... {'#' * 10}\n\n", "35")
 
         print(list_all_datasets())
-        print(list_all_datasets_detailed())
 
         num_datasets = 0
 

@@ -29,16 +29,7 @@ SUPPORTED_SUMM_DATASETS = [
 def list_all_datasets():
     all_datasets = []
     for ds in SUPPORTED_SUMM_DATASETS:
-        ds_obj = ds()
-        all_datasets.append(ds_obj.dataset_name)
+        all_datasets.append(ds.__name__)
     
     return all_datasets
-
-
-def list_all_datasets_detailed():
-    all_dataset_dict = {}
-    for ds in SUPPORTED_SUMM_DATASETS:
-        ds_obj = ds()
-        all_dataset_dict[ds_obj.dataset_name] = ds_obj.description
     
-    return all_dataset_dict
