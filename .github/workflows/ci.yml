@@ -14,7 +14,8 @@ jobs:
     env:
       ROUGE_HOME: /data/lily/ttf5/ci-test/actions-runner/_work/SummerTime/SummerTime/.venv/lib/python3.9/site-packages/summ_eval/ROUGE-1.5.5/
       TMPDIR: /data/lily/ttf5/tmp
-      TRANSFORMERS_CACHE: /data/lily/ttf5/cache
+      TRANSFORMERS_CACHE: /data/lily/ttf5/cache/
+      HF_HOME: /data/lily/ttf5/cache/
     steps:
       - uses: actions/checkout@v2
 
