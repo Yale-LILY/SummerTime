@@ -1,7 +1,7 @@
-import abc
-import time
-import json
-from typing import List, Optional, Union, Generator
+from abc import abstractmethod
+from pprint import pformat
+from time import sleep
+from typing import List, Tuple, Optional, Union, Generator
 
 from datasets import (
     Dataset,
@@ -51,7 +51,7 @@ class SummInstance:
         if self.query:
             instance_dict["query"] = self.query
 
-        return json.dumps(instance_dict, indent=1)
+        return pformat(instance_dict, indent=1)
 
 
 class SummDataset:
@@ -62,8 +62,15 @@ class SummDataset:
         * Query-based summarization
     """
 
-    def __init__(self, dataset_args=None, splitseed=None):
-        """Create dataset information from the huggingface Dataset class"""
+    def __init__(self, dataset_args :Optional[Tuple[str]] = None, splitseed :Optional[int] = None):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param dataset_args: a tuple containing arguments to passed on to the 'load_dataset_safe' method.
+            Only required for datasets loaded from the Huggingface library.
+            The arguments for each dataset are different and comprise of a string or multiple strings
+        :param splitseed: a number to instantiate the random generator used to generate val/test splits
+            for the datasets without them
+        """
 
         # Load dataset from huggingface, use default huggingface arguments
         if self.huggingface_dataset:
@@ -149,7 +156,7 @@ class SummDataset:
                 dataset = load_dataset(*args, **kwargs)
             except ConnectionError:
                 if i < tries - 1:  # i is zero indexed
-                    time.sleep(wait_time)
+                    sleep(wait_time)
                     continue
                 else:
                     raise RuntimeError(
@@ -169,7 +176,7 @@ class SummDataset:
         """
         return data_dict["train"].info
 
-    @abc.abstractmethod
+    @abstractmethod
     def _process_data(self, dataset: Dataset) -> Generator[SummInstance, None, None]:
         """
         Abstract class method to process the data contained within each dataset.
@@ -239,6 +246,23 @@ class SummDataset:
             temp_dict[split] = concatenate_datasets(split_set)
 
         return DatasetDict(temp_dict)
+
+    @classmethod
+    def generate_basic_description(cls) -> str:
+        """
+        Automatically generate the basic description string based on the attributes
+        :param cls: class object
+        """
+        
+        basic_description = (
+            f": {cls.dataset_name} is a "
+            f"{'query-based ' if cls.is_query_based else ''}"
+            f"{'dialogue ' if cls.is_dialogue_based else ''}"
+            f"{'multi-document' if cls.is_multi_document else 'single-document'} "
+            f"summarization dataset."
+        )
+
+        return basic_description
 
     def show_description(self):
         """

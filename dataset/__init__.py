@@ -29,6 +29,8 @@ SUPPORTED_SUMM_DATASETS = [
 def list_all_datasets():
     all_datasets = []
     for ds in SUPPORTED_SUMM_DATASETS:
-        all_datasets.append(ds.__name__)
+        dataset_description = ds.generate_basic_description()
+
+        all_datasets.append((ds.dataset_name, dataset_description))
 
     return all_datasets

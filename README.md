@@ -147,7 +147,7 @@ SummerTime supports different summarization datasets across different domains (e
 | MlsumDataset    | Multi-lingual News  | 1.5M+       | 632         | 34          |                    | :heavy_check_mark: |                    | German, Spanish, French, Russian, Turkish |
 | Multi-News      | News                | 56k         | 2.1k        | 263.8       |                    | :heavy_check_mark: |                    |                                           |
 | SAMSum          | Open-domain         | 16k         | 94          | 20          |                    |                    | :heavy_check_mark: |                                           |
-| PubmedqaDataset | Medical             | 272k        | 244         | 32          | :heavy_check_mark: |                    |                    |                                           |
+| Pubmedqa        | Medical             | 272k        | 244         | 32          | :heavy_check_mark: |                    |                    |                                           |
 | QMSum           | Meetings            | 1k          | 9.0k        | 69.6        | :heavy_check_mark: |                    | :heavy_check_mark: |                                           |
 | ScisummNet      | Scientific articles | 1k          | 4.7k        | 150         |                    |                    |                    |                                           |
 | SummScreen      | TV shows            | 26.9k       | 6.6k        | 337.4       |                    |                    | :heavy_check_mark: |                                           |

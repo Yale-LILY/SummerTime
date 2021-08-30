@@ -1,4 +1,4 @@
-import os
+from os import path
 from tqdm import tqdm
 from typing import List, Generator
 
@@ -8,8 +8,8 @@ from dataset.st_dataset import SummInstance, SummDataset
 
 
 # Set directory to load non_huggingface dataset scripts
-FILE_DIRECTORY_PATH = os.path.dirname(os.path.realpath(__file__))
-BASE_NONHUGGINGFACE_DATASETS_PATH = os.path.join(
+FILE_DIRECTORY_PATH = path.dirname(path.realpath(__file__))
+BASE_NONHUGGINGFACE_DATASETS_PATH = path.join(
     FILE_DIRECTORY_PATH, "non_huggingface_datasets_builders"
 )
 
@@ -19,6 +19,8 @@ class CnndmDataset(SummDataset):
     """
     The CNN/DM dataset
     """
+    
+    dataset_name = "CNN/DailyMail"
 
     is_query_based = False
     is_dialogue_based = False
@@ -49,6 +51,8 @@ class MultinewsDataset(SummDataset):
     The Multi News dataset
     """
 
+    dataset_name = "Multinews"
+
     is_query_based = False
     is_dialogue_based = False
     is_multi_document = True
@@ -77,6 +81,8 @@ class SamsumDataset(SummDataset):
     The SAMsum Dataset
     """
 
+    dataset_name = "Samsum"
+
     is_query_based = False
     is_dialogue_based = True
     is_multi_document = False
@@ -104,6 +110,8 @@ class XsumDataset(SummDataset):
     The Xsum Dataset
     """
 
+    dataset_name = "Xsum"
+
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/xsum"
 
@@ -127,6 +135,8 @@ class PubmedqaDataset(SummDataset):
     """
     The Pubmed QA dataset
     """
+
+    dataset_name = "Pubmedqa"
 
     is_query_based = True
     is_dialogue_based = False
@@ -164,6 +174,8 @@ class MlsumDataset(SummDataset):
     "ru" - Russian
     "tu" - Turkish
     """
+
+    dataset_name = "MlSum"
 
     is_query_based = False
     is_dialogue_based = False
@@ -255,6 +267,7 @@ class ScisummnetDataset(SummDataset):
     """
 
     dataset_name = "ScisummNet"
+
     version = "1.1.0"
     description = (
         "A summary of scientific papers should ideally incorporate the impact of the papers on the "
@@ -267,8 +280,9 @@ class ScisummnetDataset(SummDataset):
     is_multi_document = False
     is_query_based = False
 
+
     huggingface_dataset = False
-    builder_script_path = os.path.join(
+    builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
     )
 
@@ -294,13 +308,14 @@ class SummscreenDataset(SummDataset):
     """
 
     dataset_name = "Summscreen"
+    
     version = "1.1.0"
     is_dialogue_based = True
     is_multi_document = False
     is_query_based = False
 
     huggingface_dataset = False
-    builder_script_path = os.path.join(
+    builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
     )
 
@@ -334,7 +349,7 @@ class QMsumDataset(SummDataset):
     is_query_based = True
 
     huggingface_dataset = False
-    builder_script_path = os.path.join(
+    builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
     )
 
@@ -376,7 +391,7 @@ class ArxivDataset(SummDataset):
     is_query_based = False
 
     huggingface_dataset = False
-    builder_script_path = os.path.join(
+    builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
     )
 
