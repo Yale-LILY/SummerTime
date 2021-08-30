@@ -11,10 +11,11 @@ from datasets import (
     load_dataset,
 )
 
-
+# Defualt values for retrying dataset download
 DEFAULT_NUMBER_OF_RETRIES_ALLOWED = 5
 DEFAULT_WAIT_SECONDS_BEFORE_RETRY = 5
 
+# Default value for creating missing val/test splits
 TEST_OR_VAL_SPLIT_RATIO = 0.1
 
 
@@ -62,7 +63,9 @@ class SummDataset:
         * Query-based summarization
     """
 
-    def __init__(self, dataset_args :Optional[Tuple[str]] = None, splitseed :Optional[int] = None):
+    def __init__(
+        self, dataset_args: Optional[Tuple[str]] = None, splitseed: Optional[int] = None
+    ):
         """Create dataset information from the huggingface Dataset class
         :rtype: object
         :param dataset_args: a tuple containing arguments to passed on to the 'load_dataset_safe' method.
@@ -146,6 +149,9 @@ class SummDataset:
             This method tackles this problem by attempting the download multiple times with a wait time before each retry
 
         The wrapper method passes all arguments and keyword arguments to the 'load_dataset' function with no alteration.
+        :rtype: Dataset
+        :param args: non-keyword arguments to passed on to the 'load_dataset' function
+        :param kwargs: keyword arguments to passed on to the 'load_dataset' function
         """
 
         tries = DEFAULT_NUMBER_OF_RETRIES_ALLOWED
@@ -251,9 +257,10 @@ class SummDataset:
     def generate_basic_description(cls) -> str:
         """
         Automatically generate the basic description string based on the attributes
+        :rtype: string containing the description
         :param cls: class object
         """
-        
+
         basic_description = (
             f": {cls.dataset_name} is a "
             f"{'query-based ' if cls.is_query_based else ''}"

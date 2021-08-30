@@ -15,11 +15,13 @@ BASE_NONHUGGINGFACE_DATASETS_PATH = path.join(
 
 
 # Huggingface Datasets
+
+
 class CnndmDataset(SummDataset):
     """
     The CNN/DM dataset
     """
-    
+
     dataset_name = "CNN/DailyMail"
 
     is_query_based = False
@@ -280,7 +282,6 @@ class ScisummnetDataset(SummDataset):
     is_multi_document = False
     is_query_based = False
 
-
     huggingface_dataset = False
     builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
@@ -308,7 +309,7 @@ class SummscreenDataset(SummDataset):
     """
 
     dataset_name = "Summscreen"
-    
+
     version = "1.1.0"
     is_dialogue_based = True
     is_multi_document = False
