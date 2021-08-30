@@ -147,5 +147,5 @@ model/third_party/HMNet/ExampleInitModel/AMI-finetuned/model.pt
 
 sandbox.py
 
-# Dataset builder lock files
-*.lock
+# # Dataset builder lock files
+# *.lock
