@@ -146,3 +146,6 @@ model/dialogue/hmnet/ExampleRawData/meeting_summarization/**/*.jsonl.gz
 model/third_party/HMNet/ExampleInitModel/AMI-finetuned/model.pt
 
 sandbox.py
+
+# Dataset builder lock files
+*.lock
