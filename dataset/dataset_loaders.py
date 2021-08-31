@@ -16,6 +16,7 @@ BASE_NONHUGGINGFACE_DATASETS_PATH = path.join(
 
 # Huggingface Datasets
 
+
 class CnndmDataset(SummDataset):
     """
     The CNN/DM dataset
@@ -39,13 +40,13 @@ class CnndmDataset(SummDataset):
         )
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
-        '''
+        """
         Overrides the SummDataset '_process_data()' method
         This method processes the data contained in the dataset
             and puts each data instance into a SummInstance object
         :param dataset: a train/validation/test dataset
         :rtype: a generator yielding SummInstance objects
-        '''
+        """
         for instance in tqdm(data):
             article: str = instance["article"]
             highlights: str = instance["highlights"]
@@ -72,13 +73,13 @@ class MultinewsDataset(SummDataset):
         super().__init__(dataset_args=("multi_news",))
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
-        '''
+        """
         Overrides the SummDataset '_process_data()' method
         This method processes the data contained in the dataset
             and puts each data instance into a SummInstance object
         :param dataset: a train/validation/test dataset
         :rtype: a generator yielding SummInstance objects
-        '''
+        """
         for instance in tqdm(data):
             document: list = [
                 doc for doc in instance["document"].split("|||||") if doc
@@ -109,13 +110,13 @@ class SamsumDataset(SummDataset):
         super().__init__(dataset_args=("samsum",))
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
-        '''
+        """
         Overrides the SummDataset '_process_data()' method
         This method processes the data contained in the dataset
             and puts each data instance into a SummInstance object
         :param dataset: a train/validation/test dataset
         :rtype: a generator yielding SummInstance objects
-        '''
+        """
         for instance in tqdm(data):
             dialogue: List = instance["dialogue"].split(
                 "\r\n"
@@ -145,13 +146,13 @@ class XsumDataset(SummDataset):
         super().__init__(dataset_args=("xsum",))
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
-        '''
+        """
         Overrides the SummDataset '_process_data()' method
         This method processes the data contained in the dataset
             and puts each data instance into a SummInstance object
         :param dataset: a train/validation/test dataset
         :rtype: a generator yielding SummInstance objects
-        '''
+        """
         for instance in tqdm(data):
             document: List = instance["document"]
             summary: str = instance["summary"]
@@ -183,13 +184,13 @@ class PubmedqaDataset(SummDataset):
         )
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
-        '''
+        """
         Overrides the SummDataset '_process_data()' method
         This method processes the data contained in the dataset
             and puts each data instance into a SummInstance object
         :param dataset: a train/validation/test dataset
         :rtype: a generator yielding SummInstance objects
-        '''
+        """
         for instance in tqdm(data):
             context: str = " ".join(instance["context"]["contexts"])
             answer: str = instance["long_answer"]
@@ -248,14 +249,14 @@ class MlsumDataset(SummDataset):
         super().__init__(dataset_args=(languages,))
 
     def _load_dataset_safe(self, languages: Optional[Union[str, List[str]]]):
-        '''
+        """
         Overrides the parent class method
         Method loads multiple datasets of different languages provided in :param languages:
             It then concatenates these datasets into one combined dataset
         :rtype: datasetDict containing the combined dataset
         :param languages: Optional, either a string or list of strings specifying the languages
             to load
-        '''
+        """
         print(MlsumDataset.mlsum_instantiation_guide)
 
         # Choose languages to download articles
@@ -284,13 +285,13 @@ class MlsumDataset(SummDataset):
         return mlsum_dataset
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
-        '''
+        """
         Overrides the SummDataset '_process_data()' method
         This method processes the data contained in the dataset
             and puts each data instance into a SummInstance object
         :param dataset: a train/validation/test dataset
         :rtype: a generator yielding SummInstance objects
-        '''
+        """
         for instance in tqdm(data):
             article: List = instance["text"]
             summary: str = instance["summary"]
@@ -299,11 +300,11 @@ class MlsumDataset(SummDataset):
             yield summ_instance
 
     def is_supported(self, language: str):
-        '''
+        """
         Checks whether the requested langues is supported
         :param language: string containing the requested language
         :rtype bool:
-        '''
+        """
         if language not in MlsumDataset.supported_languages:
             print(MlsumDataset.mlsum_instantiation_guide)
             raise ValueError(
@@ -345,13 +346,13 @@ class ScisummnetDataset(SummDataset):
         super().__init__()
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
-        '''
+        """
         Overrides the SummDataset '_process_data()' method
         This method processes the data contained in the dataset
             and puts each data instance into a SummInstance object
         :param dataset: a train/validation/test dataset
         :rtype: a generator yielding SummInstance objects
-        '''
+        """
         for instance in tqdm(data):
             docs: List = [
                 instance["document_xml"],
@@ -385,13 +386,13 @@ class SummscreenDataset(SummDataset):
         super().__init__()
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
-        '''
+        """
         Overrides the SummDataset '_process_data()' method
         This method processes the data contained in the dataset
             and puts each data instance into a SummInstance object
         :param dataset: a train/validation/test dataset
         :rtype: a generator yielding SummInstance objects
-        '''
+        """
         for instance in tqdm(data):
             transcript: List = instance[
                 "transcript"
@@ -426,13 +427,13 @@ class QMsumDataset(SummDataset):
         super().__init__()
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
-        '''
+        """
         Overrides the SummDataset '_process_data()' method
         This method processes the data contained in the dataset
             and puts each data instance into a SummInstance object
         :param dataset: a train/validation/test dataset
         :rtype: a generator yielding SummInstance objects
-        '''
+        """
         for instance in tqdm(data):
             for query_set in (
                 instance["general_query_list"] + instance["specific_query_list"]
@@ -485,13 +486,13 @@ class ArxivDataset(SummDataset):
         super().__init__()
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
-        '''
+        """
         Overrides the SummDataset '_process_data()' method
         This method processes the data contained in the dataset
             and puts each data instance into a SummInstance object
         :param dataset: a train/validation/test dataset
         :rtype: a generator yielding SummInstance objects
-        '''
+        """
         for instance in tqdm(data):
             article: List = instance["article_text"]
             abstract: str = " ".join(instance["abstract_text"])
