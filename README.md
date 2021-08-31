@@ -1,4 +1,4 @@
-# SummerTime - A summarization library
+# SummerTime - Text Summarization Toolkit for Non-experts
 
 A library to help users choose appropriate summarization tools based on their specific tasks or needs. Includes models, evaluation metrics, and datasets.
 
@@ -10,7 +10,7 @@ The library architecture is as follows:
     <img src="https://github.com/Yale-LILY/SummerTime/blob/5cce7fd73dcda833bfd4844f853c476e354056fc/architecture.png?raw=true" width="50%">
 </p>
 
-NOTE: Although, most of the library functionality is up and running, there are some features that are still in progress and will soon be added. We are updating the library weekly, please bear with us as we finalize the library. Any helpful comments are highly encouraged, please feel free to reach out to any of our team members.
+NOTE: Although, most of the library functionality is up and running, there are some features that are still in progress and will soon be added. We are updating the library weekly, please bear with us as we finalize the library. Any helpful comments are highly encouraged, please open an issue or reach out to any of the team members.
 
 
 ## Installation and setup
