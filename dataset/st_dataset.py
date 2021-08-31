@@ -1,6 +1,7 @@
-import time
-import json
-from typing import List, Optional, Union, Generator
+from abc import abstractmethod
+from pprint import pformat
+from time import sleep
+from typing import List, Tuple, Optional, Union, Generator
 
 from datasets import (
     Dataset,
@@ -10,8 +11,12 @@ from datasets import (
     load_dataset,
 )
 
+# Defualt values for retrying dataset download
 DEFAULT_NUMBER_OF_RETRIES_ALLOWED = 5
 DEFAULT_WAIT_SECONDS_BEFORE_RETRY = 5
+
+# Default value for creating missing val/test splits
+TEST_OR_VAL_SPLIT_RATIO = 0.1
 
 
 class SummInstance:
@@ -47,7 +52,7 @@ class SummInstance:
         if self.query:
             instance_dict["query"] = self.query
 
-        return json.dumps(instance_dict, indent=1)
+        return pformat(instance_dict, indent=1)
 
 
 class SummDataset:
@@ -59,44 +64,52 @@ class SummDataset:
     """
 
     def __init__(
-        self,
-        dataset_name: str,
-        description: str,
-        citation: str = None,
-        homepage: str = None,
-        huggingface_page: str = None,
-        train_set: Optional[Generator[SummInstance, None, None]] = None,
-        dev_set: Optional[Generator[SummInstance, None, None]] = None,
-        test_set: Optional[Generator[SummInstance, None, None]] = None,
+        self, dataset_args: Optional[Tuple[str]] = None, splitseed: Optional[int] = None
     ):
-        """
-        Following huggingface, the dataset contains train, dev and test set.
-        :param train_set:
-        :param dev_set:
-        :param test_set:
-
-        The following attributes should have been class attributes, however, python initialize all class variables
-            at the time of importation, and we don't want the dataset to be loaded once imported
-        :param dataset_name:
-        :param description:
-        :param is_query_based:
-        :param is_dialogue_based:
-        :param is_multi_document:
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param dataset_args: a tuple containing arguments to passed on to the 'load_dataset_safe' method.
+            Only required for datasets loaded from the Huggingface library.
+            The arguments for each dataset are different and comprise of a string or multiple strings
+        :param splitseed: a number to instantiate the random generator used to generate val/test splits
+            for the datasets without them
         """
 
+        # Load dataset from huggingface, use default huggingface arguments
+        if self.huggingface_dataset:
+            dataset = self._load_dataset_safe(*dataset_args)
+        # Load non-huggingface dataset, use custom dataset builder
+        else:
+            dataset = self._load_dataset_safe(path=self.builder_script_path)
+
+        info_set = self._get_dataset_info(dataset)
+
+        # Ensure any dataset with a val or dev or validation split is standardised to validation split
+        if "val" in dataset:
+            dataset["validation"] = dataset["val"]
+            dataset.remove("val")
+        elif "dev" in dataset:
+            dataset["validation"] = dataset["dev"]
+            dataset.remove("dev")
+
+        # If no splits other other than training, generate them
         assert (
-            train_set or dev_set or test_set
-        ), "At least one of train/dev/test needs to be not empty!"
+            "train" in dataset or "validation" in dataset or "test" in dataset
+        ), "At least one of train/validation test needs to be not empty!"
 
-        self.dataset_name = dataset_name
-        self.description = description
-        self.citation = citation
-        self.homepage = homepage
-        self.huggingface_page = huggingface_page
+        if not ("validation" in dataset or "test" in dataset):
+            dataset = self._generate_missing_val_test_splits(dataset, splitseed)
 
-        self._train_set = train_set
-        self._dev_set = dev_set
-        self._test_set = test_set
+        self.description = info_set.description
+        self.citation = info_set.citation
+        self.homepage = info_set.homepage
+
+        # Extract the dataset entries from folders and load into dataset
+        self._train_set = self._process_data(dataset["train"])
+        self._validation_set = self._process_data(
+            dataset["validation"]
+        )  # Some datasets have a validation split
+        self._test_set = self._process_data(dataset["test"])
 
     @property
     def train_set(self) -> Union[Generator[SummInstance, None, None], List]:
@@ -109,12 +122,12 @@ class SummDataset:
             return list()
 
     @property
-    def dev_set(self) -> Union[Generator[SummInstance, None, None], List]:
-        if self._dev_set is not None:
-            return self._dev_set
+    def validation_set(self) -> Union[Generator[SummInstance, None, None], List]:
+        if self._validation_set is not None:
+            return self._validation_set
         else:
             print(
-                f"{self.dataset_name} does not contain a dev set, empty list returned"
+                f"{self.dataset_name} does not contain a validation set, empty list returned"
             )
             return list()
 
@@ -128,13 +141,16 @@ class SummDataset:
             )
             return list()
 
-    def load_dataset_safe(self, *args, **kwargs) -> Dataset:
+    def _load_dataset_safe(self, *args, **kwargs) -> Dataset:
         """
         This method creates a wrapper around the huggingface 'load_dataset()' function for a more robust download function,
             the original 'load_dataset()' function occassionally fails when it cannot reach a server especially after multiple requests.
             This method tackles this problem by attempting the download multiple times with a wait time before each retry
 
         The wrapper method passes all arguments and keyword arguments to the 'load_dataset' function with no alteration.
+        :rtype: Dataset
+        :param args: non-keyword arguments to passed on to the 'load_dataset' function
+        :param kwargs: keyword arguments to passed on to the 'load_dataset' function
         """
 
         tries = DEFAULT_NUMBER_OF_RETRIES_ALLOWED
@@ -143,72 +159,123 @@ class SummDataset:
         for i in range(tries):
             try:
                 dataset = load_dataset(*args, **kwargs)
-            except Exception:
+            except ConnectionError:
                 if i < tries - 1:  # i is zero indexed
-                    time.sleep(wait_time)
+                    sleep(wait_time)
                     continue
                 else:
                     raise RuntimeError(
                         "Wait for a minute and attempt downloading the dataset again. \
-                                        The server hosting the dataset occassionally times out."
+                         The server hosting the dataset occassionally times out."
                     )
             break
 
         return dataset
 
+    def _get_dataset_info(self, data_dict: DatasetDict) -> DatasetInfo:
+        """
+        Get the information set from the dataset
+        The information set contains: dataset name, description, version, citation and licence
+        :param data_dict: DatasetDict
+        :rtype: DatasetInfo
+        """
+        return data_dict["train"].info
 
-def generate_train_dev_test_splits(dataset: Dataset, seed: int) -> DatasetDict:
-    """
-    Creating the train, dev and test splits from a dataset
-        the generated sets are 'train: ~.80', 'dev: ~.10', and 'test: ~10' in size
-        the splits are randomized for each object unless a seed is provided for the random generator
+    @abstractmethod
+    def _process_data(self, dataset: Dataset) -> Generator[SummInstance, None, None]:
+        """
+        Abstract class method to process the data contained within each dataset.
+        Each dataset class processes it's own information differently due to the diversity in domains
+        This method processes the data contained in the dataset
+            and puts each data instance into a SummInstance object,
+            the SummInstance has the following properties [source, summary, query[optional]]
+        :param dataset: a train/validation/test dataset
+        :rtype: a generator yielding SummInstance objects
+        """
+        return
 
-    :param dataset: Arrow Dataset with containing, usually the train set
-    :param seed: seed for the random generator to shuffle the dataset
-    :rtype: Arrow DatasetDict containing the three splits
-    """
+    def _generate_missing_val_test_splits(
+        self, dataset_dict: DatasetDict, seed: int
+    ) -> DatasetDict:
+        """
+        Creating the train, val and test splits from a dataset
+            the generated sets are 'train: ~.80', 'validation: ~.10', and 'test: ~10' in size
+            the splits are randomized for each object unless a seed is provided for the random generator
 
-    # First split train into: train and test splits
-    # Further split the remaining train set into: train and dev sets
-    # The dev set split has a higher ratio than the test set (0.11 vs 0.1) due to the smaller train set used
-    dataset_traintest_split = dataset.train_test_split(test_size=0.1, seed=seed)
-    dataset_traindev_split = dataset_traintest_split["train"].train_test_split(
-        test_size=0.11, seed=seed
-    )
+        :param dataset: Arrow Dataset with containing, usually the train set
+        :param seed: seed for the random generator to shuffle the dataset
+        :rtype: Arrow DatasetDict containing the three splits
+        """
 
-    temp_dict = {}
-    temp_dict["train"] = dataset_traindev_split["train"]
-    temp_dict["dev"] = dataset_traindev_split["test"]
-    temp_dict["test"] = dataset_traintest_split["test"]
+        # Return dataset if no train set available for splitting
+        if "train" not in dataset_dict:
+            if "validation" not in dataset_dict:
+                dataset_dict["validation"] = None
+            if "test" not in dataset_dict:
+                dataset_dict["test"] = None
 
-    return DatasetDict(temp_dict)
+            return dataset_dict
 
+        # Create a 'test' split from 'train' if no 'test' set is available
+        if "test" not in dataset_dict:
+            dataset_traintest_split = dataset_dict["train"].train_test_split(
+                test_size=TEST_OR_VAL_SPLIT_RATIO, seed=seed
+            )
+            dataset_dict["train"] = dataset_traintest_split["train"]
+            dataset_dict["test"] = dataset_traintest_split["test"]
 
-def concatenate_dataset_dicts(dataset_dicts: List[DatasetDict]) -> DatasetDict:
-    """
-    Concatenate two dataset dicts with similar splits and columns tinto one
+        # Create a 'validation' split from the remaining 'train' set if no 'validation' set is available
+        if "validation" not in dataset_dict:
+            dataset_trainval_split = dataset_dict["train"].train_test_split(
+                test_size=TEST_OR_VAL_SPLIT_RATIO, seed=seed
+            )
+            dataset_dict["train"] = dataset_trainval_split["train"]
+            dataset_dict["validation"] = dataset_trainval_split["test"]
 
-    :param dataset_dicts: A list of DatasetDicts
-    :rtype: DatasetDict containing the combined data
-    """
+        return dataset_dict
 
-    # Ensure all dataset dicts have the same splits
-    setsofsplits = set(tuple(dataset_dict.keys()) for dataset_dict in dataset_dicts)
-    if len(setsofsplits) != 1:
-        raise ValueError("Splits must match for all datasets")
+    def _concatenate_dataset_dicts(
+        self, dataset_dicts: List[DatasetDict]
+    ) -> DatasetDict:
+        """
+        Concatenate two dataset dicts with similar splits and columns tinto one
+        :param dataset_dicts: A list of DatasetDicts
+        :rtype: DatasetDict containing the combined data
+        """
 
-    # Concatenate all datasets into one according to the splits
-    temp_dict = {}
-    for split in setsofsplits.pop():
-        split_set = [dataset_dict[split] for dataset_dict in dataset_dicts]
-        temp_dict[split] = concatenate_datasets(split_set)
+        # Ensure all dataset dicts have the same splits
+        setsofsplits = set(tuple(dataset_dict.keys()) for dataset_dict in dataset_dicts)
+        if len(setsofsplits) > 1:
+            raise ValueError("Splits must match for all datasets")
 
-    return DatasetDict(temp_dict)
+        # Concatenate all datasets into one according to the splits
+        temp_dict = {}
+        for split in setsofsplits.pop():
+            split_set = [dataset_dict[split] for dataset_dict in dataset_dicts]
+            temp_dict[split] = concatenate_datasets(split_set)
 
+        return DatasetDict(temp_dict)
 
-# Get the information set from the dataset
-# The information set contains: dataset name, description, version, citation and licence
-# Param: DatasetDict
-# rtype: DatasetInfo
-def get_dataset_info(data_dict: DatasetDict) -> DatasetInfo:
-    return data_dict["train"].info
+    @classmethod
+    def generate_basic_description(cls) -> str:
+        """
+        Automatically generate the basic description string based on the attributes
+        :rtype: string containing the description
+        :param cls: class object
+        """
+
+        basic_description = (
+            f": {cls.dataset_name} is a "
+            f"{'query-based ' if cls.is_query_based else ''}"
+            f"{'dialogue ' if cls.is_dialogue_based else ''}"
+            f"{'multi-document' if cls.is_multi_document else 'single-document'} "
+            f"summarization dataset."
+        )
+
+        return basic_description
+
+    def show_description(self):
+        """
+        Print the description of the dataset.
+        """
+        print(self.dataset_name, ":\n", self.description)

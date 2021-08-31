@@ -1,12 +1,10 @@
-from dataset.huggingface_datasets import (
+from dataset.dataset_loaders import (
     CnndmDataset,
     MultinewsDataset,
     SamsumDataset,
     XsumDataset,
     PubmedqaDataset,
     MlsumDataset,
-)
-from dataset.non_huggingface_datasets import (
     ScisummnetDataset,
     SummscreenDataset,
     QMsumDataset,
@@ -14,27 +12,25 @@ from dataset.non_huggingface_datasets import (
 )
 
 
-SUPPORTED_HF_DATASETS = [
+SUPPORTED_SUMM_DATASETS = [
     CnndmDataset,
     MultinewsDataset,
     SamsumDataset,
     XsumDataset,
     PubmedqaDataset,
     MlsumDataset,
-]
-SUPPORTED_NON_HF_DATASETS = [
     ScisummnetDataset,
     SummscreenDataset,
     QMsumDataset,
     ArxivDataset,
 ]
-SUPPORTED_SUMM_DATASETS = SUPPORTED_HF_DATASETS + SUPPORTED_NON_HF_DATASETS
 
 
 def list_all_datasets():
-    all_dataset_tuples = []
+    all_datasets = []
     for ds in SUPPORTED_SUMM_DATASETS:
-        ds_obj = ds()
-        all_dataset_tuples.append((ds, ds_obj.description))
+        dataset_description = ds.generate_basic_description()
 
-    return all_dataset_tuples
+        all_datasets.append((ds.dataset_name, dataset_description))
+
+    return all_datasets

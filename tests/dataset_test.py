@@ -1,9 +1,8 @@
 import unittest
 
-from dataset.huggingface_datasets import MlsumDataset
-from dataset.non_huggingface_datasets import ArxivDataset
-from dataset import SUPPORTED_SUMM_DATASETS
+from dataset import SUPPORTED_SUMM_DATASETS, list_all_datasets
 from dataset.st_dataset import SummDataset, SummInstance
+from dataset.dataset_loaders import ArxivDataset
 
 from helpers import print_with_color
 
@@ -26,18 +25,23 @@ class TestDatasets(unittest.TestCase):
     def test_all_datasets(self):
         print_with_color(f"{'#' * 10} Testing all datasets... {'#' * 10}\n\n", "35")
 
+        print(list_all_datasets())
+
         num_datasets = 0
 
         for ds_cls in SUPPORTED_SUMM_DATASETS:
-            # TODO: Temporarily skipping MLSumm (Gitlab: server-side login gating) and Arxiv (size/time)
-            if ds_cls in [MlsumDataset, ArxivDataset]:
+
+            # TODO: Temporarily skipping Arxiv (size/time), > 30min download time for Travis-CI
+            if ds_cls in [ArxivDataset]:
                 continue
 
             print_with_color(f"Testing {ds_cls} dataset...", "35")
             ds: SummDataset = ds_cls()
 
+            ds.show_description()
+
             # must have at least one of train/dev/test set
-            assert ds.train_set or ds.dev_set or ds.test_set
+            assert ds.train_set or ds.validation_set or ds.test_set
 
             if ds.train_set is not None:
                 train_set = list(ds.train_set)
@@ -48,11 +52,11 @@ class TestDatasets(unittest.TestCase):
                     is_dialogue=ds.is_dialogue_based,
                 )
 
-            if ds.dev_set is not None:
-                dev_set = list(ds.dev_set)
-                print(f"{ds_cls} has a dev set of {len(dev_set)} examples")
+            if ds.validation_set is not None:
+                val_set = list(ds.validation_set)
+                print(f"{ds_cls} has a validation set of {len(val_set)} examples")
                 self._test_instance(
-                    dev_set[0],
+                    val_set[0],
                     is_multi_document=ds.is_multi_document,
                     is_dialogue=ds.is_dialogue_based,
                 )

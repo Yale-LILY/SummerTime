@@ -142,12 +142,12 @@ SummerTime supports different summarization datasets across different domains (e
 
 | Dataset         | Domain              | \# Examples | Src. length | Tgt. length | Query              | Multi-doc          | Dialogue           | Multi-lingual                             |
 |-----------------|---------------------|-------------|-------------|-------------|--------------------|--------------------|--------------------|-------------------------------------------|
-| ArXiv           | Scientific papers   | 215k        | 4.9k        | 220         |                    |                    |                    |                                           |
+| ArXiv           | Scientific articles | 215k        | 4.9k        | 220         |                    |                    |                    |                                           |
 | CNN/DM(3.0.0)   | News                | 300k        | 781         | 56          |                    |                    |                    |                                           |
 | MlsumDataset    | Multi-lingual News  | 1.5M+       | 632         | 34          |                    | :heavy_check_mark: |                    | German, Spanish, French, Russian, Turkish |
 | Multi-News      | News                | 56k         | 2.1k        | 263.8       |                    | :heavy_check_mark: |                    |                                           |
 | SAMSum          | Open-domain         | 16k         | 94          | 20          |                    |                    | :heavy_check_mark: |                                           |
-| PubmedqaDataset | Medical             | 272k        | 244         | 32          | :heavy_check_mark: |                    |                    |                                           |
+| Pubmedqa        | Medical             | 272k        | 244         | 32          | :heavy_check_mark: |                    |                    |                                           |
 | QMSum           | Meetings            | 1k          | 9.0k        | 69.6        | :heavy_check_mark: |                    | :heavy_check_mark: |                                           |
 | ScisummNet      | Scientific articles | 1k          | 4.7k        | 150         |                    |                    |                    |                                           |
 | SummScreen      | TV shows            | 26.9k       | 6.6k        | 337.4       |                    |                    | :heavy_check_mark: |                                           |
@@ -156,16 +156,10 @@ SummerTime supports different summarization datasets across different domains (e
 To see all supported datasets, run:
 
 ```python
-from dataset import SUPPORTED_SUMM_DATASETS
-print(SUPPORTED_SUMM_DATASETS)
-``` 
-
-
-### Import and initialization:
-```python
 import dataset
-```
 
+print(dataset.list_all_dataset())
+``` 
 
 ### Dataset Initialization
 ```python
@@ -186,7 +180,7 @@ train_data = dataset.train_set
 dev_data = dataset.dev_set  
 test_data = dataset.test_set        
 ```
-Users will be able to see the details of the datasets including size, domain, recommended models, LICENSE, etc. by:
+To see the details of the datasets, run:
 ```python
 dataset = dataset.CnndmDataset()
 
@@ -309,9 +303,6 @@ from evaluation.base_metric import SummMetric
 from evaluation import Rouge, RougeWe, BertScore
 
 import itertools
-
-# Initializes a bertscore metric object
-metric = BertScore()
 
 # Evaluates model on subset of cnn_dailymail
 # Get a slice of the train set - first 5 instances
