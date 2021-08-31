@@ -1,8 +1,20 @@
 # SummerTime - Text Summarization Toolkit for Non-experts
 
-A library to help users choose appropriate summarization tools based on their specific tasks or needs. Includes models, evaluation metrics, and datasets.
+<p align="left">
+    <a href="https://github.com/Yale-LILY/SummerTime/actions">
+        <img alt="CI" src="https://github.com/Yale-LILY/SummerTime/workflows/CI/badge.svg?event=push&branch=main">
+    </a>
+    <a href="https://github.com/allenai/allennlp/blob/main/LICENSE">
+        <img alt="License" src="https://img.shields.io/github/license/Yale-LILY/SummerTime.svg?color=blue&cachedrop">
+    </a>
+    <a href="https://colab.research.google.com/drive/19tPdBgaJ4_QjSiFyoxtpnFGW4OG1gTec?usp=sharing">
+        <img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg">
+    </a>
+    <br/>
+</p>
 
-Check out our midway showcase notebook on Colab to give SummerTime a try.        [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/19tPdBgaJ4_QjSiFyoxtpnFGW4OG1gTec?usp=sharing)
+
+A library to help users choose appropriate summarization tools based on their specific tasks or needs. Includes models, evaluation metrics, and datasets.
 
 The library architecture is as follows:
 
@@ -10,7 +22,7 @@ The library architecture is as follows:
     <img src="https://github.com/Yale-LILY/SummerTime/blob/5cce7fd73dcda833bfd4844f853c476e354056fc/architecture.png?raw=true" width="50%">
 </p>
 
-NOTE: Although, most of the library functionality is up and running, there are some features that are still in progress and will soon be added. We are updating the library weekly, please bear with us as we finalize the library. Any helpful comments are highly encouraged, please open an issue or reach out to any of the team members.
+**NOTE**: SummerTime is in active development, any helpful comments are highly encouraged, please open an issue or reach out to any of the team members.
 
 
 ## Installation and setup
