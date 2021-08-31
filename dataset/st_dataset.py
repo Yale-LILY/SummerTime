@@ -100,7 +100,6 @@ class SummDataset:
         if not ("validation" in dataset or "test" in dataset):
             dataset = self._generate_missing_val_test_splits(dataset, splitseed)
 
-        self.dataset_name = type(self).__name__
         self.description = info_set.description
         self.citation = info_set.citation
         self.homepage = info_set.homepage
@@ -187,6 +186,9 @@ class SummDataset:
         """
         Abstract class method to process the data contained within each dataset.
         Each dataset class processes it's own information differently due to the diversity in domains
+        This method processes the data contained in the dataset
+            and puts each data instance into a SummInstance object,
+            the SummInstance has the following properties [source, summary, query[optional]]
         :param dataset: a train/validation/test dataset
         :rtype: a generator yielding SummInstance objects
         """
@@ -205,6 +207,7 @@ class SummDataset:
         :rtype: Arrow DatasetDict containing the three splits
         """
 
+        # Return dataset if no train set available for splitting
         if "train" not in dataset_dict:
             if "validation" not in dataset_dict:
                 dataset_dict["validation"] = None
@@ -213,7 +216,7 @@ class SummDataset:
 
             return dataset_dict
 
-        # Create a 'test' split from 'train' if none is available
+        # Create a 'test' split from 'train' if no 'test' set is available
         if "test" not in dataset_dict:
             dataset_traintest_split = dataset_dict["train"].train_test_split(
                 test_size=TEST_OR_VAL_SPLIT_RATIO, seed=seed
@@ -221,7 +224,7 @@ class SummDataset:
             dataset_dict["train"] = dataset_traintest_split["train"]
             dataset_dict["test"] = dataset_traintest_split["test"]
 
-        # Create a 'validation' split from the new 'train' set if no 'validation' split is available
+        # Create a 'validation' split from the remaining 'train' set if no 'validation' set is available
         if "validation" not in dataset_dict:
             dataset_trainval_split = dataset_dict["train"].train_test_split(
                 test_size=TEST_OR_VAL_SPLIT_RATIO, seed=seed
@@ -242,7 +245,7 @@ class SummDataset:
 
         # Ensure all dataset dicts have the same splits
         setsofsplits = set(tuple(dataset_dict.keys()) for dataset_dict in dataset_dicts)
-        if len(setsofsplits) != 1:
+        if len(setsofsplits) > 1:
             raise ValueError("Splits must match for all datasets")
 
         # Concatenate all datasets into one according to the splits
