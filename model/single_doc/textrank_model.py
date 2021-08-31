@@ -1,5 +1,5 @@
 import spacy
-import pytextrank
+import pytextrank  # noqa: F401
 from math import sqrt
 from operator import itemgetter
 from .base_single_doc_model import SingleDocSummModel
@@ -20,9 +20,9 @@ class TextRankModel(SingleDocSummModel):
         self.nlp = spacy.load("en_core_web_sm")
         self.nlp.add_pipe("textrank", last=True)
 
-    def summarize(self,
-                  corpus: Union[List[str], List[List[str]]],
-                  queries: List[str] = None) -> List[str]:
+    def summarize(
+        self, corpus: Union[List[str], List[List[str]]], queries: List[str] = None
+    ) -> List[str]:
         self.assert_summ_input_type(corpus, queries)
 
         return list(map(lambda x: " ".join(self.summarize_single(x)), corpus))
@@ -81,7 +81,9 @@ class TextRankModel(SingleDocSummModel):
     @classmethod
     def show_capability(cls):
         basic_description = cls.generate_basic_description()
-        more_details = ("A graphbased ranking model for text processing. Extractive sentence summarization. \n "
-                        "Strengths: \n - Fast with low memory usage \n - Allows for control of summary length \n "
-                        "Weaknesses: \n - Not as accurate as neural methods.")
+        more_details = (
+            "A graphbased ranking model for text processing. Extractive sentence summarization. \n "
+            "Strengths: \n - Fast with low memory usage \n - Allows for control of summary length \n "
+            "Weaknesses: \n - Not as accurate as neural methods."
+        )
         print(f"{basic_description} \n {'#'*20} \n {more_details}")

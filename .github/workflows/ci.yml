@@ -1,0 +1,120 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+
+  # Code style and linting
+  STYLE:
+    name: STYLE
+    runs-on: self-hosted
+    env:
+      HOME: /data/lily/ttf5
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # - name: Test SSL workaround
+      #   run: python -m pip install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org --upgrade pip
+
+      # - name: Setup Python
+      #   uses: actions/setup-python@v2
+      #   env:
+      #     # Log useful debugging information.
+      #     ACTIONS_STEP_DEBUG: 'true'
+      #   with:
+      #     python-version: 3.8
+
+      - name: Installation
+        run: |
+          pip install black
+          pip install flake8
+
+      - name: Debug info
+        run: |
+          which pip
+          pip --version
+          which python
+          python --version
+          pip freeze
+          df -h
+          echo $HOME
+
+      - name: Run black
+        run: black --check .
+
+      - name: Run flake8
+        run: flake8 --count .
+
+  # Unit tests
+  TESTS:
+    name: TESTS
+    runs-on: self-hosted
+    env:
+      HOME: /data/lily/ttf5
+      ROUGE_HOME: /data/lily/ttf5/ci-test/actions-runner/_work/SummerTime/SummerTime/.venv/lib/python3.9/site-packages/summ_eval/ROUGE-1.5.5/
+      TMPDIR: /data/lily/ttf5/tmp
+      TRANSFORMERS_CACHE: /data/lily/ttf5/cache/
+      HF_HOME: /data/lily/ttf5/cache/
+    # needs: [STYLE]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up installation
+        run: pip install --upgrade pip virtualenv
+
+      - name: Set up virtual environment
+        run: |
+          rm -rf .venv
+          test -d .venv || virtualenv -p $(which python3.9) --copies --reset-app-data .venv
+          . .venv/bin/activate
+      
+      - name: Pre-installation upgrade
+        run: |
+          . .venv/bin/activate
+          pip install --upgrade pip
+
+      - name: Debug info
+        run: |
+          . .venv/bin/activate
+          pwd
+          which pip
+          pip --version
+          which python
+          python --version
+          pip freeze
+          df -h
+          echo $HOME
+
+      - name: Installation
+        run: |
+          . .venv/bin/activate
+          pip install numpy
+          pip install -r requirements.txt
+          pip install -U git+https://github.com/bheinzerling/pyrouge.git
+
+      - name: Setup scripts
+        run: |
+          . .venv/bin/activate
+          python setup.py develop --user
+          python download.py
+
+      - name: Test models
+        run: |
+          . .venv/bin/activate
+          python tests/model_test.py
+
+      - name: Test datasets
+        run: |
+          . .venv/bin/activate
+          python tests/dataset_test.py
+      
+      - name: Test evaluation metrics
+        run: |
+          . .venv/bin/activate
+          python tests/evaluation_test.py

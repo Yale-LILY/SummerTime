@@ -6,6 +6,7 @@ import unittest
 
 from infinibatch.closablequeue import ClosableQueue, ClosedException
 
+
 class TestClosableQueue(unittest.TestCase):
     def setUp(self):
         self.queue = ClosableQueue(maxsize=10)
@@ -15,7 +16,7 @@ class TestClosableQueue(unittest.TestCase):
             self.queue.put(item)
         if close:
             self.queue.close()
-    
+
     def get_items(self, num_items):
         return [self.queue.get() for _ in range(num_items)]
 

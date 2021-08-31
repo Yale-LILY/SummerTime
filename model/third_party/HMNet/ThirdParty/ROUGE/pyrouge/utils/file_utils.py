@@ -9,7 +9,6 @@ from . import log
 
 
 class DirectoryProcessor:
-
     @staticmethod
     def process(input_dir, output_dir, function):
         """
@@ -50,6 +49,7 @@ def xml_equal(xml_file1, xml_file2):
     have to worry about semantically meaningless differences
 
     """
+
     def canonical(xml_file):
         # poor man's canonicalization, since we don't want to install
         # external packages just for unittesting

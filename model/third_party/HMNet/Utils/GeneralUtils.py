@@ -15,12 +15,15 @@ from .Constants import *
 
 logger = logging.getLogger(__name__)
 
+
 class ObjectView(object):
     def __init__(self, d):
         self.__dict__ = d
 
+
 class AverageMeter(object):
     """Computes and stores the average and current value."""
+
     def __init__(self):
         self.reset()
 
@@ -33,26 +36,36 @@ class AverageMeter(object):
     def update(self, val, n=1, decay=0):
         self.val = val
         if decay:
-            alpha = math.exp(-n/decay)  # exponential decay over 100 updates
-            self.sum   = alpha * self.sum    + (1-alpha) * val * n
-            self.count = alpha * self.count  + (1-alpha) * n
+            alpha = math.exp(-n / decay)  # exponential decay over 100 updates
+            self.sum = alpha * self.sum + (1 - alpha) * val * n
+            self.count = alpha * self.count + (1 - alpha) * n
         else:
-            self.sum   += val * n
+            self.sum += val * n
             self.count += n
         self.avg = self.sum / self.count
+
 
 class BaseBatchGen:
     """
     This is a base class for batch generators that use infinibatch.
-    
+
     The interfaces below are required to work with LegacyTask.
 
-    For new tasks, the interfaces are not restricted (the methods and their signatures don't 
+    For new tasks, the interfaces are not restricted (the methods and their signatures don't
     have to be same as the base class). They should have minimum assumption or dependency
     on other components in the system. Task classes can use them accordingly.
     """
 
-    def __init__(self, task_args, dataset_label, model_config=None, tokenizer=None, world_size=1, rank=0, seed=None):
+    def __init__(
+        self,
+        task_args,
+        dataset_label,
+        model_config=None,
+        tokenizer=None,
+        world_size=1,
+        rank=0,
+        seed=None,
+    ):
         """
         Args:
             task_args (dict): dictionary records arguments
@@ -70,7 +83,7 @@ class BaseBatchGen:
         self.world_size = world_size
         self.rank = rank
         self.seed = seed
-        self.evaluation = dataset_label in ['dev', 'test']
+        self.evaluation = dataset_label in ["dev", "test"]
 
         self._iter = None
 
@@ -94,6 +107,7 @@ class BaseBatchGen:
     def __next__(self):
         return next(self._iter)
 
+
 def move_batch_to_device(batch, device):
     """
     Move the batch to the device.
@@ -116,7 +130,9 @@ def move_batch_to_device(batch, device):
         for k in batch:
             return_batch[k] = move_batch_to_device(batch[k], device)
     else:
-        logger.debug(f"Can not move type {type(batch)} to device. Skipping it in the batch.")
+        logger.debug(
+            f"Can not move type {type(batch)} to device. Skipping it in the batch."
+        )
         return_batch = batch
 
     return return_batch
