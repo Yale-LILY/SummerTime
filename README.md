@@ -7,7 +7,7 @@ Check out our midway showcase notebook on Colab to give SummerTime a try.       
 The library architecture is as follows:
 
 <p align="center">
-    <img src="https://github.com/Yale-LILY/SummerTime/blob/5cce7fd73dcda833bfd4844f853c476e354056fc/architecture.png?raw=true" width="50%">
+    <img src="https://raw.githubusercontent.com/Yale-LILY/SummerTime/main/docs/architecture.png" width="50%">
 </p>
 
 NOTE: Although, most of the library functionality is up and running, there are some features that are still in progress and will soon be added. We are updating the library weekly, please bear with us as we finalize the library. Any helpful comments are highly encouraged, please feel free to reach out to any of our team members.
