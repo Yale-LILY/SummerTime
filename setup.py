@@ -7,17 +7,17 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="SummerTime",
     version="0.1",
-    scripts=["summertime.py"],
     author="Ansong Ni, Murori Mutuma, Zhangir Azerbayev, Yusen Zhang, Tao Yu, Dragomir Radev",
-    author_email="ansong.ni@yale.edu, murorimutuma@gmail.com, zhangir.azerbayev@yale.edu",
-    description="A summarization mode",
+    author_email="ansong.ni@yale.edu, dragomir.radev@yale.edu",
+    description="Text summarization for non-experts",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/LILYlab",
+    url="https://github.com/Yale-LILY/SummerTime",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
 )
