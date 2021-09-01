@@ -1,11 +1,14 @@
 import matplotlib.pyplot as plt
 import itertools
 from typing import Tuple, Generator
+from SummerTime.model.base_model import SummModel
+from SummerTime.dataset.st_dataset import SummInstance
+from SummerTime.evaluation.base_metric import SummMetric
 
-def scatter(models: Tuple,
-            generator: Generator,
-            metrics: Tuple,
-            keys: Tuple,
+def scatter(models: Tuple[SummModel, SummModel],
+            generator: Generator[SummInstance, None, None],
+            metrics: Tuple[SummMetric, SummMetric],
+            keys: Tuple[str, str],
             max_instances : int = -1):
     """
     Scatter plot that compares the qualitative nature of the errors two models

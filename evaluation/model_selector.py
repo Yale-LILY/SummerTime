@@ -4,6 +4,9 @@ import itertools
 from .plotutils.radar import make_radar_plot
 from typing import List, Tuple, Generator
 from prettytable import PrettyTable
+from SummerTime.model.base_model import SummModel
+from SummerTime.dataset.st_dataset import SummInstance
+from SummerTime.evaluation.base_metric import SummMetric
 
 class EvaluationTable(dict):
     def __init__(self, *args, **kw):
@@ -22,9 +25,9 @@ class EvaluationTable(dict):
 
 class ModelSelector(): 
     def __init__(self, 
-                models: List, 
-		generator: Generator, 
-		metrics: List, 
+                models: List[SummModel], 
+		generator: Generator[SummInstance, None, None], 
+                metrics: List[SummMetric], 
 		max_instances: int = -1): 
 		
         self.models = models 
@@ -128,7 +131,8 @@ def _update_table(table: EvaluationTable,
             table[model][metric] = total_instances / denom * table[model][metric] + num_instances / denom * new_table[model][metric]
     return table
 
-def _remove_bad_model(models, table: EvaluationTable):
+def _remove_bad_model(models: List[SummModel], 
+                      table: EvaluationTable):
     """Removes a model's row from the dataframe if it is worse than every other model
     on every metric"""
     name = None
