@@ -19,7 +19,7 @@ A library to help users choose appropriate summarization tools based on their sp
 The library architecture is as follows:
 
 <p align="center">
-    <img src="https://github.com/Yale-LILY/SummerTime/blob/5cce7fd73dcda833bfd4844f853c476e354056fc/architecture.png?raw=true" width="50%">
+    <img src="https://raw.githubusercontent.com/Yale-LILY/SummerTime/main/docs/img/architecture.png" width="50%">
 </p>
 
 **NOTE**: SummerTime is in active development, any helpful comments are highly encouraged, please open an issue or reach out to any of the team members.
