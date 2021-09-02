@@ -74,48 +74,48 @@ class ModelSelector():
 
 	def run_halving(self, min_instances: int, factor: int = 3) -> EvaluationTable:
 
-        total_instances = 0
-        # first run with min_instances instances
-        num_instances = min_instances
-        tiny_generator = itertools.islice(self.generator, min_instances)
+            total_instances = 0
+            # first run with min_instances instances
+            num_instances = min_instances
+            tiny_generator = itertools.islice(self.generator, min_instances)
 
-        temp_selector = ModelSelector(self.models, tiny_generator, self.metrics)
-        table = temp_selector.run()
+            temp_selector = ModelSelector(self.models, tiny_generator, self.metrics)
+            table = temp_selector.run()
 
-        models = _remove_bad_model(self.models, table)
-
-        total_instances += num_instances
-
-        num_instances = num_instances * factor
-
-        while (len(models) > 1) and (total_instances <= max_instances):
-            tiny_generator = itertools.islice(self.generator, num_instances)
-            temp_selector = ModelSelector(models, tiny_generator, metrics)
-            new_table = temp_selector.run()
-            table = _update_table(table, new_table, total_instances, num_instances)
-
-            models = _remove_bad_model(models, new_table)
+            models = _remove_bad_model(self.models, table)
 
             total_instances += num_instances
+
             num_instances = num_instances * factor
 
-        return table
+            while (len(models) > 1) and (total_instances <= max_instances):
+                tiny_generator = itertools.islice(self.generator, num_instances)
+                temp_selector = ModelSelector(models, tiny_generator, metrics)
+                new_table = temp_selector.run()
+                table = _update_table(table, new_table, total_instances, num_instances)
+
+                models = _remove_bad_model(models, new_table)
+
+                total_instances += num_instances
+                num_instances = num_instances * factor
+
+            return table
 
 
 
 	def visualize(output: EvaluationTable):
-        # Preprocesses data.
-        data = []
-        metrics = list(output[list(output.keys())[0]].keys())
-        data.append(metrics)
-        rows = []
-        row_names = []
-        for model in output:
-            rows.append([output[model][metric] for metric in metrics])
-            row_names.append(model)
-        data.append(rows)
+            # Preprocesses data.
+            data = []
+            metrics = list(output[list(output.keys())[0]].keys())
+            data.append(metrics)
+            rows = []
+            row_names = []
+            for model in output:
+                rows.append([output[model][metric] for metric in metrics])
+                row_names.append(model)
+            data.append(rows)
 
-        return make_radar_plot(data, row_names)
+            return make_radar_plot(data, row_names)
 
 
 
