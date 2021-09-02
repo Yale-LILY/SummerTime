@@ -23,27 +23,27 @@ class EvaluationTable(dict):
     def __repr__(self):
         return self.__str__()
 
-class ModelSelector(): 
-    def __init__(self, 
-                models: List[SummModel], 
-		generator: Generator[SummInstance, None, None], 
-                metrics: List[SummMetric], 
-		max_instances: int = -1): 
-		
-        self.models = models 
+class ModelSelector():
+    def __init__(self,
+                models: List[SummModel],
+		generator: Generator[SummInstance, None, None],
+                metrics: List[SummMetric],
+		max_instances: int = -1):
 
-        if max_instances == -1: 
-                self.generator = generator 
-        else: 
+        self.models = models
+
+        if max_instances == -1:
+                self.generator = generator
+        else:
                 self.generator = itertools.islice(generator, max_instances)
 
-        self.metrics = metrics 
-	
-    def run(self) -> EvaluationTable: 
+        self.metrics = metrics
+
+    def run(self) -> EvaluationTable:
         """Evaluates every model on every metric, returning an EvaluationTable"""
         store_data = EvaluationTable()
 
-        tiny_generators = list(itertools.tee(self.generator, 
+        tiny_generators = list(itertools.tee(self.generator,
             len(self.models)*len(self.metrics)))
 
         for model in self.models:
@@ -60,7 +60,7 @@ class ModelSelector():
                 for instance in current_generator:
                     input = model.summarize([instance.source])
                     score_dict = metric.evaluate(input, [instance.summary])
-                    sum_score_dict = {key: sum_score_dict[key] + score_dict[key] 
+                    sum_score_dict = {key: sum_score_dict[key] + score_dict[key]
                             for key in sum_score_dict}
 
                     num_instances += 1
@@ -72,52 +72,52 @@ class ModelSelector():
 
         return store_data
 
-	def run_halving(self, min_instances: int, factor: int = 3) -> EvaluationTable: 
+	def run_halving(self, min_instances: int, factor: int = 3) -> EvaluationTable:
 
-            total_instances = 0
-            # first run with min_instances instances
-            num_instances = min_instances
-            tiny_generator = itertools.islice(self.generator, min_instances)
+        total_instances = 0
+        # first run with min_instances instances
+        num_instances = min_instances
+        tiny_generator = itertools.islice(self.generator, min_instances)
 
-            temp_selector = ModelSelector(self.models, tiny_generator, self.metrics)
-            table = temp_selector.run()
+        temp_selector = ModelSelector(self.models, tiny_generator, self.metrics)
+        table = temp_selector.run()
 
-            models = _remove_bad_model(self.models, table)
+        models = _remove_bad_model(self.models, table)
+
+        total_instances += num_instances
+
+        num_instances = num_instances * factor
+
+        while (len(models) > 1) and (total_instances <= max_instances):
+            tiny_generator = itertools.islice(self.generator, num_instances)
+            temp_selector = ModelSelector(models, tiny_generator, metrics)
+            new_table = temp_selector.run()
+            table = _update_table(table, new_table, total_instances, num_instances)
+
+            models = _remove_bad_model(models, new_table)
 
             total_instances += num_instances
-
             num_instances = num_instances * factor
 
-            while (len(models) > 1) and (total_instances <= max_instances):
-                tiny_generator = itertools.islice(self.generator, num_instances)
-                temp_selector = ModelSelector(models, tiny_generator, metrics)
-                new_table = temp_selector.run()
-                table = _update_table(table, new_table, total_instances, num_instances)
+        return table
 
-                models = _remove_bad_model(models, new_table)
 
-                total_instances += num_instances
-                num_instances = num_instances * factor
 
-            return table 
-	
-	
+	def visualize(output: EvaluationTable):
+        # Preprocesses data.
+        data = []
+        metrics = list(output[list(output.keys())[0]].keys())
+        data.append(metrics)
+        rows = []
+        row_names = []
+        for model in output:
+            rows.append([output[model][metric] for metric in metrics])
+            row_names.append(model)
+        data.append(rows)
 
-	def visualize(output: EvaluationTable): 
-            # Preprocesses data.
-            data = []
-            metrics = list(output[list(output.keys())[0]].keys())
-            data.append(metrics)
-            rows = []
-            row_names = []
-            for model in output:
-                rows.append([output[model][metric] for metric in metrics])
-                row_names.append(model)
-            data.append(rows)
+        return make_radar_plot(data, row_names)
 
-            return make_radar_plot(data, row_names)
-	
-		
+
 
 
 def _update_table(table: EvaluationTable,
@@ -131,7 +131,7 @@ def _update_table(table: EvaluationTable,
             table[model][metric] = total_instances / denom * table[model][metric] + num_instances / denom * new_table[model][metric]
     return table
 
-def _remove_bad_model(models: List[SummModel], 
+def _remove_bad_model(models: List[SummModel],
                       table: EvaluationTable):
     """Removes a model's row from the dataframe if it is worse than every other model
     on every metric"""
