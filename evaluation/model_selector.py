@@ -26,14 +26,14 @@ class EvaluationTable(dict):
 class ModelSelector():
     def __init__(self,
                  models: List[SummModel],
-		 generator: Generator[SummInstance, None, None],
+		   generator: Generator[SummInstance, None, None],
                  metrics: List[SummMetric],
-		 max_instances: int = -1):
+		   max_instances: int = -1):
 
         self.models = models
 
         if max_instances == -1:
-	    self.generator = generator
+	      self.generator = generator
         else:
             self.generator = itertools.islice(generator, max_instances)
 
