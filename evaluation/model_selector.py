@@ -25,17 +25,17 @@ class EvaluationTable(dict):
 
 class ModelSelector():
     def __init__(self,
-                models: List[SummModel],
-		generator: Generator[SummInstance, None, None],
-                metrics: List[SummMetric],
-		max_instances: int = -1):
+                 models: List[SummModel],
+		 generator: Generator[SummInstance, None, None],
+                 metrics: List[SummMetric],
+		 max_instances: int = -1):
 
         self.models = models
 
         if max_instances == -1:
-                self.generator = generator
+	    self.generator = generator
         else:
-                self.generator = itertools.islice(generator, max_instances)
+            self.generator = itertools.islice(generator, max_instances)
 
         self.metrics = metrics
 
@@ -121,9 +121,9 @@ class ModelSelector():
 
 
 def _update_table(table: EvaluationTable,
-               new_table: EvaluationTable,
-               total_instances : int,
-               num_instances : int) -> EvaluationTable:
+                  new_table: EvaluationTable,
+                  total_instances : int,
+                  num_instances : int) -> EvaluationTable:
     """Merges df1 and df2"""
     for model in new_table:
         for metric in new_table[model]:
