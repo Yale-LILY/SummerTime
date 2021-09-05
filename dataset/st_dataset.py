@@ -64,10 +64,10 @@ class SummDataset:
     """
 
     def __init__(
-        self, 
-        dataset_args: Optional[Tuple[str]] = (), 
-        dataset_kwargs: Optional[Tuple[str]] = {}, 
-        splitseed: Optional[int] = None
+        self,
+        dataset_args: Optional[Tuple[str]] = (),
+        dataset_kwargs: Optional[Tuple[str]] = {},
+        splitseed: Optional[int] = None,
     ):
         """Create dataset information from the huggingface Dataset class
         :rtype: object
