@@ -31,13 +31,14 @@ class CnndmDataset(SummDataset):
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/cnn_dailymail"
 
-    def __init__(self):
-        super().__init__(
-            dataset_args=(
-                "cnn_dailymail",
-                "3.0.0",
-            )
-        )
+    def __init__(self, cache_dir: str = None):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param cache_dir: Optional, a str specifying where to download/load the dataset to/from
+        """
+        dataset_args = ("cnn_dailymail", "3.0.0",)
+        dataset_kwargs = {"cache_dir":cache_dir}
+        super().__init__(dataset_args=dataset_args, dataset_kwargs=dataset_kwargs)
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
         """
@@ -69,8 +70,14 @@ class MultinewsDataset(SummDataset):
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/multi_news"
 
-    def __init__(self):
-        super().__init__(dataset_args=("multi_news",))
+    def __init__(self, cache_dir: str = None):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param cache_dir: Optional, a str specifying where to download/load the dataset to/from
+        """
+        dataset_args = ("multi_news",)
+        dataset_kwargs = {"cache_dir":cache_dir}
+        super().__init__(dataset_args=dataset_args, dataset_kwargs=dataset_kwargs)
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
         """
@@ -106,8 +113,14 @@ class SamsumDataset(SummDataset):
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/samsum"
 
-    def __init__(self):
-        super().__init__(dataset_args=("samsum",))
+    def __init__(self, cache_dir: str = None):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param cache_dir: Optional, a str specifying where to download/load the dataset to/from
+        """
+        dataset_args = ("samsum",)
+        dataset_kwargs = {"cache_dir":cache_dir}
+        super().__init__(dataset_args=dataset_args, dataset_kwargs=dataset_kwargs)
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
         """
@@ -142,8 +155,14 @@ class XsumDataset(SummDataset):
     is_dialogue_based = False
     is_multi_document = False
 
-    def __init__(self):
-        super().__init__(dataset_args=("xsum",))
+    def __init__(self, cache_dir: str = None):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param cache_dir: Optional, a str specifying where to download/load the dataset to/from
+        """
+        dataset_args = ("xsum",)
+        dataset_kwargs = {"cache_dir":cache_dir}
+        super().__init__(dataset_args=dataset_args, dataset_kwargs=dataset_kwargs)
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
         """
@@ -175,13 +194,15 @@ class PubmedqaDataset(SummDataset):
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/pubmed_qa"
 
-    def __init__(self, seed=None):
-        super().__init__(
-            dataset_args=(
-                "pubmed_qa",
-                "pqa_artificial",
-            )
-        )
+    def __init__(self, cache_dir: str = None, seed: int = None):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param cache_dir: Optional, a str specifying where to download/load the dataset to/from
+        :param seed: Optional, a seed for the random generator used for making the train and val splits
+        """
+        dataset_args = ("pubmed_qa", "pqa_artificial",)
+        dataset_kwargs = {"cache_dir":cache_dir}
+        super().__init__(dataset_args=dataset_args, dataset_kwargs=dataset_kwargs, splitseed=seed)
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
         """
@@ -245,10 +266,17 @@ class MlsumDataset(SummDataset):
                    dataset = MlsumDataset()
                 """
 
-    def __init__(self, languages: Optional[Union[str, List[str]]] = "all"):
-        super().__init__(dataset_args=(languages,))
+    def __init__(self, languages: Union[str, List[str]] = "all", cache_dir: str =None):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param languages: Optional, a str or a list[str] specifying languages to be included
+        :param cache_dir: Optional, a str specifying where to download/load the dataset to/from
+        """
+        dataset_args = ()
+        dataset_kwargs = {"cache_dir":cache_dir, "languages":languages}
+        super().__init__(dataset_args=dataset_args, dataset_kwargs=dataset_kwargs)
 
-    def _load_dataset_safe(self, languages: Optional[Union[str, List[str]]]):
+    def _load_dataset_safe(self, args, kwargs):
         """
         Overrides the parent class method
         Method loads multiple datasets of different languages provided in :param languages:
@@ -258,6 +286,9 @@ class MlsumDataset(SummDataset):
             to load
         """
         print(MlsumDataset.mlsum_instantiation_guide)
+
+        languages = kwargs["languages"]
+        kwargs.pop('languages', None)
 
         # Choose languages to download articles
         if languages == "all":
@@ -273,10 +304,9 @@ class MlsumDataset(SummDataset):
         # Concatenate selected languaeges into one dataset
         language_datasets = []
         for language in selected_languages:
-            dataset = super()._load_dataset_safe(
-                "mlsum",
-                language,
-            )
+            dataset_args = ("mlsum", language, *args)
+            dataset_kwargs = kwargs
+            dataset = super()._load_dataset_safe(dataset_args, dataset_kwargs)
 
             language_datasets.append(dataset)
 
@@ -337,13 +367,19 @@ class ScisummnetDataset(SummDataset):
     is_multi_document = False
     is_query_based = False
 
-    huggingface_dataset = False
     builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
     )
 
-    def __init__(self, seed=None):
-        super().__init__()
+    def __init__(self, cache_dir: str = None, seed: int = None):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param cache_dir: Optional, a str specifying where to download/load the dataset to/from
+        :param seed: Optional, a seed for the random generator used for making the train and val splits
+        """
+        dataset_kwargs = {"cache_dir":cache_dir,
+                          "path":self.builder_script_path}
+        super().__init__(dataset_kwargs=dataset_kwargs, splitseed=seed)
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
         """
@@ -377,13 +413,18 @@ class SummscreenDataset(SummDataset):
     is_multi_document = False
     is_query_based = False
 
-    huggingface_dataset = False
     builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
     )
 
-    def __init__(self, seed=None):
-        super().__init__()
+    def __init__(self, cache_dir: str = None):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param cache_dir: Optional, a str specifying where to download/load the dataset to/from
+        """
+        dataset_kwargs = {"cache_dir":cache_dir,
+                          "path":self.builder_script_path}
+        super().__init__(dataset_kwargs=dataset_kwargs)
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
         """
@@ -418,13 +459,18 @@ class QMsumDataset(SummDataset):
     is_multi_document = False
     is_query_based = True
 
-    huggingface_dataset = False
     builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
     )
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, cache_dir: str = None):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param cache_dir: Optional, a str specifying where to download/load the dataset to/from
+        """
+        dataset_kwargs = {"cache_dir":cache_dir,
+                          "path":self.builder_script_path}
+        super().__init__(dataset_kwargs=dataset_kwargs)
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
         """
@@ -467,13 +513,15 @@ class ArxivDataset(SummDataset):
     is_multi_document = False
     is_query_based = False
 
-    huggingface_dataset = False
     builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
     )
 
-    def __init__(self):
-
+    def __init__(self, cache_dir: str = None):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param cache_dir: Optional, a str specifying where to download/load the dataset to/from
+        """
         print(
             "*****************",
             "***Attention***",
@@ -482,8 +530,9 @@ class ArxivDataset(SummDataset):
             "*****************",
             sep="\n",
         )
-
-        super().__init__()
+        dataset_kwargs = {"cache_dir":cache_dir,
+                          "path":self.builder_script_path}
+        super().__init__(dataset_kwargs=dataset_kwargs)
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
         """

@@ -64,23 +64,23 @@ class SummDataset:
     """
 
     def __init__(
-        self, dataset_args: Optional[Tuple[str]] = None, splitseed: Optional[int] = None
+        self, 
+        dataset_args: Optional[Tuple[str]] = (), 
+        dataset_kwargs: Optional[Tuple[str]] = {}, 
+        splitseed: Optional[int] = None
     ):
         """Create dataset information from the huggingface Dataset class
         :rtype: object
         :param dataset_args: a tuple containing arguments to passed on to the 'load_dataset_safe' method.
-            Only required for datasets loaded from the Huggingface library.
+            The args are used by the huggingface 'load_dataset' method
             The arguments for each dataset are different and comprise of a string or multiple strings
+        :param dataset_kwargs: a dictionary containing keyword arguments to be passed on to the 'load_dataset_safe' method
         :param splitseed: a number to instantiate the random generator used to generate val/test splits
             for the datasets without them
         """
 
         # Load dataset from huggingface, use default huggingface arguments
-        if self.huggingface_dataset:
-            dataset = self._load_dataset_safe(*dataset_args)
-        # Load non-huggingface dataset, use custom dataset builder
-        else:
-            dataset = self._load_dataset_safe(path=self.builder_script_path)
+        dataset = self._load_dataset_safe(dataset_args, dataset_kwargs)
 
         info_set = self._get_dataset_info(dataset)
 
@@ -141,7 +141,7 @@ class SummDataset:
             )
             return list()
 
-    def _load_dataset_safe(self, *args, **kwargs) -> Dataset:
+    def _load_dataset_safe(self, args=(), kwargs={}) -> Dataset:
         """
         This method creates a wrapper around the huggingface 'load_dataset()' function for a more robust download function,
             the original 'load_dataset()' function occassionally fails when it cannot reach a server especially after multiple requests.
