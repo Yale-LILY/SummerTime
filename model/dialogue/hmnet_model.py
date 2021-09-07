@@ -4,8 +4,6 @@ import os
 import torch
 import gzip
 import json
-import sys
-import time
 from model.third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
 from model.third_party.HMNet.Utils.Arguments import Arguments
 from util.download_utils import get_cached_file_path
