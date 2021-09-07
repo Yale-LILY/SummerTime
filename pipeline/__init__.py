@@ -3,7 +3,7 @@ from model.base_model import SummModel
 from model.single_doc import LexRankModel
 
 from dataset.st_dataset import SummDataset
-from dataset.non_huggingface_datasets import ScisummnetDataset
+from dataset import ScisummnetDataset
 
 from typing import List, Tuple
 
