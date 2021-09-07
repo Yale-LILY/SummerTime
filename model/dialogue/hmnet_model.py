@@ -207,8 +207,9 @@ class HMNetModel(SummModel):
         kwargs["MIN_GEN_LENGTH"] = min_gen_length
         kwargs["MAX_GEN_LENGTH"] = max_gen_length
         kwargs["BEAM_WIDTH"] = beam_width
-        kwargs["PYLEARN_MODEL"] = get_cached_file_path("hmnet", "model.pt", 
-                                                        PRETRAINED_MODEL_DOWNLOAD_LINK, force_download=True).parent
+        kwargs["PYLEARN_MODEL"] = get_cached_file_path(
+            "hmnet", "model.pt", PRETRAINED_MODEL_DOWNLOAD_LINK, force_download=True
+        ).parent
         self.opt = self._parse_args(kwargs)
         self.model = HMNetTrainer(self.opt)
 

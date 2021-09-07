@@ -12,13 +12,13 @@ from helpers import (
     get_query_based_summarization_set,
 )
 
-class TestIndividualModels(unittest.TestCase):
 
+class TestIndividualModels(unittest.TestCase):
     def test_hmnet_model(self):
         from model.dialogue.hmnet_model import HMNetModel
 
         dummy_corpus = [["Alice: I am a girl.", "Bob: I am a boy."]]
-        model = HMNetModel(min_gen_length=10, max_gen_length =30, beam_width=2)
+        model = HMNetModel(min_gen_length=10, max_gen_length=30, beam_width=2)
         result = model.summarize(dummy_corpus)
 
         assert all([isinstance(r, str) for r in result])
