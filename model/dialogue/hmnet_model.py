@@ -7,6 +7,11 @@ import json
 from model.third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
 from model.third_party.HMNet.Utils.Arguments import Arguments
 
+from typing import List
+from pathlib import Path
+
+import urllib.request
+
 import spacy
 
 nlp = spacy.load("en_core_web_sm", disable=["parser"])
@@ -145,6 +150,14 @@ ENT = {
     "O": 73,
 }
 
+# this is for model pretrained on AMI
+PRETRAINED_MODEL_DOWNLOAD_LINK = (
+    "https://sdrgstorage01wus2.blob.core.windows.net/user"
+    "/ruox/Meeting_Minutes/HMNet/ExampleInitModel/AMI-finetuned/model.pt"
+    "?sv=2019-10-10&st=2020-10-22T19%3A25%3A46Z&se=2060-10-23T19%3A25%3A00Z"
+    "&sr=b&sp=r&sig=VTzk30aQu5KKSgKdW2L9DUYGQyZmns16WnIm%2FifMKZQ%3D"
+)
+
 
 class HMNetModel(SummModel):
     # static variables
@@ -194,6 +207,7 @@ class HMNetModel(SummModel):
         kwargs["MIN_GEN_LENGTH"] = min_gen_length
         kwargs["MAX_GEN_LENGTH"] = max_gen_length
         kwargs["BEAM_WIDTH"] = beam_width
+        kwargs["PYLEARN_MODEL"] = self.cache_pretrained_model()
         self.opt = self._parse_args(kwargs)
         self.model = HMNetTrainer(self.opt)
 
@@ -289,7 +303,29 @@ class HMNetModel(SummModel):
 
         return opt
 
-    def summarize(self, corpus, queries=None):
+    def cache_pretrained_model(self):
+        """
+        load the pretrained model from cached location, if not cached, then download first
+        """
+
+        # use huggingface cache location here
+        hf_cache_location = os.environ.get(
+            "HF_HOME", Path(Path.home(), ".cache/huggingface")
+        )
+
+        if not os.path.exists(hf_cache_location):
+            os.makedirs(hf_cache_location)
+
+        # download if the model is not cached
+        if not os.path.exists(os.path.join(hf_cache_location, "model.pt")):
+            urllib.request.urlretrieve(
+                PRETRAINED_MODEL_DOWNLOAD_LINK,
+                os.path.join(hf_cache_location, "model.pt"),
+            )
+
+        return os.path.join(hf_cache_location, "model.pt")
+
+    def summarize(self, corpus: List[List[str]], queries: List[str] = None):
         print(f"HMNet model: processing document of {corpus.__len__()} samples")
         # transform the original dataset to "dialogue" input
         # we only use test set path for evaluation
