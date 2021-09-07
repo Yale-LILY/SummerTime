@@ -4,13 +4,13 @@ import os
 import torch
 import gzip
 import json
+import sys
+import time
 from model.third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
 from model.third_party.HMNet.Utils.Arguments import Arguments
+from util.download_utils import get_cached_file_path
 
 from typing import List
-from pathlib import Path
-
-import urllib.request
 
 import spacy
 
@@ -207,7 +207,8 @@ class HMNetModel(SummModel):
         kwargs["MIN_GEN_LENGTH"] = min_gen_length
         kwargs["MAX_GEN_LENGTH"] = max_gen_length
         kwargs["BEAM_WIDTH"] = beam_width
-        kwargs["PYLEARN_MODEL"] = self.cache_pretrained_model()
+        kwargs["PYLEARN_MODEL"] = get_cached_file_path("hmnet", "model.pt", 
+                                                        PRETRAINED_MODEL_DOWNLOAD_LINK, force_download=True).parent
         self.opt = self._parse_args(kwargs)
         self.model = HMNetTrainer(self.opt)
 
@@ -258,7 +259,7 @@ class HMNetModel(SummModel):
             help="Override parameters on config, VAR=val;VAR=val;...",
         )
 
-        cmdline_args = parser.parse_args()
+        cmdline_args = parser.parse_args([])
         command = cmdline_args.command
         conf_file = cmdline_args.conf_file
         conf_args = Arguments(conf_file)
@@ -294,6 +295,8 @@ class HMNetModel(SummModel):
         # combine kwargs into opt dictionary (we allow lower case)
         for key, val in kwargs.items():
             valid_keys = [x for x in opt.keys() if x.upper() == x]
+            if key == "PYLEARN_MODEL":
+                print(f"Using model from location {val}/model.pt")
             if key.upper() not in valid_keys:
                 print("WARNING: {} is not a valid key in HMNet.".format(key))
                 print("The valid keys are:", valid_keys)
@@ -302,28 +305,6 @@ class HMNetModel(SummModel):
                 opt[key.upper()] = val
 
         return opt
-
-    def cache_pretrained_model(self):
-        """
-        load the pretrained model from cached location, if not cached, then download first
-        """
-
-        # use huggingface cache location here
-        hf_cache_location = os.environ.get(
-            "HF_HOME", Path(Path.home(), ".cache/huggingface")
-        )
-
-        if not os.path.exists(hf_cache_location):
-            os.makedirs(hf_cache_location)
-
-        # download if the model is not cached
-        if not os.path.exists(os.path.join(hf_cache_location, "model.pt")):
-            urllib.request.urlretrieve(
-                PRETRAINED_MODEL_DOWNLOAD_LINK,
-                os.path.join(hf_cache_location, "model.pt"),
-            )
-
-        return os.path.join(hf_cache_location, "model.pt")
 
     def summarize(self, corpus: List[List[str]], queries: List[str] = None):
         print(f"HMNet model: processing document of {corpus.__len__()} samples")
