@@ -350,6 +350,30 @@ print(rougewe_score)
 ```
 
 
+### Using automatic pipeline assembly
+Given a SummerTime dataset, you may use the `pipelines.assemble_model_pipeline` function to retrieve a list of initialized SummerTime models that are compatible with the dataset provided.
+
+```python
+from pipeline import assemble_model_pipeline
+from dataset.dataset_loaders import CnndmDataset, QMsumDataset
+
+single_doc_models = assemble_model_pipeline(CnndmDataset)
+# [
+#   (<model.single_doc.bart_model.BartModel object at 0x7fcd43aa12e0>, 'BART'),
+#   (<model.single_doc.lexrank_model.LexRankModel object at 0x7fcd43aa1460>, 'LexRank'),
+#   (<model.single_doc.longformer_model.LongformerModel object at 0x7fcd43b17670>, 'Longformer'),
+#   (<model.single_doc.pegasus_model.PegasusModel object at 0x7fccb84f2910>, 'Pegasus'),
+#   (<model.single_doc.textrank_model.TextRankModel object at 0x7fccb84f2880>, 'TextRank')
+# ]
+
+query_based_multi_doc_models = assemble_model_pipeline(QMsumDataset)
+# [
+#   (<model.query_based.tf_idf_model.TFIDFSummModel object at 0x7fc9c9c81e20>, 'TF-IDF (HMNET)'),
+#   (<model.query_based.bm25_model.BM25SummModel object at 0x7fc8b4fa8c10>, 'BM25 (HMNET)')
+# ]
+```
+
+
 ## To contribute
 
 ### Pull requests
