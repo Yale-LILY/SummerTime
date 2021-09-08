@@ -4,7 +4,7 @@ from itertools import chain
 from typing import List, Union
 
 from model.base_model import SummModel
-from model.single_doc.textrank_model import TextRankModel
+from model.single_doc.bart_model import BartModel
 
 
 class FlattenDialogueModel(SummModel):
@@ -12,7 +12,7 @@ class FlattenDialogueModel(SummModel):
     model_name = "FlattenDialogueModel"
     is_dialogue_based = True
 
-    def __init__(self, model_backend: SummModel = TextRankModel, **kwargs):
+    def __init__(self, model_backend: SummModel = BartModel, **kwargs):
         super(SummModel, self).__init__()
         self.model = model_backend(**kwargs)
 
