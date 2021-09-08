@@ -10,8 +10,13 @@ class FlattenDialogueModel(DialogueSummModel):
     model_name = "FlattenDialogueModel"
 
     def __init__(self, model_backend: SummModel = BartModel, **kwargs):
-        super(SummModel, self).__init__()
-        self.model = model_backend(**kwargs)
+        self.model: SummModel = model_backend(**kwargs)
+
+        super(DialogueSummModel, self).__init__(
+            trained_domain=self.model.trained_domain,
+            max_input_length=self.model.max_input_length,
+            max_output_length=self.model.max_output_length,
+        )
 
     def summarize(
         self,
