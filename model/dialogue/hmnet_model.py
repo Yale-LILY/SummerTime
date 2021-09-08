@@ -4,7 +4,6 @@ import torch
 import gzip
 import json
 
-from model.base_model import SummModel
 from model.dialogue.base_dialogue_model import DialogueSummModel
 from model.third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
 from model.third_party.HMNet.Utils.Arguments import Arguments

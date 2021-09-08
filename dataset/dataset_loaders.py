@@ -118,12 +118,12 @@ class SamsumDataset(SummDataset):
         :rtype: a generator yielding SummInstance objects
         """
         for instance in tqdm(data):
-            dialogue: List = instance["dialogue"].split(
-                "\r\n"
-            )  # split each dialogue into a list of strings such as
-            # ["speaker1 : utter..", "speaker2 : utter..."]
+            # split each dialogue into a list of strings such as ["speaker1 : utter..", "speaker2 : utter..."]
+            dialogue: List = instance["dialogue"].split("\r\n")
+
             summary: str = instance["summary"]
             summ_instance = SummInstance(source=dialogue, summary=summary)
+            summ_instance.ensure_dialogue_format()
 
             yield summ_instance
 
