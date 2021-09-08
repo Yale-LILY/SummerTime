@@ -27,7 +27,7 @@ DUMMY_DOC_OUTPUT = "California's largest electricity provider has turned off pow
 
 DUMMY_DIALOGUE_INPUT = [
     "Alice : I am a girl.",
-    "Bob: I am a boy.",
+    "Bob : I am a boy.",
 ]
 
 DUMMY_QUERY_INPUT = "What is the main topic of this?"

@@ -59,8 +59,13 @@ class SummInstance:
     def ensure_dialogue_format(self):
         pattern = re.compile(r"\w+\s:\s\w+")
 
-        if not pattern.match(self.source):
-            self.source = f"None : {self.source}"
+        assert isinstance(
+            self.source, list
+        ), "Source should be a list of strings for dialogue"
+
+        for i in range(len(self.source)):
+            if not pattern.match(self.source[i]):
+                self.source[i] = f"None : {self.source[i]}"
 
 
 class SummDataset:
