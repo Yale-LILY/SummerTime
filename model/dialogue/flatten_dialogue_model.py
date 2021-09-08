@@ -12,9 +12,7 @@ class FlattenDialogueModel(SummModel):
     model_name = "FlattenDialogueModel"
     is_dialogue_based = True
 
-    def __init__(
-        self, model_backend: SummModel = TextRankModel, **kwargs
-    ):
+    def __init__(self, model_backend: SummModel = TextRankModel, **kwargs):
         super(SummModel, self).__init__()
         self.model = model_backend(**kwargs)
 
@@ -33,13 +31,16 @@ class FlattenDialogueModel(SummModel):
         return summaries
 
     @classmethod
-    def assert_summ_input_type(cls, corpus: Union[List[str], List[List[str]]], queries: Union[List[str], None]):
-        """each instance must be a list of \"speaker : utterance\""""
+    def assert_summ_input_type(
+        cls, corpus: Union[List[str], List[List[str]]], queries: Union[List[str], None]
+    ):
+        """each instance must be a list of \"speaker : utterance\" """
         assert all([isinstance(instance, list) for instance in corpus])
 
         pattern = re.compile(r"\w+\s:\s\w+")
-        assert all([pattern.match(instance) for instance in chain.from_iterable(corpus)]), \
-            "each instance must be a list of \"[speaker] : [utterance]\", the \":\" is essential"
+        assert all(
+            [pattern.match(instance) for instance in chain.from_iterable(corpus)]
+        ), 'each instance must be a list of "[speaker] : [utterance]", the ":" is essential'
 
     @classmethod
     def generate_basic_description(cls) -> str:

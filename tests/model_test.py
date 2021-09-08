@@ -1,7 +1,12 @@
 import unittest
 from typing import List
 
-from dataset.dataset_loaders import CnndmDataset, MultinewsDataset, PubmedqaDataset, SamsumDataset
+from dataset.dataset_loaders import (
+    CnndmDataset,
+    MultinewsDataset,
+    PubmedqaDataset,
+    SamsumDataset,
+)
 from model import SUPPORTED_SUMM_MODELS, list_all_models
 from model.single_doc import LexRankModel, LongformerModel
 from model.dialogue import HMNetModel
@@ -18,30 +23,31 @@ DUMMY_DOC_INPUT = (
     " by the shutoffs which were expected to last through at least midday tomorrow."
 )
 
-DUMMY_DOC_OUTPUT = (
-    "California's largest electricity provider has turned off power to hundreds of thousands of customers."
-)
+DUMMY_DOC_OUTPUT = "California's largest electricity provider has turned off power to hundreds of thousands of customers."
 
 DUMMY_DIALOGUE_INPUT = [
     "Alice : I am a girl.",
     "Bob: I am a boy.",
 ]
 
-DUMMY_QUERY_INPUT = (
-    "What is the main topic of this?"
-)
+DUMMY_QUERY_INPUT = "What is the main topic of this?"
+
 
 def get_dummy_single_doc_instances(n: int):
     return [DUMMY_DOC_INPUT] * n
 
+
 def get_dummy_multi_doc_instances(n: int, m: int = 5):
     return [[DUMMY_DOC_INPUT] * m for _ in range(n)]
+
 
 def get_dummy_query_based_instances(n: int):
     return [DUMMY_DOC_INPUT] * n, [DUMMY_QUERY_INPUT] * n
 
+
 def get_dummy_dialogue_instances(n: int):
     return [DUMMY_DIALOGUE_INPUT for _ in range(n)]
+
 
 class TestIndividualModels(unittest.TestCase):
     """more tests for different aspects of the models"""
@@ -57,7 +63,6 @@ class TestIndividualModels(unittest.TestCase):
 
 
 class TestModels(unittest.TestCase):
-
     def test_list_models(self):
         print_with_color(f"{'#'*10} Testing test_list_models... {'#'*10}\n", "35")
         all_models = list_all_models()
@@ -122,9 +127,7 @@ class TestModels(unittest.TestCase):
                 print(f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
                 self.validate_prediction(prediction, test_src)
             elif model.is_dialogue_based:
-                test_src, test_tgt = get_summarization_set(
-                    dialogue_based_dataset, 1
-                )
+                test_src, test_tgt = get_summarization_set(dialogue_based_dataset, 1)
                 prediction = model.summarize(test_src)
                 print(f"Gold summary: {test_tgt}\nPredicted summary: {prediction}")
                 self.validate_prediction(prediction, test_src)
