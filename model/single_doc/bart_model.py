@@ -10,7 +10,9 @@ class BartModel(SingleDocSummModel):
     is_neural = False
 
     def __init__(self, device="cpu"):
-        super(BartModel, self).__init__()
+        super(BartModel, self).__init__(
+            trained_domain="News", max_input_length=1024, max_output_length=None
+        )
 
         self.device = device
         model_name = "facebook/bart-large-cnn"

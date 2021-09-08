@@ -13,7 +13,9 @@ class TextRankModel(SingleDocSummModel):
     is_neural = False
 
     def __init__(self, num_sentences=1):
-        super(TextRankModel, self).__init__()
+        super(TextRankModel, self).__init__(
+            trained_domain="not_trained", max_input_length=None, max_output_length=None
+        )
 
         self.num_sentences = num_sentences
         # load a spaCy model, depending on language, scale, etc.

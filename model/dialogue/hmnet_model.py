@@ -1,9 +1,11 @@
-from model.base_model import SummModel
 import argparse
 import os
 import torch
 import gzip
 import json
+
+from model.base_model import SummModel
+from model.dialogue.base_dialogue_model import DialogueSummModel
 from model.third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
 from model.third_party.HMNet.Utils.Arguments import Arguments
 from util.download_utils import get_cached_file_path
@@ -157,7 +159,7 @@ PRETRAINED_MODEL_DOWNLOAD_LINK = (
 )
 
 
-class HMNetModel(SummModel):
+class HMNetModel(DialogueSummModel):
     # static variables
     model_name = "HMNET"
     is_extractive = False
@@ -306,6 +308,8 @@ class HMNetModel(SummModel):
         return opt
 
     def summarize(self, corpus: List[List[str]], queries: List[str] = None):
+        self.assert_summ_input_type(corpus, queries)
+
         print(f"HMNet model: processing document of {corpus.__len__()} samples")
         # transform the original dataset to "dialogue" input
         # we only use test set path for evaluation

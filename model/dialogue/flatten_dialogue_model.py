@@ -1,16 +1,13 @@
-import re
-
-from itertools import chain
 from typing import List, Union
 
+from model.dialogue.base_dialogue_model import DialogueSummModel
 from model.base_model import SummModel
 from model.single_doc.bart_model import BartModel
 
 
-class FlattenDialogueModel(SummModel):
+class FlattenDialogueModel(DialogueSummModel):
 
     model_name = "FlattenDialogueModel"
-    is_dialogue_based = True
 
     def __init__(self, model_backend: SummModel = BartModel, **kwargs):
         super(SummModel, self).__init__()
@@ -29,18 +26,6 @@ class FlattenDialogueModel(SummModel):
         summaries = self.model.summarize(joint_corpus)
 
         return summaries
-
-    @classmethod
-    def assert_summ_input_type(
-        cls, corpus: Union[List[str], List[List[str]]], queries: Union[List[str], None]
-    ):
-        """each instance must be a list of \"speaker : utterance\" """
-        assert all([isinstance(instance, list) for instance in corpus])
-
-        pattern = re.compile(r"\w+\s:\s\w+")
-        assert all(
-            [pattern.match(instance) for instance in chain.from_iterable(corpus)]
-        ), 'each instance must be a list of "[speaker] : [utterance]", the ":" is essential'
 
     @classmethod
     def generate_basic_description(cls) -> str:
