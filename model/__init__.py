@@ -6,7 +6,7 @@ from .single_doc import (
     TextRankModel,
 )
 from .multi_doc import MultiDocJointModel, MultiDocSeparateModel
-from .dialogue import HMNetModel
+from .dialogue import HMNetModel, FlattenDialogueModel
 from .query_based import TFIDFSummModel, BM25SummModel
 from .defaults import summarizer
 
@@ -19,6 +19,7 @@ SUPPORTED_SUMM_MODELS = [
     MultiDocJointModel,
     MultiDocSeparateModel,
     HMNetModel,
+    FlattenDialogueModel,
     TFIDFSummModel,
     BM25SummModel,
 ]
