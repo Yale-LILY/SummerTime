@@ -28,25 +28,6 @@ def retrieve_task_nodes(model_or_dataset: Union[SummModel, SummDataset]) -> List
     return task_nodes
 
 
-def match_task_node_to_model(task_node: str, model: SummModel) -> bool:
-    """Matches summarization model to task string.
-
-    Args:
-        task_node (str): String for summarization task type
-        model (SummModel): Summarization model
-
-    Returns:
-        bool: Whether model matches task type.
-    """
-    if task_node == "is_dialogue_based":
-        return model.is_dialogue_based
-    if task_node == "is_multi_document":
-        return model.is_multi_document
-    if task_node == "is_query_based":
-        return model.is_query_based
-    return False
-
-
 def top_sort_dfs(
     list_nodes: List[str],
     graph: Dict[str, List],
@@ -87,7 +68,8 @@ def top_sort_options(list_nodes: List[str], graph: Dict[str, List]) -> List[str]
         in_degrees[node] = 0
     for node in list_nodes:
         for neighbor in graph[node]:
-            in_degrees[neighbor]
+            if neighbor in list_nodes:
+                in_degrees[neighbor] += 1
 
     sorted_list = []
     visited = {}
