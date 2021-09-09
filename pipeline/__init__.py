@@ -20,11 +20,11 @@ def retrieve_task_nodes(model_or_dataset: Union[SummModel, SummDataset]) -> List
     """
     task_nodes = []
     if model_or_dataset.is_dialogue_based:
-        task_nodes.push("is_dialogue_based")
+        task_nodes.append("is_dialogue_based")
     if model_or_dataset.is_multi_document:
-        task_nodes.push("is_multi_document")
+        task_nodes.append("is_multi_document")
     if model_or_dataset.is_query_based:
-        task_nodes.push("is_query_based")
+        task_nodes.append("is_query_based")
     return task_nodes
 
 
@@ -60,7 +60,7 @@ def top_sort_dfs(
         list_nodes (List[str]): List of nodes to sort
         graph (Dict[List]): Directed graph of nodes
         cur_node (str): Current node in dfs
-        sorted_list (List[str]): Sorted list to push new nodes to
+        sorted_list (List[str]): Sorted list to append new nodes to
         visited (Dict[bool]): Tracks whether nodes have been visited previously
     """
     if visited[cur_node]:
