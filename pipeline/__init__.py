@@ -18,7 +18,7 @@ def retrieve_task_nodes(model_or_dataset: Union[SummModel, SummDataset]) -> List
     Returns:
         List[str]: Model/dataset task types in string form
     """
-    task_nodes = []
+    task_nodes = ["is_single_document"]
     if model_or_dataset.is_dialogue_based:
         task_nodes.append("is_dialogue_based")
     if model_or_dataset.is_multi_document:
@@ -44,7 +44,7 @@ def top_sort_dfs(
         sorted_list (List[str]): Sorted list to append new nodes to
         visited (Dict[bool]): Tracks whether nodes have been visited previously
     """
-    if visited[cur_node]:
+    if cur_node in visited:
         return
     visited.add(cur_node)
     sorted_list.append(cur_node)
@@ -72,15 +72,17 @@ def top_sort_options(list_nodes: List[str], graph: Dict[str, List]) -> List[str]
                 in_degrees[neighbor] += 1
 
     sorted_list = []
-    visited = {}
+    visited = set()
     for node in list_nodes:
         if in_degrees[node] == 0:
-            sorted_list.append(node)
-            visited.add(neighbor)
             top_sort_dfs(list_nodes, graph, node, sorted_list, visited)
     if len(sorted_list) == 0:
-        print("Graph is cyclical")
+        print(list_nodes)
+        print("Graph is cyclical!!!")
         return []
+
+    print(sorted_list)
+    return sorted_list
 
 
 def create_model_composition_graph() -> Dict[str, List]:
@@ -94,8 +96,9 @@ def create_model_composition_graph() -> Dict[str, List]:
         graph.
     """
     graph = {}
-    graph["is_multi_document"] = []
-    graph["is_dialogue_based"] = ["is_multi_document"]
+    graph["is_single_document"] = []
+    graph["is_multi_document"] = ["is_single_document"]
+    graph["is_dialogue_based"] = ["is_multi_document", "is_single_document"]
     graph["is_query_based"] = ["is_dialogue_based", "is_multi_document"]
     print(graph)
     return graph
@@ -175,10 +178,12 @@ def assemble_model_pipeline_2(
     graph = create_model_composition_graph()
     sorted_task_node_list = top_sort_options(task_node_list, graph)
 
+    print(sorted_task_node_list)
     if len(sorted_task_node_list) == 0:
-        return single_doc_model_instances
+        return [(model, model.model_name) for model in single_doc_model_instances]
 
     task_node_to_model_list = {
+        "is_single_document": single_doc_model_list,
         "is_dialogue_based": dialogue_based_model_list,
         "is_multi_document": multi_doc_model_list,
         "is_query_based": query_based_model_list,
@@ -190,12 +195,22 @@ def assemble_model_pipeline_2(
         if len(matching_models) == 0:
             for model_cls in task_node_to_model_list[task_node]:
                 # TODO: How to tell if last task needs model backend?
-                matching_models.append(model_cls())
+                matching_models.append((model_cls, model_cls.model_name))
         else:
             new_matching_models = []
             for model_cls in task_node_to_model_list[task_node]:
-                for model_backend in matching_models:
-                    new_matching_models.append(model_cls(model_backend=model_backend))
+                for model_backend, model_backend_name in matching_models:
+                    new_matching_models.append(
+                        (
+                            model_cls(
+                                model_backend=model_backend,
+                                data=get_lxr_train_set(dataset),
+                            ),
+                            f"{model_cls.model_name} ({model_backend_name})",
+                        )
+                        if model_backend == LexRankModel
+                        else model_cls(model_backend=model_backend)
+                    )
             matching_models = new_matching_models
     return matching_models
 

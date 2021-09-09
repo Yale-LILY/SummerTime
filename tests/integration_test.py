@@ -3,7 +3,7 @@ import unittest
 from model.base_model import SummModel
 from model import SUPPORTED_SUMM_MODELS
 
-from pipeline import assemble_model_pipeline
+from pipeline import assemble_model_pipeline, assemble_model_pipeline_2
 
 from evaluation.base_metric import SummMetric
 from evaluation import SUPPORTED_EVALUATION_METRICS
@@ -87,9 +87,10 @@ class IntegrationTests(unittest.TestCase):
                     "35",
                 )
                 # matching_model_instances = assemble_model_pipeline(dataset_cls, list(filter(lambda m: m != PegasusModel, SUPPORTED_SUMM_MODELS)))
-                matching_model_instances = assemble_model_pipeline(
+                matching_model_instances = assemble_model_pipeline_2(
                     dataset_cls, SUPPORTED_SUMM_MODELS
                 )
+                print(matching_model_instances)
                 for model, model_name in matching_model_instances:
                     test_instances = retrieve_random_test_instances(
                         dataset_instances=dataset_instances, num_instances=1
