@@ -47,7 +47,13 @@ def match_task_node_to_model(task_node: str, model: SummModel) -> bool:
     return False
 
 
-def top_sort_dfs(list_nodes: List[str], graph: Dict[str, List], cur_node: str, sorted_list: List[str], visited: Set):
+def top_sort_dfs(
+    list_nodes: List[str],
+    graph: Dict[str, List],
+    cur_node: str,
+    sorted_list: List[str],
+    visited: Set,
+):
     """DFS helper for topological sort
 
     Args:
@@ -93,10 +99,10 @@ def top_sort_options(list_nodes: List[str], graph: Dict[str, List]) -> List[str]
     if len(sorted_list) == 0:
         print("Graph is cyclical")
         return []
-    
+
 
 def create_model_composition_graph() -> Dict[str, List]:
-    """ Returns directed graph where each node
+    """Returns directed graph where each node
     is a summarization task and each edge represents
     an appropriate order for models to be applied
     to a multi-layered summarization task.
@@ -108,7 +114,7 @@ def create_model_composition_graph() -> Dict[str, List]:
     graph = {}
     graph["is_multi_document"] = []
     graph["is_dialogue_based"] = ["is_multi_document"]
-    graph["is_query_based"] = ["is_query_based", "is_multi_document"]
+    graph["is_query_based"] = ["is_dialogue_based", "is_multi_document"]
     print(graph)
     return graph
 
@@ -189,7 +195,7 @@ def assemble_model_pipeline_2(
 
     if len(sorted_task_node_list) == 0:
         return single_doc_model_instances
-    
+
     task_node_to_model_list = {
         "is_dialogue_based": dialogue_based_model_list,
         "is_multi_document": multi_doc_model_list,
@@ -210,9 +216,6 @@ def assemble_model_pipeline_2(
                     new_matching_models.append(model_cls(model_backend=model_backend))
             matching_models = new_matching_models
     return matching_models
-                
-            
-
 
 
 def assemble_model_pipeline(
