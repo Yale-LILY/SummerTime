@@ -10,7 +10,9 @@ class LongformerModel(SingleDocSummModel):
     is_neural = True
 
     def __init__(self):
-        super(LongformerModel, self).__init__()
+        super(LongformerModel, self).__init__(
+            trained_domain="News", max_input_length=4096, max_output_length=None
+        )
 
         self.model = EncoderDecoderModel.from_pretrained(
             "patrickvonplaten/longformer2roberta-cnn_dailymail-fp16"

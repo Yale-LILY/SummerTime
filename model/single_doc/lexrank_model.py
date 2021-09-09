@@ -12,7 +12,11 @@ class LexRankModel(SingleDocSummModel):
     is_neural = False
 
     def __init__(self, data, summary_length=2, threshold=0.1):
-        super(LexRankModel, self).__init__()
+        super(LexRankModel, self).__init__(
+            trained_domain="not_trained",
+            max_input_length=None,
+            max_output_length=None,
+        )
 
         nltk.download("punkt", quiet=True)
         corpus = [nltk.sent_tokenize(example) for example in data]

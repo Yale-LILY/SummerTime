@@ -1,19 +1,18 @@
-from .base_multi_doc_model import MultiDocSummModel
+from typing import List, Union
+
+from model.dialogue.base_dialogue_model import DialogueSummModel
 from model.base_model import SummModel
-from model.single_doc import TextRankModel
-from typing import Union, List
+from model.single_doc.bart_model import BartModel
 
 
-class MultiDocJointModel(MultiDocSummModel):
+class FlattenDialogueModel(DialogueSummModel):
 
-    model_name = "Multi-document joint"
-    is_multi_document = True
+    model_name = "FlattenDialogueModel"
 
-    def __init__(self, model_backend: SummModel = TextRankModel, **kwargs):
-        model: SummModel = model_backend(**kwargs)
-        self.model = model
+    def __init__(self, model_backend: SummModel = BartModel, **kwargs):
+        self.model: SummModel = model_backend(**kwargs)
 
-        super(MultiDocJointModel, self).__init__(
+        super(DialogueSummModel, self).__init__(
             trained_domain=self.model.trained_domain,
             max_input_length=self.model.max_input_length,
             max_output_length=self.model.max_output_length,
@@ -36,9 +35,10 @@ class MultiDocJointModel(MultiDocSummModel):
     @classmethod
     def generate_basic_description(cls) -> str:
         basic_description = (
-            "MultiDocJointModel performs multi-document summarization by"
-            " first concatenating all documents,"
-            " and then performing single-document summarization on the concatenation."
+            "FlattenDialogueModel performs multi-document summarization by"
+            " first concatenating all dialogue utterances,"
+            " and then treat the concatenated text as a single document and use"
+            " single document models to solve it."
         )
         return basic_description
 
@@ -46,11 +46,10 @@ class MultiDocJointModel(MultiDocSummModel):
     def show_capability(cls):
         basic_description = cls.generate_basic_description()
         more_details = (
-            "A multi-document summarization model."
+            "A dialogue summarization model."
             " Allows for custom model backend selection at initialization."
-            " Concatenates each document in corpus and returns single-document summarization of joint corpus.\n"
+            " Concatenates the utterances in the dialogue and returns single-document summarization of joint corpus.\n"
             "Strengths: \n - Allows for control of backend model.\n"
-            "Weaknesses: \n - Assumes all documents are equally weighted.\n"
-            " - May fail to extract information from certain documents.\n"
+            "Weaknesses: \n - Disregards the dialogue structure.\n"
         )
         print(f"{basic_description}\n{'#' * 20}\n{more_details}")

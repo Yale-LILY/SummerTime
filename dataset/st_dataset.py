@@ -1,3 +1,5 @@
+import re
+
 from abc import abstractmethod
 from pprint import pformat
 from time import sleep
@@ -53,6 +55,17 @@ class SummInstance:
             instance_dict["query"] = self.query
 
         return pformat(instance_dict, indent=1)
+
+    def ensure_dialogue_format(self):
+        pattern = re.compile(r"\w+\s:\s\w+")
+
+        assert isinstance(
+            self.source, list
+        ), "Source should be a list of strings for dialogue"
+
+        for i in range(len(self.source)):
+            if not pattern.match(self.source[i]):
+                self.source[i] = f"None : {self.source[i]}"
 
 
 class SummDataset:

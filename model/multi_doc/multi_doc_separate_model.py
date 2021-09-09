@@ -10,9 +10,14 @@ class MultiDocSeparateModel(MultiDocSummModel):
     is_multi_document = True
 
     def __init__(self, model_backend: SummModel = TextRankModel, **kwargs):
-        super(MultiDocSeparateModel, self).__init__()
-        model = model_backend(**kwargs)
+        model: SummModel = model_backend(**kwargs)
         self.model = model
+
+        super(MultiDocSeparateModel, self).__init__(
+            trained_domain=self.model.trained_domain,
+            max_input_length=self.model.max_input_length,
+            max_output_length=self.model.max_output_length,
+        )
 
     def summarize(
         self,

@@ -1,11 +1,15 @@
-from model.base_model import SummModel
 import argparse
 import os
 import torch
 import gzip
 import json
+
+from model.dialogue.base_dialogue_model import DialogueSummModel
 from model.third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
 from model.third_party.HMNet.Utils.Arguments import Arguments
+from util.download_utils import get_cached_file_path
+
+from typing import List
 
 import spacy
 
@@ -145,8 +149,16 @@ ENT = {
     "O": 73,
 }
 
+# this is for model pretrained on AMI
+PRETRAINED_MODEL_DOWNLOAD_LINK = (
+    "https://sdrgstorage01wus2.blob.core.windows.net/user/ruox/"
+    "Meeting_Minutes/HMNet/ExampleInitModel/HMNet-pretrained/model.pt"
+    "?sv=2019-10-10&st=2020-10-22T19%3A24%3A06Z&se=2060-10-23T19%3A24%3A00Z"
+    "&sr=b&sp=r&sig=cRfastEaN7s75cgMaBvEFGbXio20smnjjRxxYbqEkoE%3D"
+)
 
-class HMNetModel(SummModel):
+
+class HMNetModel(DialogueSummModel):
     # static variables
     model_name = "HMNET"
     is_extractive = False
@@ -194,6 +206,9 @@ class HMNetModel(SummModel):
         kwargs["MIN_GEN_LENGTH"] = min_gen_length
         kwargs["MAX_GEN_LENGTH"] = max_gen_length
         kwargs["BEAM_WIDTH"] = beam_width
+        kwargs["PYLEARN_MODEL"] = get_cached_file_path(
+            "hmnet", "model.pt", PRETRAINED_MODEL_DOWNLOAD_LINK
+        ).parent
         self.opt = self._parse_args(kwargs)
         self.model = HMNetTrainer(self.opt)
 
@@ -244,7 +259,7 @@ class HMNetModel(SummModel):
             help="Override parameters on config, VAR=val;VAR=val;...",
         )
 
-        cmdline_args = parser.parse_args()
+        cmdline_args = parser.parse_args([])
         command = cmdline_args.command
         conf_file = cmdline_args.conf_file
         conf_args = Arguments(conf_file)
@@ -280,6 +295,8 @@ class HMNetModel(SummModel):
         # combine kwargs into opt dictionary (we allow lower case)
         for key, val in kwargs.items():
             valid_keys = [x for x in opt.keys() if x.upper() == x]
+            if key == "PYLEARN_MODEL":
+                print(f"Using model from location {val}/model.pt")
             if key.upper() not in valid_keys:
                 print("WARNING: {} is not a valid key in HMNet.".format(key))
                 print("The valid keys are:", valid_keys)
@@ -289,7 +306,9 @@ class HMNetModel(SummModel):
 
         return opt
 
-    def summarize(self, corpus, queries=None):
+    def summarize(self, corpus: List[List[str]], queries: List[str] = None):
+        self.assert_summ_input_type(corpus, queries)
+
         print(f"HMNet model: processing document of {corpus.__len__()} samples")
         # transform the original dataset to "dialogue" input
         # we only use test set path for evaluation

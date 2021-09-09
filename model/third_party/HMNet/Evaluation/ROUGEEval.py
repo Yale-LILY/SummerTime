@@ -9,7 +9,8 @@ from tqdm.auto import tqdm
 from model.third_party.HMNet.Evaluation.OldROUGEEval import rouge
 from model.third_party.HMNet.ThirdParty.ROUGE import pyrouge
 from shutil import copyfile
-from mpi4py import MPI
+
+# from mpi4py import MPI
 import torch
 import logging
 import json
@@ -229,14 +230,14 @@ class ROUGEEval:
         assert len(predictions) == len(
             gts
         ), "len(predictions): {0}, len(gts): {1}".format(len(predictions), len(gts))
-        comm = MPI.COMM_WORLD
-        predictions = comm.gather(predictions, root=0)
-        x_tokens = comm.gather(x_tokens, root=0)
-        y_tokens = comm.gather(y_tokens, root=0)
+        # comm = MPI.COMM_WORLD
+        # predictions = comm.gather(predictions, root=0)
+        # x_tokens = comm.gather(x_tokens, root=0)
+        # y_tokens = comm.gather(y_tokens, root=0)
         # if GPU numbers are high (>=8), passing x_ids, y_ids to a rank 0 will cause out of memory
         # x_ids = comm.gather(x_ids, root=0)
         # y_ids = comm.gather(y_ids, root=0)
-        gts = comm.gather(gts, root=0)
+        # gts = comm.gather(gts, root=0)
         if self.opt["rank"] == 0:
             # flatten lists
             predictions = [item for sublist in predictions for item in sublist]
