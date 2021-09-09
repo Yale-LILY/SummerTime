@@ -1,0 +1,43 @@
+# YAML 1.2
+---
+authors: 
+  -
+    affiliation: "Yale University"
+    family-names: Ni
+    given-names: Ansong
+  -
+    affiliation: "Yale University"
+    family-names: Azerbayev
+    given-names: Zhangir
+  -
+    affiliation: "Yale University"
+    family-names: Mutuma 
+    given-names: Mutethia 
+  -
+    affiliation: "Yale University"
+    family-names: Feng
+    given-names: Troy 
+  -
+    affiliation: "Penn State University"
+    family-names: Zhang
+    given-names: Yusen 
+  -
+    affiliation: "Yale University"
+    family-names: Yu
+    given-names: Tao
+  -
+    affiliation: "Yale University"
+    family-names: Awadallah
+    given-names: Ahmed H.
+  -
+    affiliation: "Yale University"
+    family-names: Radev
+    given-names: Dragomir
+cff-version: "1.1.0"
+license: "Apache-2.0"
+message: "If you use this software, please cite it using this metadata."
+repository-code: "https://github.com/Yale-LILY/SummerTime"
+title: "SummerTime - Text Summarization Toolkit for Non-experts"
+version: "0.1"
+# doi: "10.18653/v1/W18-2501"
+...
