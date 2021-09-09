@@ -8,32 +8,38 @@ from SummerTime.model.base_model import SummModel
 from SummerTime.dataset.st_dataset import SummInstance
 from SummerTime.evaluation.base_metric import SummMetric
 
+
 class EvaluationTable(dict):
     def __init__(self, *args, **kw):
         super(EvaluationTable, self).__init__(*args, **kw)
+
     def __str__(self):
         out = PrettyTable()
         metrics = list(self[list(self.keys())[0]].keys())
-        out.field_names = ['Model'] + metrics
+        out.field_names = ["Model"] + metrics
         for model_name in self:
             to_add = [model_name] + [self[model_name][metric] for metric in metrics]
             out.add_row(to_add)
-        out.float_format = f'.3'
+        out.float_format = f".3"
         return out.__str__()
+
     def __repr__(self):
         return self.__str__()
 
-class ModelSelector():
-    def __init__(self,
-                 models: List[SummModel],
-		   generator: Generator[SummInstance, None, None],
-                 metrics: List[SummMetric],
-		   max_instances: int = -1):
+
+class ModelSelector:
+    def __init__(
+        self,
+        models: List[SummModel],
+        generator: Generator[SummInstance, None, None],
+        metrics: List[SummMetric],
+        max_instances: int = -1,
+    ):
 
         self.models = models
 
         if max_instances == -1:
-	      self.generator = generator
+            self.generator = generator
         else:
             self.generator = itertools.islice(generator, max_instances)
 
@@ -43,15 +49,16 @@ class ModelSelector():
         """Evaluates every model on every metric, returning an EvaluationTable"""
         store_data = EvaluationTable()
 
-        tiny_generators = list(itertools.tee(self.generator,
-            len(self.models)*len(self.metrics)))
+        tiny_generators = list(
+            itertools.tee(self.generator, len(self.models) * len(self.metrics))
+        )
 
         for model in self.models:
             store_data[model.model_name] = {}
 
             for metric in self.metrics:
                 # TODO: make default keys a class variable
-                get_keys = metric.evaluate(['test'], ['test'])
+                get_keys = metric.evaluate(["test"], ["test"])
                 # used for averaging metric across examples
                 sum_score_dict = {key: 0 for key in get_keys}
                 num_instances = 0
@@ -60,19 +67,23 @@ class ModelSelector():
                 for instance in current_generator:
                     input = model.summarize([instance.source])
                     score_dict = metric.evaluate(input, [instance.summary])
-                    sum_score_dict = {key: sum_score_dict[key] + score_dict[key]
-                            for key in sum_score_dict}
+                    sum_score_dict = {
+                        key: sum_score_dict[key] + score_dict[key]
+                        for key in sum_score_dict
+                    }
 
                     num_instances += 1
 
-                avg_score_dict = {key: sum_score_dict[key]/num_instances for key in sum_score_dict}
+                avg_score_dict = {
+                    key: sum_score_dict[key] / num_instances for key in sum_score_dict
+                }
 
                 for key in avg_score_dict:
                     store_data[model.model_name][key] = avg_score_dict[key]
 
         return store_data
 
-	def run_halving(self, min_instances: int, factor: int = 3) -> EvaluationTable:
+        def run_halving(self, min_instances: int, factor: int = 3) -> EvaluationTable:
 
             total_instances = 0
             # first run with min_instances instances
@@ -101,9 +112,7 @@ class ModelSelector():
 
             return table
 
-
-
-	def visualize(output: EvaluationTable):
+        def visualize(output: EvaluationTable):
             # Preprocesses data.
             data = []
             metrics = list(output[list(output.keys())[0]].keys())
@@ -118,28 +127,36 @@ class ModelSelector():
             return make_radar_plot(data, row_names)
 
 
-
-
-def _update_table(table: EvaluationTable,
-                  new_table: EvaluationTable,
-                  total_instances : int,
-                  num_instances : int) -> EvaluationTable:
+def _update_table(
+    table: EvaluationTable,
+    new_table: EvaluationTable,
+    total_instances: int,
+    num_instances: int,
+) -> EvaluationTable:
     """Merges df1 and df2"""
     for model in new_table:
         for metric in new_table[model]:
             denom = total_instances + num_instances
-            table[model][metric] = total_instances / denom * table[model][metric] + num_instances / denom * new_table[model][metric]
+            table[model][metric] = (
+                total_instances / denom * table[model][metric]
+                + num_instances / denom * new_table[model][metric]
+            )
     return table
 
-def _remove_bad_model(models: List[SummModel],
-                      table: EvaluationTable):
+
+def _remove_bad_model(models: List[SummModel], table: EvaluationTable):
     """Removes a model's row from the dataframe if it is worse than every other model
     on every metric"""
     name = None
     for model in table:
         cumulative_and = 1
         for other in table:
-            cumulative_and *= math.prod([1 if table[model][metric] <= table[other][metric] else 0 for metric in table[model]])
+            cumulative_and *= math.prod(
+                [
+                    1 if table[model][metric] <= table[other][metric] else 0
+                    for metric in table[model]
+                ]
+            )
         if cumulative_and == 1:
             name = model
     if name:
