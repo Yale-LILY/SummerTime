@@ -4,9 +4,9 @@ import itertools
 from .plotutils.radar import make_radar_plot
 from typing import List, Tuple, Generator
 from prettytable import PrettyTable
-from SummerTime.model.base_model import SummModel
-from SummerTime.dataset.st_dataset import SummInstance
-from SummerTime.evaluation.base_metric import SummMetric
+from model.base_model import SummModel
+from dataset.st_dataset import SummInstance
+from evaluation.base_metric import SummMetric
 
 
 class EvaluationTable(dict):
