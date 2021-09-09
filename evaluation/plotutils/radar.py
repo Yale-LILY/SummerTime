@@ -9,7 +9,7 @@ from matplotlib.spines import Spine
 from matplotlib.transforms import Affine2D
 
 
-def radar_factory(num_vars, frame='circle'):
+def radar_factory(num_vars, frame="circle"):
     """
     Create a radar chart with `num_vars` axes.
 
@@ -26,18 +26,18 @@ def radar_factory(num_vars, frame='circle'):
 
     """
     # calculate evenly-spaced axis angles
-    theta = np.linspace(0, 2*np.pi, num_vars, endpoint=False)
+    theta = np.linspace(0, 2 * np.pi, num_vars, endpoint=False)
 
     class RadarAxes(PolarAxes):
 
-        name = 'radar'
+        name = "radar"
         # use 1 line segment to connect specified points
         RESOLUTION = 1
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             # rotate plot such that the first axis is at the top
-            self.set_theta_zero_location('N')
+            self.set_theta_zero_location("N")
 
         def fill(self, *args, closed=True, **kwargs):
             """Override fill so that line is closed by default"""
@@ -62,35 +62,35 @@ def radar_factory(num_vars, frame='circle'):
         def _gen_axes_patch(self):
             # The Axes patch must be centered at (0.5, 0.5) and of radius 0.5
             # in axes coordinates.
-            if frame == 'circle':
+            if frame == "circle":
                 return Circle((0.5, 0.5), 0.5)
-            elif frame == 'polygon':
-                return RegularPolygon((0.5, 0.5), num_vars,
-                                      radius=.5, edgecolor="k")
+            elif frame == "polygon":
+                return RegularPolygon((0.5, 0.5), num_vars, radius=0.5, edgecolor="k")
             else:
                 raise ValueError("Unknown value for 'frame': %s" % frame)
 
         def _gen_axes_spines(self):
-            if frame == 'circle':
+            if frame == "circle":
                 return super()._gen_axes_spines()
-            elif frame == 'polygon':
+            elif frame == "polygon":
                 # spine_type must be 'left'/'right'/'top'/'bottom'/'circle'.
-                spine = Spine(axes=self,
-                              spine_type='circle',
-                              path=Path.unit_regular_polygon(num_vars))
+                spine = Spine(
+                    axes=self,
+                    spine_type="circle",
+                    path=Path.unit_regular_polygon(num_vars),
+                )
                 # unit_regular_polygon gives a polygon of radius 1 centered at
                 # (0, 0) but we want a polygon of radius 0.5 centered at (0.5,
                 # 0.5) in axes coordinates.
-                spine.set_transform(Affine2D().scale(.5).translate(.5, .5)
-                                    + self.transAxes)
-                return {'polar': spine}
+                spine.set_transform(
+                    Affine2D().scale(0.5).translate(0.5, 0.5) + self.transAxes
+                )
+                return {"polar": spine}
             else:
                 raise ValueError("Unknown value for 'frame': %s" % frame)
 
     register_projection(RadarAxes)
     return theta
-
-
 
 
 def make_radar_plot(data, row_names):
@@ -99,15 +99,16 @@ def make_radar_plot(data, row_names):
     and a list of entries for each metric. 
     """
     N = len(data[0])
-    theta = radar_factory(N, frame='polygon')
+    theta = radar_factory(N, frame="polygon")
 
     spoke_labels = data.pop(0)
 
-    fig, axs = plt.subplots(figsize=(9, 9), nrows=1, ncols=1,
-                            subplot_kw=dict(projection='radar'))
+    fig, axs = plt.subplots(
+        figsize=(9, 9), nrows=1, ncols=1, subplot_kw=dict(projection="radar")
+    )
     fig.subplots_adjust(wspace=0.25, hspace=0.20, top=0.85, bottom=0.05)
 
-    colors = ['b', 'r', 'g', 'm', 'y'] * (N%5)
+    colors = ["b", "r", "g", "m", "y"] * (N % 5)
 
     case_data = data[0]
     axs.set_rgrids([0.2, 0.4, 0.6, 0.8])
@@ -116,9 +117,7 @@ def make_radar_plot(data, row_names):
         axs.fill(theta, d, facecolor=color, alpha=0.25)
     axs.set_varlabels(spoke_labels)
 
-
     labels = tuple(row_names)
-    legend = axs.legend(labels, loc=(0.9, .95),
-                              labelspacing=0.1, fontsize='large')
+    legend = axs.legend(labels, loc=(0.9, 0.95), labelspacing=0.1, fontsize="large")
 
     return fig
