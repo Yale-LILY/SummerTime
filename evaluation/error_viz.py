@@ -20,7 +20,7 @@ def scatter(
     generator: Generator[SummInstance]
     metrics: Tuple[SummMetric, SummMetric]
     keys: Tuple[str, str]
-    max_instances: Defaults to -1, in which case entire dataset is used. 
+    max_instances: Defaults to -1, in which case entire dataset is used.
     """
 
     lexical_metric = metrics[0]

@@ -95,8 +95,8 @@ def radar_factory(num_vars, frame="circle"):
 
 def make_radar_plot(data, row_names):
     """
-    Format data as a two-item list, consisting of a list of metric names 
-    and a list of entries for each metric. 
+    Format data as a two-item list, consisting of a list of metric names
+    and a list of entries for each metric.
     """
     N = len(data[0])
     theta = radar_factory(N, frame="polygon")
