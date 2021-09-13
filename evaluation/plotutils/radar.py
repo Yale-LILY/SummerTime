@@ -118,6 +118,6 @@ def make_radar_plot(data, row_names):
     axs.set_varlabels(spoke_labels)
 
     labels = tuple(row_names)
-    legend = axs.legend(labels, loc=(0.9, 0.95), labelspacing=0.1, fontsize="large")
+    axs.legend(labels, loc=(0.9, 0.95), labelspacing=0.1, fontsize="large")
 
     return fig

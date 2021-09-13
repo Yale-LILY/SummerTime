@@ -1,8 +1,7 @@
-import pandas as pd
 import math
 import itertools
 from .plotutils.radar import make_radar_plot
-from typing import List, Tuple, Generator
+from typing import List, Generator
 from prettytable import PrettyTable
 from model.base_model import SummModel
 from dataset.st_dataset import SummInstance
@@ -20,7 +19,7 @@ class EvaluationTable(dict):
         for model_name in self:
             to_add = [model_name] + [self[model_name][metric] for metric in metrics]
             out.add_row(to_add)
-        out.float_format = f".3"
+        out.float_format = ".3"
         return out.__str__()
 
     def __repr__(self):
@@ -84,6 +83,7 @@ class ModelSelector:
         return store_data
 
         def run_halving(self, min_instances: int, factor: int = 3) -> EvaluationTable:
+            models = self.models 
 
             total_instances = 0
             # first run with min_instances instances
@@ -99,9 +99,9 @@ class ModelSelector:
 
             num_instances = num_instances * factor
 
-            while (len(models) > 1) and (total_instances <= max_instances):
+            while (len(models) > 1):
                 tiny_generator = itertools.islice(self.generator, num_instances)
-                temp_selector = ModelSelector(models, tiny_generator, metrics)
+                temp_selector = ModelSelector(models, tiny_generator, self.metrics)
                 new_table = temp_selector.run()
                 table = _update_table(table, new_table, total_instances, num_instances)
 

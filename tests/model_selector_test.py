@@ -1,7 +1,6 @@
 import unittest
 from evaluation import SUPPORTED_EVALUATION_METRICS
 from evaluation.model_selector import model_selector, smart_model_selector
-from evaluation import SUPPORTED_EVALUATION_METRICS
 from model.base_model import SummModel
 from dataset.st_dataset import SummInstance
 
