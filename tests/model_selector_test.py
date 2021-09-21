@@ -1,6 +1,6 @@
 import unittest
 from evaluation import SUPPORTED_EVALUATION_METRICS
-from evaluation.model_selector import model_selector, smart_model_selector
+from evaluation.model_selector import ModelSelector
 from model.base_model import SummModel
 from dataset.st_dataset import SummInstance
 
@@ -34,12 +34,12 @@ class TestModelSelector(unittest.TestCase):
         generator2 = iter([SummInstance("A context.", "A summary.")] * 10)
         metrics = [metric() for metric in SUPPORTED_EVALUATION_METRICS]
 
-        table = model_selector(models, generator1, metrics)
+        selector = ModelSelector(models, generator1, metrics)
+        table = selector.run()
         print(table)
-        smart_table = smart_model_selector(
-            models, generator2, metrics, min_instances=2, max_instances=10, factor=2
-        )
 
+        new_selector = ModelSelector(models, generator2, metrics)
+        smart_table = new_selector.run_halving(min_instances=2, factor=2)
         print(smart_table)
 
         print(f"{'#'*10} model_selector_evaluate ENDS {'#'*10}")

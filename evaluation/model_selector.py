@@ -83,7 +83,7 @@ class ModelSelector:
         return store_data
 
         def run_halving(self, min_instances: int, factor: int = 3) -> EvaluationTable:
-            models = self.models 
+            models = self.models
 
             total_instances = 0
             # first run with min_instances instances
@@ -99,7 +99,7 @@ class ModelSelector:
 
             num_instances = num_instances * factor
 
-            while (len(models) > 1):
+            while len(models) > 1:
                 tiny_generator = itertools.islice(self.generator, num_instances)
                 temp_selector = ModelSelector(models, tiny_generator, self.metrics)
                 new_table = temp_selector.run()
