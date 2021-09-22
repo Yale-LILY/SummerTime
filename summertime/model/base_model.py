@@ -79,3 +79,19 @@ class SummModel:
             )
 
         return basic_description
+
+
+class SummPipeline(SummModel):
+    """
+    A basic wrapper class for SummModel for handling different aspects of more complicated
+    summarization tasks, such as query-based, dialouge, multi-docs, etc
+    """
+
+    def __init__(
+        self, trained_domain: str, max_input_length: int, max_output_length: int
+    ):
+        super().__init__(
+            trained_domain=trained_domain,
+            max_input_length=max_input_length,
+            max_output_length=max_output_length,
+        )
