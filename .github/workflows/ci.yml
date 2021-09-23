@@ -94,14 +94,15 @@ jobs:
       - name: Installation
         run: |
           . .venv/bin/activate
-          pip install numpy
-          pip install -r requirements.txt
-          pip install -U git+https://github.com/bheinzerling/pyrouge.git
+          # pip install numpy
+          # pip install -r requirements.txt
+          # pip install -U git+https://github.com/bheinzerling/pyrouge.git
 
       - name: Setup scripts
         run: |
           . .venv/bin/activate
-          python setup.py develop --user
+          # python setup.py develop --user
+          python setup.py -e .
 
       - name: Test models
         run: |
