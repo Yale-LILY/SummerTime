@@ -13,7 +13,10 @@ import torch.nn as nn
 import torch.nn.init as init
 import torch.nn.functional as F
 from torch.nn.parameter import Parameter
-from summertime.model.third_party.HMNet.Models.Networks.Layers import dropout, set_seq_dropout
+from summertime.model.third_party.HMNet.Models.Networks.Layers import (
+    dropout,
+    set_seq_dropout,
+)
 from summertime.model.third_party.HMNet.Models.Networks.Transformer import (
     EncoderBlock,
     LayerNorm,

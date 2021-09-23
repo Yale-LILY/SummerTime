@@ -85,7 +85,8 @@ class HMNetTrainer(DistributedTrainer):
         # instantiate module (tokenizer should be contained in module as self.module.tokenizer)
         try:
             model_module = importlib.import_module(
-                "summertime.model.third_party.HMNet.Models.Networks." + self.opt["MODEL"]
+                "summertime.model.third_party.HMNet.Models.Networks."
+                + self.opt["MODEL"]
             )
             model_class = getattr(model_module, self.opt["MODEL"])
             self.module = model_class(self.opt)
@@ -103,7 +104,8 @@ class HMNetTrainer(DistributedTrainer):
         # instantiate criterion
         try:
             criterion_module = importlib.import_module(
-                "summertime.model.third_party.HMNet.Models.Criteria." + self.opt["CRITERION"]
+                "summertime.model.third_party.HMNet.Models.Criteria."
+                + self.opt["CRITERION"]
             )
             criterion_class = getattr(criterion_module, self.opt["CRITERION"])
             self.criterion = criterion_class(self.opt, self.module)
@@ -145,7 +147,8 @@ class HMNetTrainer(DistributedTrainer):
         except:
             try:  # then try custom optimizer inside Models.Optimizers
                 optimizer_module = importlib.import_module(
-                    "summertime.model.third_party.HMNet.Models.Optimizers." + self.opt["OPTIMIZER"]
+                    "summertime.model.third_party.HMNet.Models.Optimizers."
+                    + self.opt["OPTIMIZER"]
                 )
                 optimizer_class = getattr(optimizer_module, self.opt["OPTIMIZER"])
                 self.log("Using custom optimizer: {}".format(self.opt["OPTIMIZER"]))

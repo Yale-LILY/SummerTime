@@ -22,7 +22,9 @@ class Task:
             )
 
             batch_gen = HMNetBatchGen
-            from summertime.model.third_party.HMNet.Evaluation.ROUGEEval import ROUGEEval
+            from summertime.model.third_party.HMNet.Evaluation.ROUGEEval import (
+                ROUGEEval,
+            )
 
             evaluator = ROUGEEval(opt["datadir"], save_dir, opt)
         else:
