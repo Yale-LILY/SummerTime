@@ -8,9 +8,9 @@ import random
 import numpy as np
 
 from pkg_resources import parse_version
-from model.third_party.HMNet.Models.Trainers.BaseTrainer import BaseTrainer
-from model.third_party.HMNet.Utils.GeneralUtils import bcolors
-from model.third_party.HMNet.Utils.distributed import distributed
+from summertime.model.third_party.HMNet.Models.Trainers.BaseTrainer import BaseTrainer
+from summertime.model.third_party.HMNet.Utils.GeneralUtils import bcolors
+from summertime.model.third_party.HMNet.Utils.distributed import distributed
 
 
 class DistributedTrainer(BaseTrainer):

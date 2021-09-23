@@ -1,5 +1,5 @@
 from summ_eval.rouge_metric import RougeMetric
-from evaluation.summeval_metric import SummEvalMetric
+from summertime.evaluation.summeval_metric import SummEvalMetric
 from typing import List, Dict
 
 

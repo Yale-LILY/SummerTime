@@ -1,6 +1,6 @@
 from .base_query_based_model import QueryBasedSummModel
-from model.base_model import SummModel
-from model.single_doc import TextRankModel
+from summertime.model.base_model import SummModel
+from summertime.model.single_doc import TextRankModel
 from typing import List
 
 from gensim.summarization.bm25 import BM25

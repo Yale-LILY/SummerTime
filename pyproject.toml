@@ -12,6 +12,7 @@ exclude = '''
 [build-system]
 requires = [
     "setuptools",
-    "wheel"
+    "wheel",
+    "cython"
 ]
 build-backend = "setuptools.build_meta"

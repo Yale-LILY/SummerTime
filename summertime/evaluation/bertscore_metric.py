@@ -1,5 +1,5 @@
 from summ_eval.bert_score_metric import BertScoreMetric
-from evaluation.summeval_metric import SummEvalMetric
+from summertime.evaluation.summeval_metric import SummEvalMetric
 from typing import List, Dict
 
 

@@ -24,6 +24,7 @@ setuptools.setup(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests"]
     ),
     install_requires=[
+        "cython",
         "numpy", # installing summEval requires numpy to be install first, we put numpy first as a workaround
         "click==7.1.2", # a workaround for resolving a dependency conflict
         "transformers==4.5.1",

@@ -2,7 +2,7 @@ import re
 
 from typing import List, Union
 from itertools import chain
-from model.base_model import SummModel
+from summertime.model.base_model import SummModel
 
 
 class DialogueSummModel(SummModel):

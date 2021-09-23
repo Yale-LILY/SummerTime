@@ -1,4 +1,4 @@
-from model.base_model import SummModel
+from summertime.model.base_model import SummModel
 
 
 class MultiDocSummModel(SummModel):

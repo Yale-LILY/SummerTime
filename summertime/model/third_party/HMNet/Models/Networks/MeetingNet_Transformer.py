@@ -13,8 +13,8 @@ import torch.nn as nn
 import torch.nn.init as init
 import torch.nn.functional as F
 from torch.nn.parameter import Parameter
-from model.third_party.HMNet.Models.Networks.Layers import dropout, set_seq_dropout
-from model.third_party.HMNet.Models.Networks.Transformer import (
+from summertime.model.third_party.HMNet.Models.Networks.Layers import dropout, set_seq_dropout
+from summertime.model.third_party.HMNet.Models.Networks.Transformer import (
     EncoderBlock,
     LayerNorm,
     Embedder,
@@ -22,10 +22,10 @@ from model.third_party.HMNet.Models.Networks.Transformer import (
     Attention,
     MLP,
 )
-from model.third_party.HMNet.ThirdParty.Huggingface.Transformers.src.transformers import (
+from summertime.model.third_party.HMNet.ThirdParty.Huggingface.Transformers.src.transformers import (
     tokenization_transfo_xl,
 )
-from model.third_party.HMNet.ThirdParty.Huggingface.Transformers.src.transformers.modeling_encoder_decoder import (
+from summertime.model.third_party.HMNet.ThirdParty.Huggingface.Transformers.src.transformers.modeling_encoder_decoder import (
     calc_banned_ngram_tokens,
     calc_banned_bad_words_ids,
     top_k_top_p_filtering,

@@ -1,5 +1,5 @@
-from model.base_model import SummModel
-from model.single_doc import TextRankModel
+from summertime.model.base_model import SummModel
+from summertime.model.single_doc import TextRankModel
 from typing import List, Union
 
 from nltk import sent_tokenize, word_tokenize

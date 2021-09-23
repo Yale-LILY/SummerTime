@@ -3,11 +3,12 @@ import os
 import torch
 import gzip
 import json
+from pathlib import Path
 
-from model.dialogue.base_dialogue_model import DialogueSummModel
-from model.third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
-from model.third_party.HMNet.Utils.Arguments import Arguments
-from util.download_utils import get_cached_file_path
+from summertime.model.dialogue.base_dialogue_model import DialogueSummModel
+from summertime.model.third_party.HMNet.Models.Trainers.HMNetTrainer import HMNetTrainer
+from summertime.model.third_party.HMNet.Utils.Arguments import Arguments
+from summertime.util.download_utils import get_cached_file_path
 
 from typing import List
 
@@ -200,7 +201,7 @@ class HMNetModel(DialogueSummModel):
         Return an instance of HMNet model for dialogue summarization.
         """
         super(HMNetModel, self).__init__()
-        self.root_path = self._get_root()
+        self.root_path = Path(__file__).resolve().parent
 
         # we leave the most influential params with prompt and the others as hidden kwargs
         kwargs["MIN_GEN_LENGTH"] = min_gen_length

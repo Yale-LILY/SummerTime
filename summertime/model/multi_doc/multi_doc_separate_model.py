@@ -1,6 +1,6 @@
 from .base_multi_doc_model import MultiDocSummModel
-from model.base_model import SummModel
-from model.single_doc import TextRankModel
+from summertime.model.base_model import SummModel
+from summertime.model.single_doc import TextRankModel
 from typing import Union, List
 
 

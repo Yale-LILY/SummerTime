@@ -16,17 +16,17 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.optim.lr_scheduler as lr_scheduler
 
-from model.third_party.HMNet.Models.Trainers.DistributedTrainer import (
+from summertime.model.third_party.HMNet.Models.Trainers.DistributedTrainer import (
     DistributedTrainer,
 )
-from model.third_party.HMNet.Models.Trainers.Tasks import Task
-from model.third_party.HMNet.Utils.GeneralUtils import (
+from summertime.model.third_party.HMNet.Models.Trainers.Tasks import Task
+from summertime.model.third_party.HMNet.Utils.GeneralUtils import (
     AverageMeter,
     BaseBatchGen,
     bcolors,
 )
 
-from model.third_party.HMNet.DataLoader import iterators
+from summertime.model.third_party.HMNet.DataLoader import iterators
 
 
 class ObjectView(object):
@@ -85,7 +85,7 @@ class HMNetTrainer(DistributedTrainer):
         # instantiate module (tokenizer should be contained in module as self.module.tokenizer)
         try:
             model_module = importlib.import_module(
-                "model.third_party.HMNet.Models.Networks." + self.opt["MODEL"]
+                "summertime.model.third_party.HMNet.Models.Networks." + self.opt["MODEL"]
             )
             model_class = getattr(model_module, self.opt["MODEL"])
             self.module = model_class(self.opt)
@@ -103,7 +103,7 @@ class HMNetTrainer(DistributedTrainer):
         # instantiate criterion
         try:
             criterion_module = importlib.import_module(
-                "model.third_party.HMNet.Models.Criteria." + self.opt["CRITERION"]
+                "summertime.model.third_party.HMNet.Models.Criteria." + self.opt["CRITERION"]
             )
             criterion_class = getattr(criterion_module, self.opt["CRITERION"])
             self.criterion = criterion_class(self.opt, self.module)
@@ -145,7 +145,7 @@ class HMNetTrainer(DistributedTrainer):
         except:
             try:  # then try custom optimizer inside Models.Optimizers
                 optimizer_module = importlib.import_module(
-                    "model.third_party.HMNet.Models.Optimizers." + self.opt["OPTIMIZER"]
+                    "summertime.model.third_party.HMNet.Models.Optimizers." + self.opt["OPTIMIZER"]
                 )
                 optimizer_class = getattr(optimizer_module, self.opt["OPTIMIZER"])
                 self.log("Using custom optimizer: {}".format(self.opt["OPTIMIZER"]))
@@ -168,7 +168,7 @@ class HMNetTrainer(DistributedTrainer):
         except:
             try:  # then look for custom lr scheduler inside Models.Optimizers
                 lr_scheduler_module = importlib.import_module(
-                    "model.third_party.HMNet.Models.Optimizers."
+                    "summertime.model.third_party.HMNet.Models.Optimizers."
                     + self.opt["LR_SCHEDULER"]
                 )
                 lr_scheduler_class = getattr(

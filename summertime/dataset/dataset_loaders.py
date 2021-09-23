@@ -4,7 +4,7 @@ from typing import List, Generator, Optional, Union
 
 from datasets import Dataset
 
-from dataset.st_dataset import SummInstance, SummDataset
+from summertime.dataset.st_dataset import SummInstance, SummDataset
 
 
 # Set directory to load non_huggingface dataset scripts

@@ -1,4 +1,4 @@
-from dataset.dataset_loaders import (
+from summertime.dataset.dataset_loaders import (
     CnndmDataset,
     MultinewsDataset,
     SamsumDataset,

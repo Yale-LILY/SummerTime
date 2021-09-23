@@ -1,8 +1,8 @@
 from typing import List, Union
 
-from model.dialogue.base_dialogue_model import DialogueSummModel
-from model.base_model import SummModel
-from model.single_doc.bart_model import BartModel
+from summertime.model.dialogue.base_dialogue_model import DialogueSummModel
+from summertime.model.base_model import SummModel
+from summertime.model.single_doc.bart_model import BartModel
 
 
 class FlattenDialogueModel(DialogueSummModel):

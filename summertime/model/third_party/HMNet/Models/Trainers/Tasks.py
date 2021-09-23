@@ -17,12 +17,12 @@ class Task:
     def setup_task(cls, task_name, opt, save_dir):
 
         if task_name == "HMNet":
-            from model.third_party.HMNet.Utils.HMNet.InfinibatchLoader import (
+            from summertime.model.third_party.HMNet.Utils.HMNet.InfinibatchLoader import (
                 HMNetBatchGen,
             )
 
             batch_gen = HMNetBatchGen
-            from model.third_party.HMNet.Evaluation.ROUGEEval import ROUGEEval
+            from summertime.model.third_party.HMNet.Evaluation.ROUGEEval import ROUGEEval
 
             evaluator = ROUGEEval(opt["datadir"], save_dir, opt)
         else:

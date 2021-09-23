@@ -7,7 +7,7 @@ import numpy as np
 from random import Random, shuffle, random
 import torch
 import math
-from model.third_party.HMNet.DataLoader import iterators
+from summertime.model.third_party.HMNet.DataLoader import iterators
 import json
 import struct
 from timeit import default_timer as timer

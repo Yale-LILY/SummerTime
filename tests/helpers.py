@@ -1,4 +1,4 @@
-from dataset.st_dataset import SummDataset, SummInstance
+from summertime.dataset.st_dataset import SummDataset, SummInstance
 
 import random
 from typing import List, Tuple

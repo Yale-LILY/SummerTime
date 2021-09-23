@@ -6,8 +6,8 @@ import re
 import shutil
 from string import ascii_uppercase
 from tqdm.auto import tqdm
-from model.third_party.HMNet.Evaluation.OldROUGEEval import rouge
-from model.third_party.HMNet.ThirdParty.ROUGE import pyrouge
+from summertime.model.third_party.HMNet.Evaluation.OldROUGEEval import rouge
+from summertime.model.third_party.HMNet.ThirdParty.ROUGE import pyrouge
 from shutil import copyfile
 
 # from mpi4py import MPI
