@@ -102,7 +102,7 @@ jobs:
         run: |
           . .venv/bin/activate
           # python setup.py develop --user
-          python setup.py -e .
+          pip install -e .
 
       - name: Test models
         run: |
