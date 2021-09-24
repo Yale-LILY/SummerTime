@@ -3,7 +3,7 @@ import re
 from abc import abstractmethod
 from pprint import pformat
 from time import sleep
-from typing import List, Tuple, Optional, Union, Generator
+from typing import List, Dictionary, Tuple, Optional, Union, Generator
 
 from datasets import (
     Dataset,
@@ -293,6 +293,7 @@ class SummDataset:
         """
         print(self.dataset_name, ":\n", self.description)
 
+
 class CustomDataset(SummDataset):
     """
     This is a dataset class that acts as an API to load custom user dataset
@@ -300,15 +301,18 @@ class CustomDataset(SummDataset):
     Once created, it can be used with any of our models and contains most properties and methods
         similar to other SummerTime datasets
     """
-    ## TODO: Create a caching mechanism for user created datasets
 
-    def __init__(self,
-                train_set=[],
-                test_set=[],
-                validation_set=[],
-                query_based=False, 
-                multi_doc=False, 
-                dialogue_based=False):
+    # TODO: Create a caching mechanism for user created datasets
+
+    def __init__(
+        self,
+        train_set: List[Dictionary] = [],
+        test_set: List[Dictionary] = [],
+        validation_set: List[Dictionary] = [],
+        query_based: bool = False,
+        multi_doc: bool = False,
+        dialogue_based: bool = False,
+    ):
         """Create dataset information from the huggingface Dataset class
         :rtype: dataset object
         :param train_set: List[Dictionary], list of dictionaries that contain a data instance.
@@ -341,13 +345,14 @@ class CustomDataset(SummDataset):
         self._validation_set = self._process_data(validation_set, "Validation")
         self._test_set = self._process_data(test_set, "Test")
 
-        dataset_name = None
-        version = None
+        self.dataset_name = None
+        self.version = None
 
         self.dataset_name = "Custom"
 
-
-    def _process_data(self, data: Dataset, split) -> Generator[SummInstance, None, None]:
+    def _process_data(
+        self, data: Dataset, split: str
+    ) -> Generator[SummInstance, None, None]:
         """
         This method processes the data contained in the dataset
             and puts each data instance into a SummInstance object
@@ -358,7 +363,6 @@ class CustomDataset(SummDataset):
 
         summaries_present = False
         for instance in data:
-            
             if "source" in instance and instance["source"]:
                 if self.is_dialogue_based or self.is_multi_document:
                     source: List = instance["source"]
@@ -367,7 +371,7 @@ class CustomDataset(SummDataset):
             else:
                 raise TypeError("Missing source for a dataset instance")
 
-            ## TODO: Ensure models can handle datasets with no summaries 
+            # TODO: Ensure models can handle datasets with no summaries
             summary = None
             if "summary" in instance and instance["summary"]:
                 summaries_present = True
@@ -380,10 +384,16 @@ class CustomDataset(SummDataset):
                 else:
                     raise TypeError("Missing query for a query-based dataset")
 
-            data_instances.append(SummInstance(source=source, summary=summary, query=query))
+            data_instances.append(
+                SummInstance(source=source, summary=summary, query=query)
+            )
 
         if not summaries_present:
-            print("\nATTENTION:", split, "split does not contain summaries.",
-                  "Proceed if this is intended.\n")
+            print(
+                "\nATTENTION:",
+                split,
+                "split does not contain summaries.",
+                "Proceed if this is intended.\n",
+            )
 
         return (data for data in data_instances)
