@@ -3,7 +3,7 @@ import re
 from abc import abstractmethod
 from pprint import pformat
 from time import sleep
-from typing import List, Dictionary, Tuple, Optional, Union, Generator
+from typing import List, Dict, Tuple, Optional, Union, Generator
 
 from datasets import (
     Dataset,
@@ -306,16 +306,16 @@ class CustomDataset(SummDataset):
 
     def __init__(
         self,
-        train_set: List[Dictionary] = [],
-        test_set: List[Dictionary] = [],
-        validation_set: List[Dictionary] = [],
+        train_set: List[Dict] = [],
+        test_set: List[Dict] = [],
+        validation_set: List[Dict] = [],
         query_based: bool = False,
         multi_doc: bool = False,
         dialogue_based: bool = False,
     ):
         """Create dataset information from the huggingface Dataset class
         :rtype: dataset object
-        :param train_set: List[Dictionary], list of dictionaries that contain a data instance.
+        :param train_set: List[Dict], list of dictionaries that contain a data instance.
             Contains the training examples and is in the form listed below.
                 The dictionary is in the form:
                     {"source": "source_data", "summary": "summary_data", "query":"query_data"}
@@ -324,9 +324,9 @@ class CustomDataset(SummDataset):
                         * query_data is of type str
                 The list of dictionaries looks as follows:
                     [dictionary_instance_1, dictionary_instance_2, ...]
-        :param validation_set: Optional[List[Dictionary]], similar format to train_set
+        :param validation_set: Optional[List[Dict]], similar format to train_set
             Contains the validation examples
-        :param test_set: Optional[List[Dictionary]], similar format to train_set
+        :param test_set: Optional[List[Dict]], similar format to train_set
             Contains the test examples
         :param query_based: bool, Is the dataset query-based?
         :param multi_doc: bool, Does each dataset instance source contain multiple documents
