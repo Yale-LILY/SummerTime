@@ -1,7 +1,7 @@
 import unittest
 
-from dataset import SUPPORTED_SUMM_DATASETS, list_all_datasets
-from dataset.st_dataset import SummDataset, SummInstance
+from dataset import SUPPORTED_SUMM_DATASETS, list_all_datasets, QMsumDataset, SamsumDataset
+from dataset.st_dataset import SummDataset, SummInstance, CustomDataset
 from dataset.dataset_loaders import ArxivDataset
 
 from helpers import print_with_color
@@ -23,22 +23,46 @@ class TestDatasets(unittest.TestCase):
             self.assertTrue(isinstance(ins.query, str))
 
     def test_all_datasets(self):
-        print_with_color(f"{'#' * 10} Testing all datasets... {'#' * 10}\n\n", "35")
 
+        # Test custom dataset
+        print_with_color(f"{'#' * 10} Loading custom dataset... {'#' * 10}\n\n", "35")
+
+        test_dataset = QMsumDataset()
+        train_set = [{"source": instance.source, "summary": instance.summary, "query":instance.query}
+                    for instance in list(test_dataset.train_set)]
+        validation_set = [{"source": instance.source, "summary": None, "query":instance.query}
+                    for instance in list(test_dataset.validation_set)]
+        test_set = [{"source": instance.source, "summary": instance.summary, "query":instance.query}
+                    for instance in list(test_dataset.test_set)]
+
+        custom_dataset = CustomDataset(
+                            train_set=train_set,
+                            validation_set=validation_set,
+                            test_set=test_set,
+                            query_based=True,
+                            multi_doc=True)
+
+        test_datasets = [custom_dataset] + SUPPORTED_SUMM_DATASETS
+
+
+        # Test pre-loaded SummerTime datasets
+        print_with_color(f"{'#' * 10} Testing all datasets... {'#' * 10}\n\n", "35")
         print(list_all_datasets())
 
         num_datasets = 0
 
-        for ds_cls in SUPPORTED_SUMM_DATASETS:
+        for ds_cls in test_datasets:
 
             # TODO: Temporarily skipping Arxiv (size/time), > 30min download time for Travis-CI
             if ds_cls in [ArxivDataset]:
                 continue
+            elif isinstance(ds_cls, CustomDataset):
+                ds = ds_cls
+            else:
+                print_with_color(f"Testing {ds_cls} dataset...", "35")
+                ds: SummDataset = ds_cls()
 
-            print_with_color(f"Testing {ds_cls} dataset...", "35")
-            ds: SummDataset = ds_cls()
-
-            ds.show_description()
+                ds.show_description()
 
             # must have at least one of train/dev/test set
             assert ds.train_set or ds.validation_set or ds.test_set

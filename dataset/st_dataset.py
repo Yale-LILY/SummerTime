@@ -292,3 +292,98 @@ class SummDataset:
         Print the description of the dataset.
         """
         print(self.dataset_name, ":\n", self.description)
+
+class CustomDataset(SummDataset):
+    """
+    This is a dataset class that acts as an API to load custom user dataset
+    The dataset class to contains data that the users source themselves or from a third party
+    Once created, it can be used with any of our models and contains most properties and methods
+        similar to other SummerTime datasets
+    """
+    ## TODO: Create a caching mechanism for user created datasets
+
+    def __init__(self,
+                train_set=[],
+                test_set=[],
+                validation_set=[],
+                query_based=False, 
+                multi_doc=False, 
+                dialogue_based=False):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: dataset object
+        :param train_set: List[Dictionary], list of dictionaries that contain a data instance.
+            Contains the training examples and is in the form listed below.
+                The dictionary is in the form:
+                    {"source": "source_data", "summary": "summary_data", "query":"query_data"}
+                        * source_data is either of type List[str] or str
+                        * summary_data is of type str
+                        * query_data is of type str
+                The list of dictionaries looks as follows:
+                    [dictionary_instance_1, dictionary_instance_2, ...]
+        :param validation_set: Optional[List[Dictionary]], similar format to train_set
+            Contains the validation examples
+        :param test_set: Optional[List[Dictionary]], similar format to train_set
+            Contains the test examples
+        :param query_based: bool, Is the dataset query-based?
+        :param multi_doc: bool, Does each dataset instance source contain multiple documents
+        :param dialogue_based: Is the dataset dialogue-based?
+        """
+
+        if not (train_set or test_set or validation_set):
+            raise ValueError("Missing data for the dataset")
+
+        self.is_dialogue_based = dialogue_based
+        self.is_multi_document = multi_doc
+        self.is_query_based = query_based
+
+        # Load the data into their respective splits
+        self._train_set = self._process_data(train_set, "Train")
+        self._validation_set = self._process_data(validation_set, "Validation")
+        self._test_set = self._process_data(test_set, "Test")
+
+        dataset_name = None
+        version = None
+
+        self.dataset_name = "Custom"
+
+
+    def _process_data(self, data: Dataset, split) -> Generator[SummInstance, None, None]:
+        """
+        This method processes the data contained in the dataset
+            and puts each data instance into a SummInstance object
+        :param dataset: a train/validation/test dataset
+        :rtype: a generator yielding SummInstance objects
+        """
+        data_instances = []
+
+        summaries_present = False
+        for instance in data:
+            
+            if "source" in instance and instance["source"]:
+                if self.is_dialogue_based or self.is_multi_document:
+                    source: List = instance["source"]
+                else:
+                    source: str = instance["source"]
+            else:
+                raise TypeError("Missing source for a dataset instance")
+
+            ## TODO: Ensure models can handle datasets with no summaries 
+            summary = None
+            if "summary" in instance and instance["summary"]:
+                summaries_present = True
+                summary: str = instance["summary"]
+
+            query = None
+            if self.is_query_based:
+                if "query" in instance and instance["query"]:
+                    query: str = instance["query"]
+                else:
+                    raise TypeError("Missing query for a query-based dataset")
+
+            data_instances.append(SummInstance(source=source, summary=summary, query=query))
+
+        if not summaries_present:
+            print("\nATTENTION:", split, "split does not contain summaries.",
+                  "Proceed if this is intended.\n")
+
+        return (data for data in data_instances)
