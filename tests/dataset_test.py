@@ -1,6 +1,6 @@
 import unittest
 
-from dataset import SUPPORTED_SUMM_DATASETS, list_all_datasets, QMsumDataset, SamsumDataset
+from dataset import SUPPORTED_SUMM_DATASETS, list_all_datasets, QMsumDataset
 from dataset.st_dataset import SummDataset, SummInstance, CustomDataset
 from dataset.dataset_loaders import ArxivDataset
 
@@ -28,22 +28,36 @@ class TestDatasets(unittest.TestCase):
         print_with_color(f"{'#' * 10} Loading custom dataset... {'#' * 10}\n\n", "35")
 
         test_dataset = QMsumDataset()
-        train_set = [{"source": instance.source, "summary": instance.summary, "query":instance.query}
-                    for instance in list(test_dataset.train_set)]
-        validation_set = [{"source": instance.source, "summary": None, "query":instance.query}
-                    for instance in list(test_dataset.validation_set)]
-        test_set = [{"source": instance.source, "summary": instance.summary, "query":instance.query}
-                    for instance in list(test_dataset.test_set)]
+        train_set = [
+            {
+                "source": instance.source,
+                "summary": instance.summary,
+                "query": instance.query,
+            }
+            for instance in list(test_dataset.train_set)
+        ]
+        validation_set = [
+            {"source": instance.source, "summary": None, "query": instance.query}
+            for instance in list(test_dataset.validation_set)
+        ]
+        test_set = [
+            {
+                "source": instance.source,
+                "summary": instance.summary,
+                "query": instance.query,
+            }
+            for instance in list(test_dataset.test_set)
+        ]
 
         custom_dataset = CustomDataset(
-                            train_set=train_set,
-                            validation_set=validation_set,
-                            test_set=test_set,
-                            query_based=True,
-                            multi_doc=True)
+            train_set=train_set,
+            validation_set=validation_set,
+            test_set=test_set,
+            query_based=True,
+            multi_doc=True,
+        )
 
         test_datasets = [custom_dataset] + SUPPORTED_SUMM_DATASETS
-
 
         # Test pre-loaded SummerTime datasets
         print_with_color(f"{'#' * 10} Testing all datasets... {'#' * 10}\n\n", "35")
