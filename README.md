@@ -230,6 +230,8 @@ print(corpus)
 ### Loading a custom dataset
 You can use load custom data using the `CustomDataset` class that puts the data in the SummerTime dataset Class
 ```python
+from dataset import CustomDataset
+
 # Depending on the dataset properties, you can specify the type of dataset
 #   i.e multi_doc, query_based, dialogue_based. If not specified, they default to false
 custom_dataset = CustomDataset(
