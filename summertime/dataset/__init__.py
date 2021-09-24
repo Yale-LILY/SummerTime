@@ -11,6 +11,7 @@ from summertime.dataset.dataset_loaders import (
     ArxivDataset,
 )
 
+from dataset.st_dataset import CustomDataset
 
 SUPPORTED_SUMM_DATASETS = [
     CnndmDataset,
