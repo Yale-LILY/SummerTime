@@ -50,6 +50,5 @@ setuptools.setup(
         "black",
         "flake8",
         "progressbar",
-        "cython",
     ],
 )
