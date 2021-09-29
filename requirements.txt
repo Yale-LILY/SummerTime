@@ -10,7 +10,7 @@ spacy==3.0.6
 pytextrank
 datasets>=1.6.2
 sentencepiece>=0.1.95
-summ_eval
+summ_eval==0.70
 git+https://github.com/bheinzerling/pyrouge.git@08e9cc35d713f718a05b02bf3bb2e29947d436ce
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0-py3-none-any.whl
 jupyter
