@@ -3,6 +3,8 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+from pip._internal import main as pipmain
+pipmain(['install', 'numpy'])
 
 setuptools.setup(
     name="summertime",
