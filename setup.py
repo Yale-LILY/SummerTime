@@ -5,8 +5,6 @@ import sys
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'numpy'])
-
 setuptools.setup(
     name="summertime",
     version="0.1",
