@@ -1,15 +1,15 @@
 numpy # installing summEval requires numpy to be install first, we put numpy first as a workaround
 click==7.1.2 # a workaround for resolving a dependency conflict
-transformers>=4.5.1
-torch>=1.8.1
+transformers~=4.5.1
+torch~=1.8.1
 # torchvision>=0.9.1
 # torchaudio>=0.8.1
-lexrank>=0.1.0
-nltk>=3.6.2
+lexrank~=0.1.0
+nltk~=3.6.2
 spacy==3.0.6
 pytextrank
-datasets>=1.6.2
-sentencepiece>=0.1.95
+datasets~=1.6.2
+sentencepiece~=0.1.95
 summ_eval==0.70
 git+https://github.com/bheinzerling/pyrouge.git@08e9cc35d713f718a05b02bf3bb2e29947d436ce
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0-py3-none-any.whl
@@ -17,9 +17,9 @@ jupyter
 gdown
 gensim==3.8.3
 sklearn
-py7zr>=0.16.1
-tqdm>=4.49.0
-# tensorboard==2.4.1
+py7zr~=0.16.1
+tqdm~=4.49.0
+tensorboard~=2.4.1
 black
 flake8
 progressbar
