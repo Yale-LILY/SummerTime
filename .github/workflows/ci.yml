@@ -94,7 +94,6 @@ jobs:
       - name: Installation
         run: |
           . .venv/bin/activate
-
           pip install numpy
           pip install cython
           pip install -r requirements.txt
