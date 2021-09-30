@@ -1,10 +1,11 @@
 import setuptools
+import subprocess
+import sys
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-from pip._internal import main as pipmain
-pipmain(['install', 'numpy'])
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'numpy'])
 
 setuptools.setup(
     name="summertime",
