@@ -31,8 +31,8 @@ jobs:
 
       - name: Installation
         run: |
-          pip install black
-          pip install flake8
+          pip install -U black
+          pip install -U flake8
 
       - name: Debug info
         run: |
@@ -54,6 +54,9 @@ jobs:
   TESTS:
     name: TESTS
     runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./$GITHUB_SHA
     env:
       HOME: /data/lily/ttf5
       ROUGE_HOME: /data/lily/ttf5/ci-test/actions-runner/_work/SummerTime/SummerTime/.venv/lib/python3.9/site-packages/summ_eval/ROUGE-1.5.5/
@@ -65,13 +68,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Create isolated folder
-        run: |
-          mkdir $GITHUB_SHA
-          cd $GITHUB_SHA
+      # - name: Create isolated folder
+      #   run: |
+      #     mkdir $GITHUB_SHA
 
       - name: Set up installation
-        run: pip install --upgrade pip virtualenv
+        run: |
+          pip install --upgrade pip virtualenv
 
       - name: Set up virtual environment
         run: |
@@ -123,3 +126,6 @@ jobs:
         run: |
           . .venv/bin/activate
           python tests/evaluation_test.py
+      
+      - name: Remove isolated folder
+
