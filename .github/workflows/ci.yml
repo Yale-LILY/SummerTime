@@ -128,4 +128,7 @@ jobs:
           python tests/evaluation_test.py
       
       - name: Remove isolated folder
+        run: |
+          cd ..
+          rm -rf $GITHUB_SHA
 
