@@ -54,9 +54,9 @@ jobs:
   TESTS:
     name: TESTS
     runs-on: self-hosted
-    defaults:
-      run:
-        working-directory: ./$GITHUB_SHA
+    # defaults:
+    #   run:
+    #     working-directory: ./$GITHUB_SHA
     env:
       HOME: /data/lily/ttf5
       ROUGE_HOME: /data/lily/ttf5/ci-test/actions-runner/_work/SummerTime/SummerTime/.venv/lib/python3.9/site-packages/summ_eval/ROUGE-1.5.5/
@@ -127,8 +127,8 @@ jobs:
           . .venv/bin/activate
           python tests/evaluation_test.py
       
-      - name: Remove isolated folder
-        run: |
-          cd ..
-          rm -rf $GITHUB_SHA
+      # - name: Remove isolated folder
+      #   run: |
+      #     cd ..
+      #     rm -rf $GITHUB_SHA
 
