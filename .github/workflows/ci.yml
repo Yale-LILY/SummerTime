@@ -65,6 +65,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Create isolated folder
+        run: |
+          mkdir $GITHUB_SHA
+          cd $GITHUB_SHA
+
       - name: Set up installation
         run: pip install --upgrade pip virtualenv
 
