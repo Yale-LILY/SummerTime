@@ -27,20 +27,19 @@ The library architecture is as follows:
 
 ## Installation and setup
 
-#### Create and activate a new `conda` environment:
+#### [Optional] Create and activate a new `conda` environment:
 ```bash
-!conda create -n summertime python=3.7
-!conda activate summertime
+conda create -n summertime python=3.7
+conda activate summertime
 ```
 
-#### `pip` dependencies for local demo:
+#### Local `pip` installation
 ```bash
-!pip install -r requirements.txt
+pip install -e .
 ```
-##### Setup `ROUGE`
+##### Setup `ROUGE` (when using evaluation)
 ```bash
-!export ROUGE_HOME=/usr/local/lib/python3.7/dist-packages/summ_eval/ROUGE-1.5.5/
-!pip install -U  git+https://github.com/bheinzerling/pyrouge.git
+export ROUGE_HOME=/usr/local/lib/python3.7/dist-packages/summ_eval/ROUGE-1.5.5/
 ```
 
 
