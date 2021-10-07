@@ -13,7 +13,7 @@ from summertime.model import SUPPORTED_SUMM_MODELS, list_all_models
 from summertime.model.single_doc import LexRankModel, LongformerModel
 from summertime.model.dialogue import HMNetModel
 
-from .helpers import (
+from helpers import (
     print_with_color,
     get_summarization_set,
     get_query_based_summarization_set,
