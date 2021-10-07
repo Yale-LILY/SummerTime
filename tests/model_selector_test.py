@@ -1,8 +1,8 @@
 import unittest
-from evaluation import SUPPORTED_EVALUATION_METRICS
-from evaluation.model_selector import ModelSelector
-from model.base_model import SummModel
-from dataset.st_dataset import SummInstance
+from summertime.evaluation import SUPPORTED_EVALUATION_METRICS
+from summertime.evaluation.model_selector import ModelSelector
+from summertime.model.base_model import SummModel
+from summertime.dataset.st_dataset import SummInstance
 
 
 class ToyModel(SummModel):
