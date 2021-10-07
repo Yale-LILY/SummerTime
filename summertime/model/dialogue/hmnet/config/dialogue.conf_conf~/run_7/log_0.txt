@@ -1,0 +1,4 @@
+-----------------------------------------------
+Evaluating model ... 
+Total trainable parameters: 204488240
+Loaded data on rank 0.

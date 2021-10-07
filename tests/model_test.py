@@ -1,15 +1,15 @@
 import unittest
 from typing import List
 
-from dataset.dataset_loaders import (
+from summertime.dataset.dataset_loaders import (
     CnndmDataset,
     MultinewsDataset,
     PubmedqaDataset,
     SamsumDataset,
 )
-from model import SUPPORTED_SUMM_MODELS, list_all_models
-from model.single_doc import LexRankModel, LongformerModel
-from model.dialogue import HMNetModel
+from summertime.model import SUPPORTED_SUMM_MODELS, list_all_models
+from summertime.model.single_doc import LexRankModel, LongformerModel
+from summertime.model.dialogue import HMNetModel
 
 from helpers import (
     print_with_color,
@@ -53,7 +53,7 @@ class TestIndividualModels(unittest.TestCase):
     """more tests for different aspects of the models"""
 
     def test_hmnet_model(self):
-        from model.dialogue.hmnet_model import HMNetModel
+        from summertime.model.dialogue.hmnet_model import HMNetModel
 
         dummy_corpus = get_dummy_dialogue_instances(2)
         model = HMNetModel(min_gen_length=10, max_gen_length=30, beam_width=2)
