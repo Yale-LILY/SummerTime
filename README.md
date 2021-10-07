@@ -65,7 +65,6 @@ Also, please run our colab notebook for a more hands-on demo and more examples.
  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/19tPdBgaJ4_QjSiFyoxtpnFGW4OG1gTec?usp=sharing)
 
 
-
 ## Models
 
 ### Supported Models
