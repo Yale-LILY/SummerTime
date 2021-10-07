@@ -1,16 +1,20 @@
 from transformers import MBartForConditionalGeneration, MBartTokenizer
 from .base_single_doc_model import SingleDocSummModel
 
+
 class MBartModel(SingleDocSummModel):
     # static variables
     model_name = "mBART"
     is_extractive = False
     is_neural = True
+    is_multilingual = True
 
     def __init__(self, device="cpu"):
         super(MBartModel, self).__init__(
             # TODO: trained domain not news (at least not exclusively)
-            trained_domain="News", max_input_length=1024, max_output_length=None
+            trained_domain="News",
+            max_input_length=1024,
+            max_output_length=None,
         )
 
         self.device = device
@@ -31,7 +35,7 @@ class MBartModel(SingleDocSummModel):
         )
 
         return summaries
-    
+
     @classmethod
     def show_capability(cls) -> None:
         basic_description = cls.generate_basic_description()
@@ -44,4 +48,4 @@ class MBartModel(SingleDocSummModel):
             "- `device = 'cpu'` specifies the device the model is stored on and uses for computation. "
             "Use `device='gpu'` to run on an Nvidia GPU."
         )
-        print(f"{basic_description} \n {'#'*20} \n {more_details}")  
+        print(f"{basic_description} \n {'#'*20} \n {more_details}")
