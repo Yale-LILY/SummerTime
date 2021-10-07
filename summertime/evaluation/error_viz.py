@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import itertools
 from typing import Tuple, Generator
-from model.base_model import SummModel
-from dataset.st_dataset import SummInstance
-from evaluation.base_metric import SummMetric
+from summertime.model.base_model import SummModel
+from summertime.dataset.st_dataset import SummInstance
+from summertime.evaluation.base_metric import SummMetric
 
 
 def scatter(
