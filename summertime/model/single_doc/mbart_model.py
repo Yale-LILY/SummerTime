@@ -7,7 +7,7 @@ class MBartModel(SingleDocSummModel):
     model_name = "mBART"
     is_extractive = False
     is_neural = True
-    is_multilingual = True
+    Fis_multilingual = True
 
     def __init__(self, device="cpu"):
         super(MBartModel, self).__init__(
