@@ -118,3 +118,8 @@ jobs:
         run: |
           . .venv/bin/activate
           python tests/evaluation_test.py
+
+      - name: Test model selector
+        run: |
+          . .venv/bin/activate
+          python tests/model_selector_test.py
