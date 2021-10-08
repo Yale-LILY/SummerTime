@@ -1,7 +1,7 @@
 import unittest
 from typing import Tuple, List, Dict
 
-from evaluation import SUPPORTED_EVALUATION_METRICS
+from summertime.evaluation import SUPPORTED_EVALUATION_METRICS
 
 from helpers import print_with_color
 

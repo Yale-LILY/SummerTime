@@ -1,0 +1,18 @@
+include = '\.pyi?$'
+
+exclude = '''
+(
+      __pycache__
+    | \.git
+    | \.vscode
+    | \.venv
+)
+'''
+
+[build-system]
+requires = [
+    "setuptools",
+    "wheel",
+    "cython"
+]
+build-backend = "setuptools.build_meta"

@@ -1,16 +1,16 @@
 import unittest
 
-from model.base_model import SummModel
-from model import SUPPORTED_SUMM_MODELS
+from summertime.model.base_model import SummModel
+from summertime.model import SUPPORTED_SUMM_MODELS
 
-from pipeline import assemble_model_pipeline
+from summertime.pipeline import assemble_model_pipeline
 
-from evaluation.base_metric import SummMetric
-from evaluation import SUPPORTED_EVALUATION_METRICS
+from summertime.evaluation.base_metric import SummMetric
+from summertime.evaluation import SUPPORTED_EVALUATION_METRICS
 
-from dataset.st_dataset import SummInstance, SummDataset
-from dataset import SUPPORTED_SUMM_DATASETS
-from dataset.dataset_loaders import ScisummnetDataset, ArxivDataset
+from summertime.dataset.st_dataset import SummInstance, SummDataset
+from summertime.dataset import SUPPORTED_SUMM_DATASETS
+from summertime.dataset.dataset_loaders import ScisummnetDataset, ArxivDataset
 
 from helpers import print_with_color, retrieve_random_test_instances
 
