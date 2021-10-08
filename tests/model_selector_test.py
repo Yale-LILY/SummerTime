@@ -24,7 +24,7 @@ class ToyModel(SummModel):
 
 
 class TestModelSelector(unittest.TestCase):
-    def model_selector_evaluate(self):
+    def test_model_selector(self):
         print(f"{'#'*10} model_selector_evaluate STARTS {'#'*10}")
 
         model_1 = ToyModel(1)
