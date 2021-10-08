@@ -19,14 +19,14 @@ class PegasusModel(SingleDocSummModel):
         self.tokenizer = PegasusTokenizer.from_pretrained(model_name)
         print("init load pretrained model with tokenizer on " + device)
         # self.model = PegasusForConditionalGeneration.from_pretrained(model_name).to(device)
-        self.model = PegasusForConditionalGeneration.from_pretrained(model_name)
+        self.model = PegasusForConditionalGeneration.from_pretrained(model_name).to(device)
 
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)
 
         print("batching")
         # batch = self.tokenizer(corpus, truncation=True, padding='longest', return_tensors="pt").to(self.device)
-        batch = self.tokenizer(corpus, truncation=True, return_tensors="pt")
+        batch = self.tokenizer(corpus, truncation=True, return_tensors="pt").to(device)
         print("encoding batches")
         # encoded_summaries = self.model.generate(**batch, max_length=40, max_time=120)
         encoded_summaries = self.model.generate(batch["input_ids"], max_time=1024)
