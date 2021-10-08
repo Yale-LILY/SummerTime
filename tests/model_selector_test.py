@@ -43,3 +43,6 @@ class TestModelSelector(unittest.TestCase):
         print(smart_table)
 
         print(f"{'#'*10} model_selector_evaluate ENDS {'#'*10}")
+
+if __name__ == "__main__":
+    unittest.main()
