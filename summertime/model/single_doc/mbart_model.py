@@ -1,4 +1,4 @@
-from transformers import MBartForConditionalGeneration, MBartTokenizer
+from transformers import MBartForConditionalGeneration, MBart50Tokenizer
 from .base_single_doc_model import SingleDocSummModel
 
 
@@ -18,10 +18,10 @@ class MBartModel(SingleDocSummModel):
         )
 
         self.device = device
-        # TODO: could change to facebook/mbart-large-cc25, but more language support prob better
+        
         model_name = "facebook/mbart-large-50"
-        self.tokenizer = MBartTokenizer.from_pretrained(model_name)
-        self.model = MBartForConditionalGeneration.from_pretrained(model_name)
+        self.tokenizer = MBart50Tokenizer.from_pretrained(model_name)
+        self.model = MBartForConditionalGeneration.from_pretrained(model_name).to(device)
 
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)
@@ -29,7 +29,9 @@ class MBartModel(SingleDocSummModel):
         batch = self.tokenizer(
             corpus, truncation=True, padding="longest", return_tensors="pt"
         ).to(self.device)
-        encoded_summaries = self.model.generate(**batch)
+        encoded_summaries = self.model.generate(**batch) 
+        # num_beams=4, max_length=5, early_stopping=True
+        # add hyperparameters to .generate? above are what's used in the huggingface docs
         summaries = self.tokenizer.batch_decode(
             encoded_summaries, skip_special_tokens=True
         )
