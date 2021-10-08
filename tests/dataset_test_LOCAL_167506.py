@@ -1,41 +1,10 @@
 import unittest
 
-from dataset import SUPPORTED_SUMM_DATASETS, list_all_datasets
+from dataset import SUPPORTED_SUMM_DATASETS, list_all_datasets, QMsumDataset
 from dataset.st_dataset import SummDataset, SummInstance, CustomDataset
 from dataset.dataset_loaders import ArxivDataset
 
 from helpers import print_with_color
-
-
-NUM_DUMMY_DATA_INSTANCES = 10
-
-DUMMY_DATA_WITH_QUERY = [
-    # Source doc
-    "PG&E stated it scheduled the blackouts in response to forecasts for high winds amid dry conditions. \
-     The aim is to reduce the risk of wildfires. Nearly 800 thousand customers were scheduled to be affected \
-     by the shutoffs which were expected to last through at least midday tomorrow.",
-    # Summary
-    "California's largest electricity provider has turned off power to hundreds of thousands of customers.",
-    # Query
-    "What is the main topic of this?",
-]
-
-DUMMY_DATA_WITHOUT_QUERY = [
-    # Source doc
-    "Alice : I am a girl. \
-     Bob : I am a boy.",
-    # Summary
-    "Alice and Bob say who they are",
-]
-
-
-def get_dummy_data_with_query(n: int):
-    return [DUMMY_DATA_WITH_QUERY] * n
-
-
-def get_dummy_data_without_query(n: int):
-    return [DUMMY_DATA_WITHOUT_QUERY] * n
-
 
 class TestDatasets(unittest.TestCase):
     def _test_instance(
@@ -57,29 +26,26 @@ class TestDatasets(unittest.TestCase):
         # Test custom dataset
         print_with_color(f"{'#' * 10} Loading custom dataset... {'#' * 10}\n\n", "35")
 
+        test_dataset = QMsumDataset()
         train_set = [
             {
-                "source": instance[0],
-                "summary": instance[1],
-                "query": instance[2],
+                "source": instance.source,
+                "summary": instance.summary,
+                "query": instance.query,
             }
-            for instance in get_dummy_data_with_query(NUM_DUMMY_DATA_INSTANCES)
+            for instance in list(test_dataset.train_set)
         ]
         validation_set = [
-            {
-                "source": instance[0],
-                "summary": None,
-                "query": instance[2],
-            }
-            for instance in get_dummy_data_with_query(NUM_DUMMY_DATA_INSTANCES)
+            {"source": instance.source, "summary": None, "query": instance.query}
+            for instance in list(test_dataset.validation_set)
         ]
         test_set = [
             {
-                "source": instance[0],
-                "summary": instance[1],
-                "query": instance[2],
+                "source": instance.source,
+                "summary": instance.summary,
+                "query": instance.query,
             }
-            for instance in get_dummy_data_with_query(NUM_DUMMY_DATA_INSTANCES)
+            for instance in list(test_dataset.test_set)
         ]
 
         custom_dataset = CustomDataset(
@@ -87,7 +53,7 @@ class TestDatasets(unittest.TestCase):
             validation_set=validation_set,
             test_set=test_set,
             query_based=True,
-            multi_doc=False,
+            multi_doc=True,
         )
 
         test_datasets = [custom_dataset] + SUPPORTED_SUMM_DATASETS
