@@ -1,8 +1,8 @@
 import unittest
 
-from dataset import SUPPORTED_SUMM_DATASETS, list_all_datasets
-from dataset.st_dataset import SummDataset, SummInstance, CustomDataset
-from dataset.dataset_loaders import ArxivDataset
+from summertime.dataset import SUPPORTED_SUMM_DATASETS, list_all_datasets
+from summertime.dataset.st_dataset import SummDataset, SummInstance, CustomDataset
+from summertime.dataset.dataset_loaders import ArxivDataset
 
 from helpers import print_with_color
 

@@ -1,4 +1,4 @@
-from dataset.dataset_loaders import (
+from summertime.dataset.dataset_loaders import (
     CnndmDataset,
     MultinewsDataset,
     SamsumDataset,
@@ -11,7 +11,7 @@ from dataset.dataset_loaders import (
     ArxivDataset,
 )
 
-from dataset.st_dataset import CustomDataset
+from summertime.dataset.st_dataset import CustomDataset
 
 SUPPORTED_SUMM_DATASETS = [
     CnndmDataset,
