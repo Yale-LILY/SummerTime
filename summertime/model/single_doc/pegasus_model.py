@@ -19,7 +19,9 @@ class PegasusModel(SingleDocSummModel):
         self.tokenizer = PegasusTokenizer.from_pretrained(model_name)
         print("init load pretrained model with tokenizer on " + device)
         # self.model = PegasusForConditionalGeneration.from_pretrained(model_name).to(device)
-        self.model = PegasusForConditionalGeneration.from_pretrained(model_name).to(device)
+        self.model = PegasusForConditionalGeneration.from_pretrained(
+            model_name
+        ).to(device)
 
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)
