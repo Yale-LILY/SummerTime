@@ -14,6 +14,7 @@ class LongformerModel(SingleDocSummModel):
             trained_domain="News", max_input_length=4096, max_output_length=None
         )
 
+        self.device = device
         self.model = EncoderDecoderModel.from_pretrained(
             "patrickvonplaten/longformer2roberta-cnn_dailymail-fp16"
         ).to(device)
@@ -36,7 +37,7 @@ class LongformerModel(SingleDocSummModel):
             return_length=True,
             truncation=True,
             max_length=4096,
-        ).to(device)
+        ).to(self.device)
         print(
             f"Longformer model: processing document of {tokenized_sequence.length} tokens"
         )
