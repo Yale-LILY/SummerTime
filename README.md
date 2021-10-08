@@ -227,6 +227,55 @@ corpus = [instance.source for instance in train_set]
 print(corpus)
 ```
 
+### Loading a custom dataset
+You can use load custom data using the `CustomDataset` class that puts the data in the SummerTime dataset Class
+```python
+from dataset import CustomDataset
+
+''' The train_set, test_set and validation_set have the following format: 
+        List[Dict], list of dictionaries that contain a data instance.
+            The dictionary is in the form:
+                {"source": "source_data", "summary": "summary_data", "query":"query_data"}
+                    * source_data is either of type List[str] or str
+                    * summary_data is of type str
+                    * query_data is of type str
+        The list of dictionaries looks as follows:
+            [dictionary_instance_1, dictionary_instance_2, ...]
+'''
+
+# Create sample data
+train_set = [
+    {
+        "source": "source1",
+        "summary": "summary1",
+        "query": "query1",      # only included, if query is present
+    }
+]
+validation_set = [
+    {
+        "source": "source2",
+        "summary": "summary2",
+        "query": "query2",      
+    }
+]
+test_set = [
+    {
+        "source": "source3",
+        "summary": "summary3",
+        "query": "query3",     
+    }
+]
+
+# Depending on the dataset properties, you can specify the type of dataset
+#   i.e multi_doc, query_based, dialogue_based. If not specified, they default to false
+custom_dataset = CustomDataset(
+                    train_set=train_set,
+                    validation_set=validation_set,
+                    test_set=test_set,
+                    query_based=True,
+                    multi_doc=True
+                    dialogue_based=False)
+```
 
 ## Using the datasets with the models - Examples
 ```python
