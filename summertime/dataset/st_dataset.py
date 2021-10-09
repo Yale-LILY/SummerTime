@@ -182,10 +182,12 @@ class SummDataset:
                         "Wait for a minute and attempt downloading the dataset again. \
                          The server hosting the dataset occassionally times out."
                     )
-            except: 
+            except Exception:
                 # Force dataset redownload in the event of a corrupted dataset cache
                 if i < tries:
-                    dataset = load_dataset(*args, download_mode="force_redownload", **kwargs)
+                    dataset = load_dataset(
+                        *args, download_mode="force_redownload", **kwargs
+                    )
                 else:
                     raise RuntimeError("Dataset could not be feteched.")
             break
