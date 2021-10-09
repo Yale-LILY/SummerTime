@@ -169,11 +169,12 @@ class SummDataset:
         tries = DEFAULT_NUMBER_OF_RETRIES_ALLOWED
         wait_time = DEFAULT_WAIT_SECONDS_BEFORE_RETRY
 
-        for i in range(tries):
+        for i in range(1, tries):
             try:
                 dataset = load_dataset(*args, **kwargs)
             except ConnectionError:
-                if i < tries - 1:  # i is zero indexed
+                # Wait in the event of a connection error to host website
+                if i < tries:
                     sleep(wait_time)
                     continue
                 else:
@@ -181,6 +182,12 @@ class SummDataset:
                         "Wait for a minute and attempt downloading the dataset again. \
                          The server hosting the dataset occassionally times out."
                     )
+            except: 
+                # Force dataset redownload in the event of a corrupted dataset cache
+                if i < tries:
+                    dataset = load_dataset(*args, download_mode="force_redownload", **kwargs)
+                else:
+                    raise RuntimeError("Dataset could not be feteched.")
             break
 
         return dataset
