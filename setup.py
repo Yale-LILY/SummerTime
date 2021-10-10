@@ -47,5 +47,6 @@ setuptools.setup(
         "black",
         "flake8",
         "progressbar",
+        "prettytable",
     ],
 )
