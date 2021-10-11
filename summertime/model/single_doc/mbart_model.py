@@ -21,7 +21,9 @@ class MBartModel(SingleDocSummModel):
 
         model_name = "facebook/mbart-large-50"
         self.tokenizer = MBart50Tokenizer.from_pretrained(model_name)
-        self.model = MBartForConditionalGeneration.from_pretrained(model_name).to(device)
+        self.model = MBartForConditionalGeneration.from_pretrained(model_name).to(
+            device
+        )
 
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)
