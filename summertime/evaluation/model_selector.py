@@ -1,4 +1,3 @@
-import math
 from functools import reduce
 import operator
 import itertools
@@ -153,11 +152,13 @@ def _remove_bad_model(models: List[SummModel], table: EvaluationTable):
     for model in table:
         cumulative_and = 1
         for other in table:
-            cumulative_and *= reduce(operator.mul, 
+            cumulative_and *= reduce(
+                operator.mul,
                 [
                     1 if table[model][metric] <= table[other][metric] else 0
                     for metric in table[model]
-                ], 1
+                ],
+                1,
             )
         if cumulative_and == 1:
             name = model
