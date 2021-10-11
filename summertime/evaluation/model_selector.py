@@ -1,4 +1,6 @@
 import math
+from functools import reduce
+import operator
 import itertools
 from .plotutils.radar import make_radar_plot
 from typing import List, Generator
@@ -112,7 +114,7 @@ class ModelSelector:
 
         return table
 
-    def visualize(output: EvaluationTable):
+    def visualize(self, output: EvaluationTable):
         # Preprocesses data.
         data = []
         metrics = list(output[list(output.keys())[0]].keys())
@@ -151,11 +153,11 @@ def _remove_bad_model(models: List[SummModel], table: EvaluationTable):
     for model in table:
         cumulative_and = 1
         for other in table:
-            cumulative_and *= math.prod(
+            cumulative_and *= reduce(operator.mul, 
                 [
                     1 if table[model][metric] <= table[other][metric] else 0
                     for metric in table[model]
-                ]
+                ], 1
             )
         if cumulative_and == 1:
             name = model
