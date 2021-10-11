@@ -29,7 +29,7 @@ setuptools.setup(
         "transformers~=4.5.1",
         "torch~=1.8.1",
         "lexrank~=0.1.0",
-        "nltk~=3.6.2",
+        "nltk==3.6.2",
         "spacy==3.0.6",
         "pytextrank",
         "datasets~=1.6.2",
