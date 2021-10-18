@@ -6,7 +6,9 @@ from summertime.dataset.dataset_loaders import (
     MultinewsDataset,
     PubmedqaDataset,
     SamsumDataset,
+    MlsumDataset,
 )
+
 from summertime.model import SUPPORTED_SUMM_MODELS, list_all_models
 from summertime.model.single_doc import LexRankModel, LongformerModel
 from summertime.model.dialogue import HMNetModel
@@ -89,6 +91,7 @@ class TestModels(unittest.TestCase):
         """
 
         single_doc_dataset = CnndmDataset()
+        multiling_dataset = MlsumDataset(["es"])
         multi_doc_dataset = MultinewsDataset()
         query_based_dataset = PubmedqaDataset()
         dialogue_based_dataset = SamsumDataset()
@@ -130,6 +133,11 @@ class TestModels(unittest.TestCase):
                 test_src, test_tgt = get_summarization_set(dialogue_based_dataset, 1)
                 prediction = model.summarize(test_src)
                 print(f"Gold summary: {test_tgt}\nPredicted summary: {prediction}")
+                self.validate_prediction(prediction, test_src)
+            elif model.is_multilingual:
+                test_src, test_tgt = get_summarization_set(multiling_dataset, 1)
+                prediction = model.summarize(test_src)
+                print(f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
                 self.validate_prediction(prediction, test_src)
             else:
                 test_src, test_tgt = get_summarization_set(single_doc_dataset, 1)

@@ -1,5 +1,6 @@
 from .single_doc import (
     BartModel,
+    MBartModel,
     LexRankModel,
     LongformerModel,
     PegasusModel,
@@ -12,6 +13,7 @@ from .defaults import summarizer
 
 SUPPORTED_SUMM_MODELS = [
     BartModel,
+    MBartModel,
     LexRankModel,
     LongformerModel,
     PegasusModel,
