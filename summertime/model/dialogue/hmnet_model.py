@@ -277,7 +277,6 @@ class HMNetModel(DialogueSummModel):
                     conf_args.add_opt(opt, var_val[0], var_val[1], force_override=True)
 
         opt["cuda"] = torch.cuda.is_available() and not cmdline_args.no_cuda
-        opt["device"] = "cuda:1"
         opt["confFile"] = conf_file
         if "datadir" not in opt:
             opt["datadir"] = os.path.dirname(
