@@ -60,6 +60,7 @@ jobs:
       TMPDIR: /data/lily/ttf5/tmp
       TRANSFORMERS_CACHE: /data/lily/ttf5/cache/
       HF_HOME: /data/lily/ttf5/cache/
+      CUDA_VISIBLE_DEVICES: 1
     # needs: [STYLE]
 
     steps:
