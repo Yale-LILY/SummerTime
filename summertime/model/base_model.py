@@ -50,6 +50,17 @@ class SummModel:
         raise NotImplementedError(
             "The base class for models shouldn't be instantiated!"
         )
+    
+    @classmethod
+    def assert_summ_input_language(
+        cls, corpus: Union[List[str], List[List[str]]], queries: Union[List[str], None]
+    ):
+        """
+        Verifies that language of input corpus and queries for summarization align with the model type.
+        """
+        raise NotImplementedError(
+            "The base class for models shouldn't be instantiated!"
+        )
 
     @classmethod
     def show_capability(cls) -> None:
