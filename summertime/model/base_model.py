@@ -13,6 +13,7 @@ class SummModel:
     is_query_based = False
     is_dialogue_based = False
     is_multi_document = False
+    is_multilingual = False
 
     def __init__(
         self,
