@@ -44,6 +44,7 @@ setuptools.setup(
         "py7zr~=0.16.1",
         "tqdm~=4.49.0",
         "tensorboard~=2.4.1",
+        "fasttext~=0.9.2",
         "black",
         "flake8",
         "progressbar",

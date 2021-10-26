@@ -32,5 +32,13 @@ class MultilingualSummModel(SingleDocSummModel):
             desc="Language Detection Model Download",
         )
 
-        model = fasttext.load_model("./lid.176.ftz")  # TODO: change download location,
+        classifier = fasttext.load_model("./lid.176.ftz")  # TODO: change download location,
         # do not redownload every time if not necessary
+
+        if all([isinstance(ins, list) for ins in corpus]):
+            prediction = classifier.predict(corpus[0])
+            print(prediction)
+
+        elif isinstance(corpus, list):
+            prediction = classifier.predict(corpus)
+            print(prediction)
