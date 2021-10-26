@@ -43,8 +43,8 @@ class MultilingualSummModel(SingleDocSummModel):
             prediction = classifier.predict(corpus)
         
         
-        label = prediction[0][0]
-        print(label)
+        label = prediction[0][0][0]
+        
 
         label.replace("__label__", "")
 
