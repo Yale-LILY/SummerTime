@@ -2,7 +2,7 @@ from summertime.model.single_doc.base_single_doc_model import SingleDocSummModel
 
 from tqdm import tqdm
 import urllib.request
-import fasttext  # fasttext 0.9.2
+import fasttext
 
 
 class MultilingualSummModel(SingleDocSummModel):
