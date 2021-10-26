@@ -7,7 +7,7 @@ class BartModel(SingleDocSummModel):
     # static variables
     model_name = "BART"
     is_extractive = False
-    is_neural = False
+    is_neural = True
 
     def __init__(self, device="cpu"):
         super(BartModel, self).__init__(
@@ -17,7 +17,7 @@ class BartModel(SingleDocSummModel):
         self.device = device
         model_name = "facebook/bart-large-cnn"
         self.tokenizer = BartTokenizer.from_pretrained(model_name)
-        self.model = BartForConditionalGeneration.from_pretrained(model_name)
+        self.model = BartForConditionalGeneration.from_pretrained(model_name).to(device)
 
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)

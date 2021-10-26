@@ -9,14 +9,15 @@ class LongformerModel(SingleDocSummModel):
     is_extractive = False
     is_neural = True
 
-    def __init__(self):
+    def __init__(self, device="cpu"):
         super(LongformerModel, self).__init__(
             trained_domain="News", max_input_length=4096, max_output_length=None
         )
 
+        self.device = device
         self.model = EncoderDecoderModel.from_pretrained(
             "patrickvonplaten/longformer2roberta-cnn_dailymail-fp16"
-        )
+        ).to(device)
         self.tokenizer = LongformerTokenizer.from_pretrained(
             "allenai/longformer-base-4096"
         )
@@ -36,7 +37,7 @@ class LongformerModel(SingleDocSummModel):
             return_length=True,
             truncation=True,
             max_length=4096,
-        )
+        ).to(self.device)
         print(
             f"Longformer model: processing document of {tokenized_sequence.length} tokens"
         )
@@ -54,6 +55,6 @@ class LongformerModel(SingleDocSummModel):
             "Strengths:\n - Correctly handles longer (> 2000 tokens) corpus.\n\n"
             "Weaknesses:\n - Less accurate on contexts outside training domain.\n\n"
             "Initialization arguments:\n "
-            " - `corpus`: Unlabelled corpus of documents.\n"
+            ' - device: use `device="gpu"` to load onto \n'
         )
         print(f"{basic_description} \n {'#'*20} \n {more_details}")

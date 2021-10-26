@@ -1,9 +1,9 @@
-from model import SUPPORTED_SUMM_MODELS
-from model.base_model import SummModel
-from model.single_doc import LexRankModel
+from summertime.model import SUPPORTED_SUMM_MODELS
+from summertime.model.base_model import SummModel
+from summertime.model.single_doc import LexRankModel
 
-from dataset.st_dataset import SummDataset
-from dataset import ScisummnetDataset
+from summertime.dataset.st_dataset import SummDataset
+from summertime.dataset import ScisummnetDataset
 
 from typing import List, Tuple
 
