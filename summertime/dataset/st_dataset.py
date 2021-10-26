@@ -185,6 +185,13 @@ class SummDataset:
             except Exception:
                 # Force dataset redownload in the event of a corrupted dataset cache
                 if i < tries:
+                    print(
+                        "Attempt ",
+                        i + 1,
+                        " out of ",
+                        tries,
+                        " to redownload dataset: cache is likely corrupted:",
+                    )
                     dataset = load_dataset(
                         *args, download_mode="force_redownload", **kwargs
                     )
