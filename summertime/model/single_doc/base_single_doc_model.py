@@ -42,7 +42,7 @@ class SingleDocSummModel(SummModel):
                 print(
                     "Warning: non-ASCII input document detected!\n\
                     If this is not English, consider using \
-                    one of our multilingual models.\n"
+                    one of our multilingual models."
                 )
         
         elif isinstance(corpus, list):
@@ -50,7 +50,7 @@ class SingleDocSummModel(SummModel):
                 print(
                     "Warning: non-ASCII input document detected!\n\
                     If this is not English, consider using\
-                    one of our multilingual models.\n"
+                    one of our multilingual models."
                 )  # TODO: is ASCII a known term to our intended users?
 
         if query is not None:
@@ -58,5 +58,5 @@ class SingleDocSummModel(SummModel):
                 print(
                     "Warning: non-ASCII input query detected!\n\
                     If this is not English, consider using \
-                    one of our multilingual models.\n"
+                    one of our multilingual models."
                 )

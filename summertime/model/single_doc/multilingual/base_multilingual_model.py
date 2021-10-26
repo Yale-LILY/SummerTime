@@ -5,6 +5,7 @@ import urllib.request
 import fasttext
 
 
+
 class MultilingualSummModel(SingleDocSummModel):
     def __init__(
         self,
@@ -37,8 +38,19 @@ class MultilingualSummModel(SingleDocSummModel):
 
         if all([isinstance(ins, list) for ins in corpus]):
             prediction = classifier.predict(corpus[0])
-            print(prediction)
 
         elif isinstance(corpus, list):
             prediction = classifier.predict(corpus)
-            print(prediction)
+        
+        label = prediction[0][0]
+
+        label.replace("__label__", "")
+
+        if label in lang_tag_dict:
+            print(f"Language {label} detected.") 
+            return lang_tag_dict[label]
+        else:
+            raise ValueError(
+                f"Unsupported language {label} detected"
+            )
+
