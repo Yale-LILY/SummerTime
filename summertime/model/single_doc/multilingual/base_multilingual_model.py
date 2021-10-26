@@ -44,7 +44,7 @@ class MultilingualSummModel(SingleDocSummModel):
         
         
         label = prediction[0][0][0]
-        
+        print(label)
 
         label.replace("__label__", "")
 

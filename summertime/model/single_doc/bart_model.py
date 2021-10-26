@@ -22,6 +22,8 @@ class BartModel(SingleDocSummModel):
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)
 
+        self.assert_summ_input_language(corpus, queries)
+
         batch = self.tokenizer(
             corpus, truncation=True, padding="longest", return_tensors="pt"
         ).to(self.device)
