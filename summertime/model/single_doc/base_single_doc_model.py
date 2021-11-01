@@ -38,7 +38,7 @@ class SingleDocSummModel(SummModel):
     @classmethod
     def assert_summ_input_language(cls, corpus, query):
 
-        warning = "Warning: non-ASCII input query detected!\n\
+        warning = "Warning: non-ASCII input corpus detected!\n\
                     If this is not English, consider using \
                     one of our multilingual models."
 
@@ -50,6 +50,4 @@ class SingleDocSummModel(SummModel):
             if not all([ins.isascii() for ins in corpus]):
                 print(warning)
 
-        if query is not None:
-            if not all([q.isascii() for q in query]):
-                print(warning)
+        return "en"  # ISO-639-1 code for English
