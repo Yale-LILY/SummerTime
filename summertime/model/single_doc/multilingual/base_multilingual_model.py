@@ -7,6 +7,9 @@ import fasttext
 
 
 class MultilingualSummModel(SingleDocSummModel):
+    
+    lang_tag_dict = None
+    
     def __init__(
         self,
         trained_domain: str = None,
@@ -19,19 +22,17 @@ class MultilingualSummModel(SingleDocSummModel):
             max_output_length=max_output_length,
         )
 
-        lang_tag_dict = None
-
     @classmethod
     def assert_summ_input_language(cls, corpus, query):
         # TODO: add fasttext language detection here
 
         url = "https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz"
         # currently using compressed fasttext model
-
-        tqdm(
-            urllib.request.urlretrieve(url, "lid.176.ftz"),
-            desc="Language Detection Model Download",
-        )
+        urllib.request.urlretrieve(url, "lid.176.ftz")
+        # tqdm(
+        #     urllib.request.urlretrieve(url, "lid.176.ftz"),
+        #     desc="Downloading language detector",
+        # )
 
         classifier = fasttext.load_model("./lid.176.ftz")  # TODO: change download location,
         # do not redownload every time if not necessary
@@ -44,15 +45,16 @@ class MultilingualSummModel(SingleDocSummModel):
         
         
         label = prediction[0][0][0]
-        print(label)
 
-        label.replace("__label__", "")
+        label = label.replace("__label__", "")
 
-        if label in lang_tag_dict:
-            print(f"Language {label} detected.") 
-            return lang_tag_dict[label]
+        if label in cls.lang_tag_dict:
+            print(f"Language '{label}' detected.") 
+            return cls.lang_tag_dict[label]
         else:
             raise ValueError(
-                f"Unsupported language {label} detected"
+                f"Unsupported language '{label}'' detected!\n\
+                    Try checking if another of our multilingual models \
+                    supports this language."
             )
 

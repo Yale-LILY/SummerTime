@@ -9,25 +9,7 @@ class MBartModel(MultilingualSummModel):
     is_neural = True
     is_multilingual = True
 
-    def __init__(self, device="cpu"):
-        super(MBartModel, self).__init__(
-            # TODO: trained domain not news (at least not exclusively)
-            trained_domain="News",
-            max_input_length=1024,
-            max_output_length=None,
-        )
-
-        self.device = device
-
-        model_name = "facebook/mbart-large-50"
-        self.tokenizer = MBart50Tokenizer.from_pretrained(
-            model_name, src_lang="en_XX", tgt_lang="en_XX"
-        )
-        self.model = MBartForConditionalGeneration.from_pretrained(model_name).to(
-            device
-        )
-        
-        lang_tag_dict = {
+    lang_tag_dict = {
             "ar": "ar_AR",
             "cs": "cs_CZ",
             "de": "de_DE",
@@ -79,24 +61,42 @@ class MBartModel(MultilingualSummModel):
             "xh": "xh_ZA",
             "sl": "sl_SI",
         }
+    
+    def __init__(self, device="cpu"):
+        super(MBartModel, self).__init__(
+            # TODO: trained domain not news (at least not exclusively)
+            trained_domain="News",
+            max_input_length=1024,
+            max_output_length=None,
+        )
+
+        self.device = device
+
+        model_name = "facebook/mbart-large-50"
+        self.tokenizer = MBart50Tokenizer.from_pretrained(
+            model_name, src_lang="en_XX", tgt_lang="en_XX"
+        )
+        self.model = MBartForConditionalGeneration.from_pretrained(model_name).to(
+            device
+        )
 
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)
 
-        self.assert_summ_input_language(corpus, queries)
+        lang_code = self.assert_summ_input_language(corpus, queries)
 
-        # self.tokenizer.src_lang = language token
-        # self.tokenizer.tgt_lang = language token
+        self.tokenizer.src_lang = lang_code
+        self.tokenizer.tgt_lang = lang_code
 
-        with self.tokenizer.as_target_tokenizer:
+        with self.tokenizer.as_target_tokenizer():
             batch = self.tokenizer(
                 corpus, truncation=True, padding="longest", return_tensors="pt"
             ).to(self.device)
         encoded_summaries = self.model.generate(
-            **batch
-        )  # ,decoder_start_token_id=self.tokenizer.lang_code_to_id[""] )
-        # num_beams=4, max_length=5, early_stopping=True
-        # add hyperparameters to .generate? above are what's used in the huggingface docs
+            **batch#, decoder_start_token_id=self.tokenizer.lang_code_to_id[lang_code], 
+            #length_penalty=1.0, num_beams=4, early_stopping=True
+            )
+        
         summaries = self.tokenizer.batch_decode(
             encoded_summaries, skip_special_tokens=True
         )
