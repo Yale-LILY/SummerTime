@@ -1,15 +1,13 @@
 from summertime.model.single_doc.base_single_doc_model import SingleDocSummModel
 
-from tqdm import tqdm
 import urllib.request
 import fasttext
 
 
-
 class MultilingualSummModel(SingleDocSummModel):
-    
+
     lang_tag_dict = None
-    
+
     def __init__(
         self,
         trained_domain: str = None,
@@ -34,7 +32,9 @@ class MultilingualSummModel(SingleDocSummModel):
         #     desc="Downloading language detector",
         # )
 
-        classifier = fasttext.load_model("./lid.176.ftz")  # TODO: change download location,
+        classifier = fasttext.load_model(
+            "./lid.176.ftz"
+        )  # TODO: change download location,
         # do not redownload every time if not necessary
 
         if all([isinstance(ins, list) for ins in corpus]):
@@ -42,14 +42,13 @@ class MultilingualSummModel(SingleDocSummModel):
 
         elif isinstance(corpus, list):
             prediction = classifier.predict(corpus)
-        
-        
+
         label = prediction[0][0][0]
 
         label = label.replace("__label__", "")
 
         if label in cls.lang_tag_dict:
-            print(f"Language '{label}' detected.") 
+            print(f"Language '{label}' detected.")
             return cls.lang_tag_dict[label]
         else:
             raise ValueError(
@@ -57,4 +56,3 @@ class MultilingualSummModel(SingleDocSummModel):
                     Try checking if another of our multilingual models \
                     supports this language."
             )
-

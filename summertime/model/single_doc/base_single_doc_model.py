@@ -38,14 +38,14 @@ class SingleDocSummModel(SummModel):
     @classmethod
     def assert_summ_input_language(cls, corpus, query):
 
-        warning =  "Warning: non-ASCII input query detected!\n\
+        warning = "Warning: non-ASCII input query detected!\n\
                     If this is not English, consider using \
                     one of our multilingual models."
 
         if all([isinstance(ins, list) for ins in corpus]):
             if not all([ins.isascii() for batch in corpus for ins in batch]):
                 print(warning)
-        
+
         elif isinstance(corpus, list):
             if not all([ins.isascii() for ins in corpus]):
                 print(warning)
