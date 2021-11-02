@@ -48,11 +48,15 @@ class MultilingualSummModel(SingleDocSummModel):
         label = label.replace("__label__", "")
 
         if label in cls.lang_tag_dict:
-            print(f"Language '{label}' detected.")
+            print(f"Supported language '{label}' detected.")
             return cls.lang_tag_dict[label]
         else:
             raise ValueError(
-                f"Unsupported language '{label}'' detected!\n\
-                    Try checking if another of our multilingual models \
-                    supports this language."
+                f"Unsupported language '{label}' detected! \
+Try checking if another of our multilingual models \
+supports this language."
             )
+
+    @classmethod
+    def get_supported_languages(cls): #TODO: implement a display of supported languages for all models?
+        return cls.lang_tag_dict.keys()
