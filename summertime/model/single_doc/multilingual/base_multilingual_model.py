@@ -58,5 +58,7 @@ supports this language."
             )
 
     @classmethod
-    def get_supported_languages(cls): #TODO: implement a display of supported languages for all models?
+    def get_supported_languages(
+        cls,
+    ):  # TODO: implement a display of supported languages for all models?
         return cls.lang_tag_dict.keys()
