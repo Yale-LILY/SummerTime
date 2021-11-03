@@ -12,7 +12,7 @@ jobs:
   STYLE:
     name: STYLE
     runs-on: self-hosted
-    env:
+    # env:
       # HOME: /data/lily/ttf5
 
     steps:
