@@ -12,8 +12,6 @@ jobs:
   STYLE:
     name: STYLE
     runs-on: self-hosted
-    # env:
-      # HOME: /data/lily/ttf5
 
     steps:
       - uses: actions/checkout@v2
@@ -58,13 +56,7 @@ jobs:
     name: TESTS
     runs-on: self-hosted
     env:
-      # HOME: /data/lily/ttf5
-      # ROUGE_HOME: /data/lily/ttf5/ci-test/actions-runner/_work/SummerTime/SummerTime/.venv/lib/python3.9/site-packages/summ_eval/ROUGE-1.5.5/
       CUDA_VISIBLE_DEVICES: 1
-      # TMPDIR: /data/lily/ttf5/tmp
-      # TRANSFORMERS_CACHE: /data/lily/ttf5/cache/
-      # HF_HOME: /data/lily/ttf5/cache/
-    # needs: [STYLE]
 
     steps:
       - uses: actions/checkout@v2
