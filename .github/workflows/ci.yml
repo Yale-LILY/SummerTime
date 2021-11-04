@@ -18,6 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
 
       # - name: Test SSL workaround
       #   run: python -m pip install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org --upgrade pip
@@ -67,6 +69,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
 
       - name: Set up installation
         run: pip install --upgrade pip virtualenv
