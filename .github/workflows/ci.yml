@@ -81,6 +81,8 @@ jobs:
         run: |
           . .venv/bin/activate
           pip install --upgrade pip
+          pip install --upgrade setuptools
+          pip install --upgrade wheel
 
       - name: Debug info
         run: |
