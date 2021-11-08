@@ -51,3 +51,7 @@ class SingleDocSummModel(SummModel):
                 print(warning)
 
         return "en"  # ISO-639-1 code for English
+
+    # @classmethod
+    # def show_supported_languages(cls) -> str:
+    #     return "english"

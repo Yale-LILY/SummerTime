@@ -92,6 +92,16 @@ class SummModel:
             )
 
         return basic_description
+    
+    # TODO nick: implement this function eventually!
+    # @classmethod
+    # def show_supported_languages(cls) -> str:
+    #     """
+    #     Returns a list of supported languages for summarization.
+    #     """
+    #     raise NotImplementedError(
+    #         "The base class for models shouldn't be instantiated!"
+    #     )
 
 
 class SummPipeline(SummModel):

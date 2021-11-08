@@ -68,15 +68,17 @@ Also, please run our colab notebook for a more hands-on demo and more examples.
 ## Models
 
 ### Supported Models
-SummerTime supports different models (e.g., TextRank, BART, Longformer) as well as model wrappers for more complex summariztion tasks (e.g., JointModel for multi-doc summarzation, BM25 retrieval for query-based summarization).
+SummerTime supports different models (e.g., TextRank, BART, Longformer) as well as model wrappers for more complex summarization tasks (e.g., JointModel for multi-doc summarzation, BM25 retrieval for query-based summarization).
 
-| Models                    | Single-doc           | Multi-doc            | Dialogue-based       | Query-based          |
-| ---------                 | :------------------: | :------------------: | :------------------: | :------------------: | 
-| BartModel                 | :heavy_check_mark:   |                      |                      |                      |   
-| BM25SummModel             |                      |                      |                      | :heavy_check_mark:   | 
-| HMNetModel                |                      |                      | :heavy_check_mark:   |                      |
-| LexRankModel              | :heavy_check_mark:   |                      |                      |                      |
-| LongformerModel           | :heavy_check_mark:   |                      |                      |                      |
+| Models                    | Single-doc           | Multi-doc            | Dialogue-based       | Query-based          | Multilingual         |
+| ---------                 | :------------------: | :------------------: | :------------------: | :------------------: | :------------------: |
+| BartModel                 | :heavy_check_mark:   |                      |                      |                      |                      |
+| BM25SummModel             |                      |                      |                      | :heavy_check_mark:   |                      |
+| HMNetModel                |                      |                      | :heavy_check_mark:   |                      |                      |
+| LexRankModel              | :heavy_check_mark:   |                      |                      |                      |                      |
+| LongformerModel           | :heavy_check_mark:   |                      |                      |                      |                      |
+| MBartModel                | :heavy_check_mark:   |                      |                      |                      | 50 languages (Arabic, Czech, German, English, Spanish, Estonian, Finnish, French, Gujarati, Hindi, Italian, Japanese, Kazakh, Korean, Lithuanian, Latvian, Burmese, Nepali, Dutch, Romanian, Russian, Sinhala, Turkish, Vietnamese, Chinese, Afrikaans, Azerbaijani, Bengali, Persian, Hebrew, Croatian, Indonesian, Georgian, Khmer, Macedonian, Malayalam, Mongolian, Marathi, Polish, Pashto, Portuguese, Swedish, Tamil, Telugu, Thai, Tagalog, Ukrainian, Urdu, Xhosa, Slovenian) |
+| MT5Model                  | :heavy_check_mark:   |                      |                      |                      | 101 languages (full list [here](https://github.com/google-research/multilingual-t5#readme)) |
 | MultiDocJointModel        |                      | :heavy_check_mark:   |                      |                      |
 | MultiDocSeparateModel     |                      | :heavy_check_mark:   |                      |                      |
 | PegasusModel              | :heavy_check_mark:   |                      |                      |                      |

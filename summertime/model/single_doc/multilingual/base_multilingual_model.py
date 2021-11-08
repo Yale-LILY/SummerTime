@@ -1,10 +1,9 @@
 from summertime.model.single_doc.base_single_doc_model import SingleDocSummModel
 from summertime.util.download_utils import (
     get_cached_file_path,
-    download_with_progressbar,
 )
-import urllib.request
 import fasttext
+
 
 
 class MultilingualSummModel(SingleDocSummModel):
@@ -30,7 +29,9 @@ class MultilingualSummModel(SingleDocSummModel):
 
         filepath = get_cached_file_path("fasttext", "lid.176.ftz", url)
 
-        classifier = fasttext.load_model(filepath)  # TODO: change download location,
+        classifier = fasttext.load_model(
+            str(filepath)
+        )  # TODO: change download location,
         # do not redownload every time if not necessary
 
         if all([isinstance(ins, list) for ins in corpus]):
@@ -53,8 +54,9 @@ Try checking if another of our multilingual models \
 supports this language."
             )
 
-    @classmethod
-    def get_supported_languages(
-        cls,
-    ):  # TODO: implement a display of supported languages for all models?
-        return cls.lang_tag_dict.keys()
+    # @classmethod
+    # def show_supported_languages(
+    #     cls,
+    # ):
+    #     langs = [iso639.to_name(lang) for lang in cls.lang_tag_dict.keys()]
+    #     return " ".join(langs)
