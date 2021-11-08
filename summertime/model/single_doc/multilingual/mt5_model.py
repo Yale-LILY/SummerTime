@@ -56,7 +56,7 @@ class MT5Model(MultilingualSummModel):
         "uz": "uz",
         "vi": "vi",
         "cy": "cy",
-        "yo": "yo", # <- up to here: langs included in XLSum
+        "yo": "yo",  # <- up to here: langs included in XLSum
         "af": "af",
         "sq": "sq",
         "hy": "hy",
@@ -73,16 +73,16 @@ class MT5Model(MultilingualSummModel):
         "nl": "nl",
         "eo": "eo",
         "et": "et",
-        "tl": "tl", # tagalog in place of filipino
+        "tl": "tl",  # tagalog in place of filipino
         "fi": "fi",
         "gl": "gl",
         "ka": "ka",
         "de": "de",
         "el": "el",
         "ht": "ht",
-        "haw": "haw", # hawaiian 639-3 code (not in fasttext id)
+        "haw": "haw",  # hawaiian 639-3 code (not in fasttext id)
         "he": "he",
-        "hmn": "hmn", # hmong 639-3 code (not in fasttext id)
+        "hmn": "hmn",  # hmong 639-3 code (not in fasttext id)
         "hu": "hu",
         "is": "is",
         "ga": "ga",
@@ -101,7 +101,7 @@ class MT5Model(MultilingualSummModel):
         "mg": "mg",
         "ms": "ms",
         "ml": "ml",
-        "mt": "mt",     
+        "mt": "mt",
         "mi": "mi",
         "mn": "mn",
         "ne": "ne",

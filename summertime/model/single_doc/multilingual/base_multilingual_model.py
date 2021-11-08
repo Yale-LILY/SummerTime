@@ -1,5 +1,8 @@
 from summertime.model.single_doc.base_single_doc_model import SingleDocSummModel
-from summertime.util.download_utils import get_cached_file_path, download_with_progressbar
+from summertime.util.download_utils import (
+    get_cached_file_path,
+    download_with_progressbar,
+)
 import urllib.request
 import fasttext
 
@@ -22,14 +25,12 @@ class MultilingualSummModel(SingleDocSummModel):
 
     @classmethod
     def assert_summ_input_language(cls, corpus, query):
-    
+
         url = "https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz"
 
         filepath = get_cached_file_path("fasttext", "lid.176.ftz", url)
 
-        classifier = fasttext.load_model(
-            filepath
-        )  # TODO: change download location,
+        classifier = fasttext.load_model(filepath)  # TODO: change download location,
         # do not redownload every time if not necessary
 
         if all([isinstance(ins, list) for ins in corpus]):
