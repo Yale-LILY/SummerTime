@@ -1,5 +1,5 @@
 from summertime.model.single_doc.base_single_doc_model import SingleDocSummModel
-
+from summertime.util.download_utils import get_cached_file_path, download_with_progressbar
 import urllib.request
 import fasttext
 
@@ -22,18 +22,13 @@ class MultilingualSummModel(SingleDocSummModel):
 
     @classmethod
     def assert_summ_input_language(cls, corpus, query):
-        # TODO: add fasttext language detection here
-
+    
         url = "https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz"
-        # currently using compressed fasttext model
-        urllib.request.urlretrieve(url, "lid.176.ftz")
-        # tqdm(
-        #     urllib.request.urlretrieve(url, "lid.176.ftz"),
-        #     desc="Downloading language detector",
-        # )
+
+        filepath = get_cached_file_path("fasttext", "lid.176.ftz", url)
 
         classifier = fasttext.load_model(
-            "./lid.176.ftz"
+            filepath
         )  # TODO: change download location,
         # do not redownload every time if not necessary
 
