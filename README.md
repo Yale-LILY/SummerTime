@@ -68,7 +68,8 @@ Also, please run our colab notebook for a more hands-on demo and more examples.
 ## Models
 
 ### Supported Models
-SummerTime supports different models (e.g., TextRank, BART, Longformer) as well as model wrappers for more complex summarization tasks (e.g., JointModel for multi-doc summarzation, BM25 retrieval for query-based summarization).
+SummerTime supports different models (e.g., TextRank, BART, Longformer) as well as model wrappers for more complex summarization tasks (e.g., JointModel for multi-doc summarzation, BM25 retrieval for query-based summarization). Several multilingual models are also supported (mT5 and mBART).
+
 
 | Models                    | Single-doc           | Multi-doc            | Dialogue-based       | Query-based          | Multilingual         |
 | ---------                 | :------------------: | :------------------: | :------------------: | :------------------: | :------------------: |
@@ -230,7 +231,7 @@ print(corpus)
 ```
 
 ### Loading a custom dataset
-You can use load custom data using the `CustomDataset` class that puts the data in the SummerTime dataset Class
+You can usecustom data using the `CustomDataset` class that loads the data in the SummerTime dataset Class
 ```python
 from dataset import CustomDataset
 
@@ -292,6 +293,7 @@ cnn_dataset = dataset.CnndmDataset()
 train_set = itertools.islice(cnn_dataset.train_set, 5)
 
 corpus = [instance.source for instance in train_set]
+
 
 
 # Example 1 - traditional non-neural model
@@ -421,6 +423,28 @@ query_based_multi_doc_models = assemble_model_pipeline(QMsumDataset)
 #   (<model.query_based.bm25_model.BM25SummModel object at 0x7fc8b4fa8c10>, 'BM25 (HMNET)')
 # ]
 ```
+
+### Multilingual summarization
+The `summarize()` method of multilingual models automatically checks for input document language. 
+
+Single-doc multilingual models can be initialized and used in the same way as monolingual models. They return an error if a language not supported by the model is input.
+
+```python
+mbart_model = st_model.MBartModel()
+mt5_model = st_model.MT5Model()
+
+# load Spanish portion of MLSum dataset
+mlsum = datasets.MlsumDataset(["es"])
+
+corpus = itertools.islice(mlsum.train_set, 5)
+corpus = [instance.source for instance in train_set]
+
+# mt5 model will automatically detect Spanish as the language and indicate that this is supported!
+mt5_model.summarize()
+```
+
+Soon to come: a simple pipeline model to first translate input text to English and then use monolingual models!
+
 
 
 ## To contribute

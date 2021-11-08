@@ -92,7 +92,7 @@ class SummModel:
             )
 
         return basic_description
-    
+
     # TODO nick: implement this function eventually!
     # @classmethod
     # def show_supported_languages(cls) -> str:
