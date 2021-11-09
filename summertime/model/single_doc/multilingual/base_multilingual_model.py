@@ -5,7 +5,6 @@ from summertime.util.download_utils import (
 import fasttext
 
 
-
 class MultilingualSummModel(SingleDocSummModel):
 
     lang_tag_dict = None
@@ -29,10 +28,8 @@ class MultilingualSummModel(SingleDocSummModel):
 
         filepath = get_cached_file_path("fasttext", "lid.176.ftz", url)
 
-        classifier = fasttext.load_model(
-            str(filepath)
-        )  # TODO: change download location,
-        # do not redownload every time if not necessary
+        fasttext.FastText.eprint = lambda x: None
+        classifier = fasttext.load_model(str(filepath))
 
         if all([isinstance(ins, list) for ins in corpus]):
             prediction = classifier.predict(corpus[0])
