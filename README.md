@@ -449,7 +449,7 @@ print(table)
 visualization = selector.visualize(table)
 ```
 <p align="center">
-    <img src="https://github.com/Yale-LILY/SummerTime/blob/bfec6260f25f6ab3eb8a28b759ced3dabcebd811/docs/img/radar_plot.PNG" width="50%">
+    <img src="https://github.com/Yale-LILY/SummerTime/blob/bfec6260f25f6ab3eb8a28b759ced3dabcebd811/docs/img/radar_plot.PNG" width="100%">
 </p>
 
 ```python
@@ -471,7 +471,7 @@ keys = ("bert_score_f1", "bleu", "rouge_1_f_score", "rouge_2_f_score", "rouge_l_
 scatter(models, sample_data, metrics[1:3], keys=keys[1:3], max_instances=5)
 ```
 <p align="center">
-    <img src="https://github.com/Yale-LILY/SummerTime/blob/bfec6260f25f6ab3eb8a28b759ced3dabcebd811/docs/img/scatter_plot.PNG" width="50%">
+    <img src="https://github.com/Yale-LILY/SummerTime/blob/bfec6260f25f6ab3eb8a28b759ced3dabcebd811/docs/img/scatter_plot.PNG" width="100%">
 </p>
 
 
