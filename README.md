@@ -27,14 +27,21 @@ The library architecture is as follows:
 
 ## Installation and setup
 
-#### [Optional] Create and activate a new `conda` environment:
+#### Install from PyPI (recommended)
 ```bash
-conda create -n summertime python=3.7
-conda activate summertime
+# install extra dependencies first
+pip install pyrouge@git+https://github.com/bheinzerling/pyrouge.git
+pip install en_core_web_sm@https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0-py3-none-any.whl
+
+# install summertime from PyPI
+pip install summertime
+
 ```
 
 #### Local `pip` installation
+Alternatively, to enjoy the most recent features, you can install from the source:
 ```bash
+git clone git@github.com:Yale-LILY/SummerTime
 pip install -e .
 ```
 ##### Setup `ROUGE` (when using evaluation)
@@ -517,7 +524,7 @@ Note that our CI test suite will include invoking `black --check .` and `flake8 
 Our continuous integration system is provided through [Github actions](https://docs.github.com/en/actions). When any pull request is created or updated or whenever `main` is updated, the repository's unit tests will be run as build jobs on tangra for that pull request. Build jobs will either pass or fail within a few minutes, and build statuses and logs are visible under [Actions](https://github.com/Yale-LILY/SummerTime/actions). Please ensure that the most recent commit in pull requests passes all checks (i.e. all steps in all jobs run to completion) before merging, or request a review. To skip a build on any particular commit, append `[skip ci]` to the commit message. Note that PRs with the substring `/no-ci/` anywhere in the branch name will not be included in CI.
 
 ## Citation
-This repository is built by the [LILY Lab](https://yale-lily.github.io/) at Yale University, led by Prof. [Dragomir Radev](https://cpsc.yale.edu/people/dragomir-radev). The main contributors are [Ansong Ni](https://niansong1996.github.io), Zhangir Azerbayev, Troy Feng, Murori Mutuma and Yusen Zhang (Penn State).
+This repository is built by the [LILY Lab](https://yale-lily.github.io/) at Yale University, led by Prof. [Dragomir Radev](https://cpsc.yale.edu/people/dragomir-radev). The main contributors are [Ansong Ni](https://niansong1996.github.io), Zhangir Azerbayev, Troy Feng, Murori Mutuma, Nick Schoelkopf, and Yusen Zhang (Penn State).
 
 If you use SummerTime in your work, consider citing:
 ```
