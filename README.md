@@ -27,14 +27,21 @@ The library architecture is as follows:
 
 ## Installation and setup
 
-#### [Optional] Create and activate a new `conda` environment:
+#### Install from PyPI (recommended)
 ```bash
-conda create -n summertime python=3.7
-conda activate summertime
+# install extra dependencies first
+pip install pyrouge@git+https://github.com/bheinzerling/pyrouge.git
+pip install en_core_web_sm@https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0-py3-none-any.whl
+
+# install summertime from PyPI
+pip install summertime
+
 ```
 
 #### Local `pip` installation
+Alternatively, to enjoy the most recent features, you can install from the source:
 ```bash
+git clone git@github.com:Yale-LILY/SummerTime
 pip install -e .
 ```
 ##### Setup `ROUGE` (when using evaluation)

@@ -35,8 +35,6 @@ setuptools.setup(
         "datasets~=1.6.2",
         "sentencepiece~=0.1.95",
         "summ_eval==0.70",
-        "pyrouge@git+https://github.com/bheinzerling/pyrouge.git",
-        "en_core_web_sm@https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0-py3-none-any.whl",
         "jupyter",
         "gdown",
         "gensim~=3.8.3",
