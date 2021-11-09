@@ -12,11 +12,12 @@ jobs:
   STYLE:
     name: STYLE
     runs-on: self-hosted
-    env:
-      HOME: /data/lily/ttf5
 
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
 
       # - name: Test SSL workaround
       #   run: python -m pip install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org --upgrade pip
@@ -55,16 +56,13 @@ jobs:
     name: TESTS
     runs-on: self-hosted
     env:
-      HOME: /data/lily/ttf5
-      ROUGE_HOME: /data/lily/ttf5/ci-test/actions-runner/_work/SummerTime/SummerTime/.venv/lib/python3.9/site-packages/summ_eval/ROUGE-1.5.5/
       CUDA_VISIBLE_DEVICES: 1
-      TMPDIR: /data/lily/ttf5/tmp
-      TRANSFORMERS_CACHE: /data/lily/ttf5/cache/
-      HF_HOME: /data/lily/ttf5/cache/
-    # needs: [STYLE]
 
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
 
       - name: Set up installation
         run: pip install --upgrade pip virtualenv
@@ -72,13 +70,15 @@ jobs:
       - name: Set up virtual environment
         run: |
           rm -rf .venv
-          test -d .venv || virtualenv -p $(which python3.9) --copies --reset-app-data .venv
+          python3 -m venv .venv
           . .venv/bin/activate
       
       - name: Pre-installation upgrade
         run: |
           . .venv/bin/activate
           pip install --upgrade pip
+          pip install --upgrade setuptools
+          pip install --upgrade wheel
 
       - name: Debug info
         run: |
@@ -91,11 +91,15 @@ jobs:
           pip freeze
           df -h
           echo $HOME
+          export
 
       - name: Installation
         run: |
           . .venv/bin/activate
           pip install numpy
+          python -m pip install --upgrade pip setuptools wheel
+          pip install pyrouge@git+https://github.com/bheinzerling/pyrouge.git     
+          pip install en_core_web_sm@https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0-py3-none-any.whl
           pip install -e .
           # pip install cython
           # pip install -r requirements.txt

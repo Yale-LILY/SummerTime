@@ -27,14 +27,21 @@ The library architecture is as follows:
 
 ## Installation and setup
 
-#### [Optional] Create and activate a new `conda` environment:
+#### Install from PyPI (recommended)
 ```bash
-conda create -n summertime python=3.7
-conda activate summertime
+# install extra dependencies first
+pip install pyrouge@git+https://github.com/bheinzerling/pyrouge.git
+pip install en_core_web_sm@https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0-py3-none-any.whl
+
+# install summertime from PyPI
+pip install summertime
+
 ```
 
 #### Local `pip` installation
+Alternatively, to enjoy the most recent features, you can install from the source:
 ```bash
+git clone git@github.com:Yale-LILY/SummerTime
 pip install -e .
 ```
 ##### Setup `ROUGE` (when using evaluation)
@@ -47,15 +54,15 @@ export ROUGE_HOME=/usr/local/lib/python3.7/dist-packages/summ_eval/ROUGE-1.5.5/
 ## Quick Start
 Imports model, initializes default model, and summarizes sample documents.
 ```python
-import model as st_model
+from summertime import model
 
-model = st_model.summarizer()
+sample_model = model.summarizer()
 documents = [
     """ PG&E stated it scheduled the blackouts in response to forecasts for high winds amid dry conditions. 
     The aim is to reduce the risk of wildfires. Nearly 800 thousand customers were scheduled to be affected 
     by the shutoffs which were expected to last through at least midday tomorrow."""
 ]
-model.summarize(documents)
+sample_model.summarize(documents)
 
 # ["California's largest electricity provider has turned off power to hundreds of thousands of customers."]
 ```
@@ -89,28 +96,28 @@ SummerTime supports different models (e.g., TextRank, BART, Longformer) as well 
 To see all supported models, run:
 
 ```python
-from model import SUPPORTED_SUMM_MODELS
+from summertime.model import SUPPORTED_SUMM_MODELS
 print(SUPPORTED_SUMM_MODELS)
 ```
 
 
 ### Import and initialization:
 ```python
-import model as st_model
+from summertime import model
 
 # To use a default model
-default_model = st_model.summarizer()    
+default_model = model.summarizer()    
 
 # Or a specific model
-bart_model = st_model.BartModel()
-pegasus_model = st_model.PegasusModel()
-lexrank_model = st_model.LexRankModel()
-textrank_model = st_model.TextRankModel()
+bart_model = model.BartModel()
+pegasus_model = model.PegasusModel()
+lexrank_model = model.LexRankModel()
+textrank_model = model.TextRankModel()
 ```
 
 Users can easily access documentation to assist with model selection
 ```python
-sample_model.show_capability()
+default_model.show_capability()
 pegasus_model.show_capability()
 textrank_model.show_capability()
 ```
@@ -123,7 +130,7 @@ documents = [
     by the shutoffs which were expected to last through at least midday tomorrow."""
 ]
 
-sample_model.summarize(documents)
+default_model.summarize(documents)
 # or 
 pegasus_model.summarize(documents)
 ```
@@ -169,14 +176,14 @@ SummerTime supports different summarization datasets across different domains (e
 To see all supported datasets, run:
 
 ```python
-import dataset
+from summertime import dataset
 
 print(dataset.list_all_dataset())
 ``` 
 
 ### Dataset Initialization
 ```python
-import dataset
+from summertime import dataset
 
 cnn_dataset = dataset.CnndmDataset()
 # or 
@@ -233,7 +240,7 @@ print(corpus)
 ### Loading a custom dataset
 You can usecustom data using the `CustomDataset` class that loads the data in the SummerTime dataset Class
 ```python
-from dataset import CustomDataset
+from summertime.dataset import CustomDataset
 
 ''' The train_set, test_set and validation_set have the following format: 
         List[Dict], list of dictionaries that contain a data instance.
@@ -283,8 +290,7 @@ custom_dataset = CustomDataset(
 ## Using the datasets with the models - Examples
 ```python
 import itertools
-import dataset
-import model
+from summertime import dataset, model
 
 cnn_dataset = dataset.CnndmDataset()
 
@@ -323,21 +329,40 @@ longformer_summary = longformer.summarize(corpus)
 print(longformer_summary)
 ```
 
+### Multilingual summarization
+The `summarize()` method of multilingual models automatically checks for input document language. 
 
+Single-doc multilingual models can be initialized and used in the same way as monolingual models. They return an error if a language not supported by the model is input.
+
+```python
+mbart_model = st_model.MBartModel()
+mt5_model = st_model.MT5Model()
+
+# load Spanish portion of MLSum dataset
+mlsum = datasets.MlsumDataset(["es"])
+
+corpus = itertools.islice(mlsum.train_set, 5)
+corpus = [instance.source for instance in train_set]
+
+# mt5 model will automatically detect Spanish as the language and indicate that this is supported!
+mt5_model.summarize()
+```
+
+Soon to come: a simple pipeline model to first translate input text to English and then use monolingual models!
 
 ## Evaluation
 SummerTime supports different evaluation metrics including: BertScore, Bleu, Meteor, Rouge, RougeWe
 
 To print all supported metrics:
 ```python
-from evaluation import SUPPORTED_EVALUATION_METRICS
+from summertime.evaluation import SUPPORTED_EVALUATION_METRICS
 
 print(SUPPORTED_EVALUATION_METRICS)
 ```
 
 ### Import and initialization:
 ```python
-import evaluation as st_eval
+import summertime.evaluation as st_eval
 
 bert_eval = st_eval.bertscore()
 bleu_eval = st_eval.bleu_eval()
@@ -362,8 +387,8 @@ def get_dict(self, keys):
 ### Using evaluation metrics
 Get sample summary data
 ```python
-from evaluation.base_metric import SummMetric
-from evaluation import Rouge, RougeWe, BertScore
+from summertime.evaluation.base_metric import SummMetric
+from summertime.evaluation import Rouge, RougeWe, BertScore
 
 import itertools
 
@@ -382,7 +407,7 @@ targets = [instance.summary for instance in corpus]
 
 Evaluate the data on different metrics
 ```python
-from evaluation import  BertScore, Rouge, RougeWe,
+from summertime.evaluation import  BertScore, Rouge, RougeWe,
 
 # Calculate BertScore
 bert_metric = BertScore()
@@ -405,8 +430,8 @@ print(rougewe_score)
 Given a SummerTime dataset, you may use the `pipelines.assemble_model_pipeline` function to retrieve a list of initialized SummerTime models that are compatible with the dataset provided.
 
 ```python
-from pipeline import assemble_model_pipeline
-from dataset.dataset_loaders import CnndmDataset, QMsumDataset
+from summertime.pipeline import assemble_model_pipeline
+from summertime.dataset import CnndmDataset, QMsumDataset
 
 single_doc_models = assemble_model_pipeline(CnndmDataset)
 # [
@@ -424,27 +449,61 @@ query_based_multi_doc_models = assemble_model_pipeline(QMsumDataset)
 # ]
 ```
 
-### Multilingual summarization
-The `summarize()` method of multilingual models automatically checks for input document language. 
-
-Single-doc multilingual models can be initialized and used in the same way as monolingual models. They return an error if a language not supported by the model is input.
+=======
+### Visualizing performance of different models on your dataset
+Given a SummerTime dataset, you may use the pipelines.assemble_model_pipeline function to retrieve a list of initialized SummerTime models that are compatible with the dataset provided.
 
 ```python
-mbart_model = st_model.MBartModel()
-mt5_model = st_model.MT5Model()
+# Get test data
+import itertools
+from summertime.dataset import XsumDataset
 
-# load Spanish portion of MLSum dataset
-mlsum = datasets.MlsumDataset(["es"])
+# Get a slice of the train set - first 5 instances
+sample_dataset = XsumDataset()
+sample_data = itertools.islice(sample_dataset.train_set, 100)
+generator1 = iter(sample_data)
+generator2 = iter(sample_data)
 
-corpus = itertools.islice(mlsum.train_set, 5)
-corpus = [instance.source for instance in train_set]
-
-# mt5 model will automatically detect Spanish as the language and indicate that this is supported!
-mt5_model.summarize()
+bart_model = BartModel()
+pegasus_model = PegasusModel()
+models = [bart_model, pegasus_model]
+metrics = [metric() for metric in SUPPORTED_EVALUATION_METRICS]
 ```
 
-Soon to come: a simple pipeline model to first translate input text to English and then use monolingual models!
+#### Create a radar plot
+```python
+from summertime.evaluation.model_selector import ModelSelector
 
+selector = ModelSelector(models, generator1, metrics)
+table = selector.run()
+print(table)
+visualization = selector.visualize(table)
+```
+<p align="center">
+    <img src="https://github.com/Yale-LILY/SummerTime/blob/c8480c149e6f44c5613d8d6b05954382616f7919/docs/img/radar_plot_and_table.PNG" width="100%">
+</p>
+
+```python
+from summertime.evaluation.model_selector import ModelSelector
+
+new_selector = ModelSelector(models, generator2, metrics)
+smart_table = new_selector.run_halving(min_instances=2, factor=2)
+print(smart_table)
+visualization_smart = selector.visualize(smart_table)
+```
+
+#### Create a scatter plot
+```python
+from summertime.evaluation.model_selector import ModelSelector
+from summertime.evaluation.error_viz import scatter
+
+keys = ("bert_score_f1", "bleu", "rouge_1_f_score", "rouge_2_f_score", "rouge_l_f_score", "rouge_we_3_f", "meteor")
+
+scatter(models, sample_data, metrics[1:3], keys=keys[1:3], max_instances=5)
+```
+<p align="center">
+    <img src="https://github.com/Yale-LILY/SummerTime/blob/bfec6260f25f6ab3eb8a28b759ced3dabcebd811/docs/img/scatter_plot.PNG" width="100%">
+</p>
 
 
 ## To contribute
@@ -489,7 +548,7 @@ Note that our CI test suite will include invoking `black --check .` and `flake8 
 Our continuous integration system is provided through [Github actions](https://docs.github.com/en/actions). When any pull request is created or updated or whenever `main` is updated, the repository's unit tests will be run as build jobs on tangra for that pull request. Build jobs will either pass or fail within a few minutes, and build statuses and logs are visible under [Actions](https://github.com/Yale-LILY/SummerTime/actions). Please ensure that the most recent commit in pull requests passes all checks (i.e. all steps in all jobs run to completion) before merging, or request a review. To skip a build on any particular commit, append `[skip ci]` to the commit message. Note that PRs with the substring `/no-ci/` anywhere in the branch name will not be included in CI.
 
 ## Citation
-This repository is built by the [LILY Lab](https://yale-lily.github.io/) at Yale University, led by Prof. [Dragomir Radev](https://cpsc.yale.edu/people/dragomir-radev). The main contributors are [Ansong Ni](https://niansong1996.github.io), Zhangir Azerbayev, Troy Feng, Murori Mutuma and Yusen Zhang (Penn State).
+This repository is built by the [LILY Lab](https://yale-lily.github.io/) at Yale University, led by Prof. [Dragomir Radev](https://cpsc.yale.edu/people/dragomir-radev). The main contributors are [Ansong Ni](https://niansong1996.github.io), Zhangir Azerbayev, Troy Feng, Murori Mutuma, Nick Schoelkopf, and Yusen Zhang (Penn State).
 
 If you use SummerTime in your work, consider citing:
 ```

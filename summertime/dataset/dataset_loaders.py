@@ -23,6 +23,7 @@ class CnndmDataset(SummDataset):
     """
 
     dataset_name = "CNN/DailyMail"
+    description = "The dataset contains news articles from CNN and Daily Mail. Version 1.0.0 of it was originally developed for reading comprehension and abstractive question answering, then the extractive and abstractive summarization annotations were added in version 2.0.0 and 3.0.0, respectively"
 
     is_query_based = False
     is_dialogue_based = False
@@ -65,6 +66,7 @@ class MultinewsDataset(SummDataset):
     """
 
     dataset_name = "Multinews"
+    description = "This is a large-scale multi-document summarization dataset which contains news articles from the site newser.com with corresponding human-written summaries. Over 1,500 sites, i.e. news sources, appear as source documents, which is higher than the other common news datasets."
 
     is_query_based = False
     is_dialogue_based = False
@@ -108,6 +110,7 @@ class SamsumDataset(SummDataset):
     """
 
     dataset_name = "Samsum"
+    description = "This  is a dataset with chat dialogues corpus, and human-annotated abstractive  summarizations. In the SAMSum corpus, each dialogue is written by one person. After collecting all the dialogues, experts write a single summary for each dialogue."
 
     is_query_based = False
     is_dialogue_based = True
@@ -150,6 +153,7 @@ class XsumDataset(SummDataset):
     """
 
     dataset_name = "Xsum"
+    description = "This  is a news summarization dataset for generating a one-sentence summary aiming to answer the question “What is the article about?”. It consists of real-world articles and corresponding one-sentence summarization from British Broadcasting Corporation (BBC)."
 
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/xsum"
@@ -189,6 +193,7 @@ class PubmedqaDataset(SummDataset):
     """
 
     dataset_name = "Pubmedqa"
+    description = "This is a question answering dataset on the biomedical domain. Every QA instance contains a short answer and a long answer, latter of which can also be used for query-based summarization."
 
     is_query_based = True
     is_dialogue_based = False
@@ -242,6 +247,7 @@ class MlsumDataset(SummDataset):
     """
 
     dataset_name = "MlSum"
+    description = "This is a large-scale multilingual summarization dataset. It contains over 1.5M news articles in five languages, namely French, German, Spanish, Russian, and Turkish."
 
     is_query_based = False
     is_dialogue_based = False
@@ -366,12 +372,7 @@ class ScisummnetDataset(SummDataset):
     dataset_name = "ScisummNet"
 
     version = "1.1.0"
-    description = (
-        "A summary of scientific papers should ideally incorporate the impact of the papers on the "
-        "research community reflected by citations. To facilitate research in citation-aware scientific "
-        "paper summarization (Scisumm), the CL-Scisumm shared task has been organized since 2014 for "
-        "papers in the computational linguistics and NLP domain."
-    )
+    description = "This is a human-annotated dataset made for citation-aware scientific paper summarization (Scisumm). It contains over 1,000 papers in the ACL anthology network as well as their citation networks and their manually labeled summaries."
 
     is_dialogue_based = False
     is_multi_document = False
@@ -416,6 +417,7 @@ class SummscreenDataset(SummDataset):
     """
 
     dataset_name = "Summscreen"
+    description = "This dataset  consists of community contributed transcripts of television show episodes from The TVMegaSite, Inc. (TMS) and ForeverDream (FD). The summary of each transcript is the recap from TMS, or a recap of the FD shows from Wikipedia and TVMaze"
 
     version = "1.1.0"
     is_dialogue_based = True
@@ -510,11 +512,7 @@ class ArxivDataset(SummDataset):
     """
 
     dataset_name = "Arxiv_longsummarization"
-    description = """
-    A summarization dataset comprised of pairs of scientific papers.
-    The dataset provides a challenging testbed for abstractive summarization.
-    It contains papers and their abstracts.
-    """
+    description = "This dataset is extracted from research papers for abstractive summarization of single, longer-form documents. For each research paper from arxiv.org, its abstract is used as ground-truth summaries."
 
     is_dialogue_based = False
     is_multi_document = False
