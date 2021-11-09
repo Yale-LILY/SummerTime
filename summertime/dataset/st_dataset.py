@@ -375,7 +375,6 @@ class CustomDataset(SummDataset):
             # TODO: Ensure models can handle datasets with no summaries
             summary = None
             if "summary" in instance and instance["summary"]:
-                summaries_present = True
                 summary: str = instance["summary"]
 
             query = None
