@@ -169,12 +169,11 @@ class SummDataset:
         tries = DEFAULT_NUMBER_OF_RETRIES_ALLOWED
         wait_time = DEFAULT_WAIT_SECONDS_BEFORE_RETRY
 
-        for i in range(1, tries):
+        for i in range(tries):
             try:
                 dataset = load_dataset(*args, **kwargs)
             except ConnectionError:
-                # Wait in the event of a connection error to host website
-                if i < tries:
+                if i < tries - 1:  # i is zero indexed
                     sleep(wait_time)
                     continue
                 else:
@@ -182,21 +181,6 @@ class SummDataset:
                         "Wait for a minute and attempt downloading the dataset again. \
                          The server hosting the dataset occassionally times out."
                     )
-            except Exception:
-                # Force dataset redownload in the event of a corrupted dataset cache
-                if i < tries:
-                    print(
-                        "Attempt ",
-                        i + 1,
-                        " out of ",
-                        tries,
-                        " to redownload dataset: cache is likely corrupted:",
-                    )
-                    dataset = load_dataset(
-                        *args, download_mode="force_redownload", **kwargs
-                    )
-                else:
-                    raise RuntimeError("Dataset could not be feteched.")
             break
 
         return dataset
@@ -303,6 +287,7 @@ class SummDataset:
 
         return basic_description
 
+    @classmethod
     def show_description(self):
         """
         Print the description of the dataset.
@@ -402,14 +387,6 @@ class CustomDataset(SummDataset):
 
             data_instances.append(
                 SummInstance(source=source, summary=summary, query=query)
-            )
-
-        if not summaries_present:
-            print(
-                "\nATTENTION:",
-                split,
-                "split does not contain summaries.",
-                "Proceed if this is intended.\n",
             )
 
         return (data for data in data_instances)
