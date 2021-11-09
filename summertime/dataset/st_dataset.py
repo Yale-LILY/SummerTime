@@ -362,7 +362,6 @@ class CustomDataset(SummDataset):
         """
         data_instances = []
 
-        summaries_present = False
         for instance in data:
             if "source" in instance and instance["source"]:
                 if self.is_dialogue_based or self.is_multi_document:

@@ -449,7 +449,7 @@ print(table)
 visualization = selector.visualize(table)
 ```
 <p align="center">
-    <img src="https://github.com/Yale-LILY/SummerTime/blob/bfec6260f25f6ab3eb8a28b759ced3dabcebd811/docs/img/radar_plot_and_table.PNG" width="100%">
+    <img src="https://github.com/Yale-LILY/SummerTime/blob/c8480c149e6f44c5613d8d6b05954382616f7919/docs/img/radar_plot_and_table.PNG" width="100%">
 </p>
 
 ```python
