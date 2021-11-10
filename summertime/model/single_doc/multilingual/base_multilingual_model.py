@@ -8,7 +8,7 @@ from typing import List, Union
 
 def fasttext_predict(corpus: Union[List[str], List[List[str]]]):
     """
-    Utility function to predict the language of input text 
+    Utility function to predict the language of input text
     using fasttext classifier.
     """
     url = "https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz"
@@ -30,6 +30,7 @@ def fasttext_predict(corpus: Union[List[str], List[List[str]]]):
     label = label.replace("__label__", "")
 
     return label
+
 
 class MultilingualSummModel(SingleDocSummModel):
 

@@ -45,10 +45,10 @@ one of our multilingual models."
         # isascii not supported in python 3.6
         try:
             if all([isinstance(ins, list) for ins in corpus]):
-                [ins.encode('ascii') for batch in corpus for ins in batch]
+                [ins.encode("ascii") for batch in corpus for ins in batch]
 
             elif isinstance(corpus, list):
-                [ins.encode('ascii') for ins in corpus]
+                [ins.encode("ascii") for ins in corpus]
         except UnicodeEncodeError:
             print(warning)
 
