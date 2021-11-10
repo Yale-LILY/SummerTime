@@ -1,7 +1,7 @@
 from transformers import MT5ForConditionalGeneration, MT5Tokenizer
 from .base_multilingual_model import MultilingualSummModel, fasttext_predict
 from summertime.model.base_model import SummModel
-from summertime.mode.single_doc import BartModel
+from summertime.model.single_doc import BartModel
 
 from easynmt import EasyNMT
 
@@ -18,14 +18,14 @@ class TranslationPipelineModel(MultilingualSummModel):
         model: SummModel = model_backend(**kwargs)
         self.model = model
 
-        super(MultiDocJointModel, self).__init__(
+        super(TranslationPipelineModel, self).__init__(
             trained_domain=self.model.trained_domain,
             max_input_length=self.model.max_input_length,
             max_output_length=self.model.max_output_length,
         )
 
         # translation module
-        self.translator = easyNMT("opus-mt")
+        self.translator = EasyNMT("opus-mt")
 
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)
