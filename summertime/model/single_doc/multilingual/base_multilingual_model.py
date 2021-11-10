@@ -5,6 +5,31 @@ from summertime.util.download_utils import (
 import fasttext
 
 
+def fasttext_predict(corpus: Union[List[str], List[List[str]]]):
+    """
+    Utility function to predict the language of input text 
+    using fasttext classifier.
+    """
+    url = "https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz"
+
+    filepath = get_cached_file_path("fasttext", "lid.176.ftz", url)
+
+    # silence warning on loading model
+    fasttext.FastText.eprint = lambda x: None
+    classifier = fasttext.load_model(str(filepath))
+
+    if all([isinstance(ins, list) for ins in corpus]):
+        prediction = classifier.predict(corpus[0])
+
+    elif isinstance(corpus, list):
+        prediction = classifier.predict(corpus)
+
+    label = prediction[0][0][0]
+
+    label = label.replace("__label__", "")
+
+    return label
+
 class MultilingualSummModel(SingleDocSummModel):
 
     lang_tag_dict = None
@@ -24,22 +49,7 @@ class MultilingualSummModel(SingleDocSummModel):
     @classmethod
     def assert_summ_input_language(cls, corpus, query):
 
-        url = "https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz"
-
-        filepath = get_cached_file_path("fasttext", "lid.176.ftz", url)
-
-        fasttext.FastText.eprint = lambda x: None
-        classifier = fasttext.load_model(str(filepath))
-
-        if all([isinstance(ins, list) for ins in corpus]):
-            prediction = classifier.predict(corpus[0])
-
-        elif isinstance(corpus, list):
-            prediction = classifier.predict(corpus)
-
-        label = prediction[0][0][0]
-
-        label = label.replace("__label__", "")
+        label = fasttext_predict(corpus)
 
         if label in cls.lang_tag_dict:
             print(f"Supported language '{label}' detected.")

@@ -43,6 +43,7 @@ setuptools.setup(
         "tqdm~=4.49.0",
         "tensorboard~=2.4.1",
         "fasttext~=0.9.2",
+        "easynmt~=2.0.1"
         "black",
         "flake8",
         "progressbar",

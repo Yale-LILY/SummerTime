@@ -4,5 +4,6 @@ from .lexrank_model import LexRankModel
 from .longformer_model import LongformerModel
 from .textrank_model import TextRankModel
 
+from .multilingual import TranslationPipelineModel
 from .multilingual import MBartModel
 from .multilingual import MT5Model
