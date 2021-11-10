@@ -40,7 +40,7 @@ class TranslationPipelineModel(MultilingualSummModel):
         # summarize in English
         english_summaries = self.model.summarize(corpus, queries)
 
-        summaries = self.translator(english_summaries, source_lang="en", target_lang=src_lang, beam_size=4)
+        summaries = self.translator.translate(english_summaries, source_lang="en", target_lang=src_lang, beam_size=4)
 
         return summaries
 
