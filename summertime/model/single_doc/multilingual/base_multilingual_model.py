@@ -3,6 +3,7 @@ from summertime.util.download_utils import (
     get_cached_file_path,
 )
 import fasttext
+from typing import List, Union
 
 
 def fasttext_predict(corpus: Union[List[str], List[List[str]]]):

@@ -33,7 +33,7 @@ class TranslationPipelineModel(MultilingualSummModel):
         src_lang = fasttext_predict(corpus)
         # translate to English
         corpus = self.translator.translate(corpus, source_lang=src_lang, target_lang="en", beam_size=4)
-        # TODO: translate each doc separately if provided multiple docs in corpus
+        # TODO: translate each doc separately if provided multiple docs in corpus?
         if queries:
             queries = self.translator.translate(queries, target_lang="en", beam_size=4)
 
