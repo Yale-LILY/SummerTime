@@ -140,8 +140,6 @@ class MT5Model(MultilingualSummModel):
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)
 
-        self.assert_summ_input_language(corpus, queries)
-
         with self.tokenizer.as_target_tokenizer():
             batch = self.tokenizer(
                 corpus,
