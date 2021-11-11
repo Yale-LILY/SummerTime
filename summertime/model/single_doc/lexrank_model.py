@@ -27,8 +27,6 @@ class LexRankModel(SingleDocSummModel):
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)
 
-        self.assert_summ_input_language(corpus, queries)
-
         documents = [nltk.sent_tokenize(document) for document in corpus]
         summaries = [
             " ".join(

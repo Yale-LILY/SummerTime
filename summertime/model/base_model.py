@@ -46,18 +46,11 @@ class SummModel:
     ):
         """
         Verifies that type of input corpus or queries for summarization align with the model type.
-        """
-        raise NotImplementedError(
-            "The base class for models shouldn't be instantiated!"
-        )
 
-    @classmethod
-    def assert_summ_input_language(
-        cls, corpus: Union[List[str], List[List[str]]], queries: Union[List[str], None]
-    ) -> str:
-        """
-        Verifies that language of input corpus and queries for summarization align with the model type.
-        Returns the ISO-639 language tag of the input corpus as a string.
+        For single-doc models: also verifies that language of input corpus
+        and queries for summarization align with the model type.
+
+        Returns the ISO-639 language tag of the input corpus as a string (for single-doc models).
         """
         raise NotImplementedError(
             "The base class for models shouldn't be instantiated!"
