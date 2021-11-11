@@ -35,20 +35,20 @@ class SingleDocSummModel(SummModel):
                     "Query-based single-document summarization requires query of `List[str]`."
                 )
 
-    @classmethod
-    def assert_summ_input_language(cls, corpus, query):
-
         warning = "Warning: non-ASCII input corpus detected!\n\
-                    If this is not English, consider using \
-                    one of our multilingual models."
+If this is not English, consider using \
+one of our multilingual models such as summertime.model.multilingual.MBartModel ."
 
-        if all([isinstance(ins, list) for ins in corpus]):
-            if not all([ins.isascii() for batch in corpus for ins in batch]):
-                print(warning)
+        # python 3.6 does not have string.ascii() functionality, so we use this instead
+        try:
+            if all([isinstance(ins, list) for ins in corpus]):
+                [ins.encode("ascii") for batch in corpus for ins in batch]
 
-        elif isinstance(corpus, list):
-            if not all([ins.isascii() for ins in corpus]):
-                print(warning)
+            elif isinstance(corpus, list):
+                [ins.encode("ascii") for ins in corpus]
+
+        except UnicodeEncodeError:
+            print(warning)
 
         return "en"  # ISO-639-1 code for English
 

@@ -25,8 +25,6 @@ class LongformerModel(SingleDocSummModel):
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)
 
-        self.assert_summ_input_language(corpus, queries)
-
         summaries = list(map(lambda doc: self.summarize_single(doc), corpus))
 
         return summaries
