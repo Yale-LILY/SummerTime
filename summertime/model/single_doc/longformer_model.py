@@ -55,6 +55,6 @@ class LongformerModel(SingleDocSummModel):
             "Strengths:\n - Correctly handles longer (> 2000 tokens) corpus.\n\n"
             "Weaknesses:\n - Less accurate on contexts outside training domain.\n\n"
             "Initialization arguments:\n "
-            ' - device: use `device="gpu"` to load onto \n'
+            ' - device: use `device="cuda"` to load onto an NVIDIA GPU.\n'
         )
         print(f"{basic_description} \n {'#'*20} \n {more_details}")

@@ -93,7 +93,7 @@ class MBartModel(MultilingualSummModel):
 
         encoded_summaries = self.model.generate(
             **batch,
-            forced_bos_token_id=self.tokenizer.lang_code_to_id[lang_code],
+            decoder_start_token_id=self.tokenizer.lang_code_to_id[lang_code],
             length_penalty=1.0,
             num_beams=4,
             early_stopping=True,
