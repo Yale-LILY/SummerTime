@@ -1,6 +1,7 @@
 from summertime.model.single_doc.base_single_doc_model import SingleDocSummModel
-
-import urllib.request
+from summertime.util.download_utils import (
+    get_cached_file_path,
+)
 import fasttext
 from typing import Dict, List, Tuple
 
@@ -30,10 +31,11 @@ class MultilingualSummModel(SingleDocSummModel):
         super().assert_summ_input_type(corpus, query)
 
         url = "https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz"
-        # currently using compressed fasttext model from FB
-        urllib.request.urlretrieve(url, "lid.176.ftz")
 
-        classifier = fasttext.load_model("./lid.176.ftz")
+        filepath = get_cached_file_path("fasttext", "lid.176.ftz", url)
+
+        fasttext.FastText.eprint = lambda x: None
+        classifier = fasttext.load_model(str(filepath))
 
         # fasttext returns a tuple of 2 lists:
         # the first list contains a list of predicted language labels
@@ -54,11 +56,18 @@ class MultilingualSummModel(SingleDocSummModel):
 
         # check if language code is in the supported language dictionary
         if label in cls.lang_tag_dict:
-            print(f"Language '{label}' detected.")
+            print(f"Supported language '{label}' detected.")
             return cls.lang_tag_dict[label]
         else:
             raise ValueError(
-                f"Unsupported language '{label}'' detected!\n\
-                    Try checking if another of our multilingual models \
-                    supports this language."
+                f"Unsupported language '{label}' detected! \
+Try checking if another of our multilingual models \
+supports this language."
             )
+
+    # @classmethod
+    # def show_supported_languages(
+    #     cls,
+    # ):
+    #     langs = [iso639.to_name(lang) for lang in cls.lang_tag_dict.keys()]
+    #     return " ".join(langs)

@@ -5,3 +5,4 @@ from .longformer_model import LongformerModel
 from .textrank_model import TextRankModel
 
 from .multilingual import MBartModel
+from .multilingual import MT5Model

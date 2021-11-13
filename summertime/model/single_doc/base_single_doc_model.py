@@ -51,3 +51,7 @@ one of our multilingual models such as summertime.model.multilingual.MBartModel 
             print(warning)
 
         return "en"  # ISO-639-1 code for English
+
+    # @classmethod
+    # def show_supported_languages(cls) -> str:
+    #     return "english"

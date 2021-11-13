@@ -75,15 +75,18 @@ Also, please run our colab notebook for a more hands-on demo and more examples.
 ## Models
 
 ### Supported Models
-SummerTime supports different models (e.g., TextRank, BART, Longformer) as well as model wrappers for more complex summariztion tasks (e.g., JointModel for multi-doc summarzation, BM25 retrieval for query-based summarization).
+SummerTime supports different models (e.g., TextRank, BART, Longformer) as well as model wrappers for more complex summarization tasks (e.g., JointModel for multi-doc summarzation, BM25 retrieval for query-based summarization). Several multilingual models are also supported (mT5 and mBART).
 
-| Models                    | Single-doc           | Multi-doc            | Dialogue-based       | Query-based          |
-| ---------                 | :------------------: | :------------------: | :------------------: | :------------------: | 
-| BartModel                 | :heavy_check_mark:   |                      |                      |                      |   
-| BM25SummModel             |                      |                      |                      | :heavy_check_mark:   | 
-| HMNetModel                |                      |                      | :heavy_check_mark:   |                      |
-| LexRankModel              | :heavy_check_mark:   |                      |                      |                      |
-| LongformerModel           | :heavy_check_mark:   |                      |                      |                      |
+
+| Models                    | Single-doc           | Multi-doc            | Dialogue-based       | Query-based          | Multilingual         |
+| ---------                 | :------------------: | :------------------: | :------------------: | :------------------: | :------------------: |
+| BartModel                 | :heavy_check_mark:   |                      |                      |                      |                      |
+| BM25SummModel             |                      |                      |                      | :heavy_check_mark:   |                      |
+| HMNetModel                |                      |                      | :heavy_check_mark:   |                      |                      |
+| LexRankModel              | :heavy_check_mark:   |                      |                      |                      |                      |
+| LongformerModel           | :heavy_check_mark:   |                      |                      |                      |                      |
+| MBartModel                | :heavy_check_mark:   |                      |                      |                      | 50 languages (Arabic, Czech, German, English, Spanish, Estonian, Finnish, French, Gujarati, Hindi, Italian, Japanese, Kazakh, Korean, Lithuanian, Latvian, Burmese, Nepali, Dutch, Romanian, Russian, Sinhala, Turkish, Vietnamese, Chinese, Afrikaans, Azerbaijani, Bengali, Persian, Hebrew, Croatian, Indonesian, Georgian, Khmer, Macedonian, Malayalam, Mongolian, Marathi, Polish, Pashto, Portuguese, Swedish, Tamil, Telugu, Thai, Tagalog, Ukrainian, Urdu, Xhosa, Slovenian) |
+| MT5Model                  | :heavy_check_mark:   |                      |                      |                      | 101 languages (full list [here](https://github.com/google-research/multilingual-t5#readme)) |
 | MultiDocJointModel        |                      | :heavy_check_mark:   |                      |                      |
 | MultiDocSeparateModel     |                      | :heavy_check_mark:   |                      |                      |
 | PegasusModel              | :heavy_check_mark:   |                      |                      |                      |
@@ -235,7 +238,7 @@ print(corpus)
 ```
 
 ### Loading a custom dataset
-You can use load custom data using the `CustomDataset` class that puts the data in the SummerTime dataset Class
+You can use custom data using the `CustomDataset` class that loads the data in the SummerTime dataset Class
 ```python
 from summertime.dataset import CustomDataset
 
@@ -298,6 +301,7 @@ train_set = itertools.islice(cnn_dataset.train_set, 5)
 corpus = [instance.source for instance in train_set]
 
 
+
 # Example 1 - traditional non-neural model
 # LexRank model
 lexrank = model.LexRankModel(corpus)
@@ -325,7 +329,26 @@ longformer_summary = longformer.summarize(corpus)
 print(longformer_summary)
 ```
 
+### Multilingual summarization
+The `summarize()` method of multilingual models automatically checks for input document language. 
 
+Single-doc multilingual models can be initialized and used in the same way as monolingual models. They return an error if a language not supported by the model is input.
+
+```python
+mbart_model = st_model.MBartModel()
+mt5_model = st_model.MT5Model()
+
+# load Spanish portion of MLSum dataset
+mlsum = datasets.MlsumDataset(["es"])
+
+corpus = itertools.islice(mlsum.train_set, 5)
+corpus = [instance.source for instance in train_set]
+
+# mt5 model will automatically detect Spanish as the language and indicate that this is supported!
+mt5_model.summarize()
+```
+
+Soon to come: a simple pipeline model to first translate input text to English and then use monolingual models!
 
 ## Evaluation
 SummerTime supports different evaluation metrics including: BertScore, Bleu, Meteor, Rouge, RougeWe
@@ -426,6 +449,7 @@ query_based_multi_doc_models = assemble_model_pipeline(QMsumDataset)
 # ]
 ```
 
+=======
 ### Visualizing performance of different models on your dataset
 Given a SummerTime dataset, you may use the pipelines.assemble_model_pipeline function to retrieve a list of initialized SummerTime models that are compatible with the dataset provided.
 

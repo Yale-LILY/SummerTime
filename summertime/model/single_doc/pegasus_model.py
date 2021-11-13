@@ -52,6 +52,6 @@ class PegasusModel(SingleDocSummModel):
             "Weaknesses: \n - High memory usage \n "
             "Initialization arguments: \n "
             "- `device = 'cpu'` specifies the device the model is stored on and uses for computation. "
-            "Use `device='gpu'` to run on an Nvidia GPU."
+            "Use `device='cuda'` to run on an Nvidia GPU."
         )
         print(f"{basic_description} \n {'#'*20} \n {more_details}")
