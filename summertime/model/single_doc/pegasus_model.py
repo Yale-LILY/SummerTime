@@ -27,7 +27,6 @@ class PegasusModel(SingleDocSummModel):
     def summarize(self, corpus, queries=None):
         self.assert_summ_input_type(corpus, queries)
 
-        self.assert_summ_input_language(corpus, queries)
         print("batching")
         # batch = self.tokenizer(corpus, truncation=True, padding='longest', return_tensors="pt").to(self.device)
         batch = self.tokenizer(corpus, truncation=True, return_tensors="pt").to(
@@ -53,6 +52,6 @@ class PegasusModel(SingleDocSummModel):
             "Weaknesses: \n - High memory usage \n "
             "Initialization arguments: \n "
             "- `device = 'cpu'` specifies the device the model is stored on and uses for computation. "
-            "Use `device='gpu'` to run on an Nvidia GPU."
+            "Use `device='cuda'` to run on an Nvidia GPU."
         )
         print(f"{basic_description} \n {'#'*20} \n {more_details}")

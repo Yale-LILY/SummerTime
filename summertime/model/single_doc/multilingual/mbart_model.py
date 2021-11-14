@@ -81,9 +81,7 @@ class MBartModel(MultilingualSummModel):
         )
 
     def summarize(self, corpus, queries=None):
-        self.assert_summ_input_type(corpus, queries)
-
-        lang_code = self.assert_summ_input_language(corpus, queries)
+        lang_code = self.assert_summ_input_type(corpus, queries)
 
         self.tokenizer.src_lang = lang_code
         self.tokenizer.tgt_lang = lang_code
@@ -92,9 +90,10 @@ class MBartModel(MultilingualSummModel):
             batch = self.tokenizer(
                 corpus, truncation=True, padding="longest", return_tensors="pt"
             ).to(self.device)
+
         encoded_summaries = self.model.generate(
             **batch,
-            forced_bos_token_id=self.tokenizer.lang_code_to_id[lang_code],
+            decoder_start_token_id=self.tokenizer.lang_code_to_id[lang_code],
             length_penalty=1.0,
             num_beams=4,
             early_stopping=True,

@@ -3,7 +3,7 @@ from summertime.util.download_utils import (
     get_cached_file_path,
 )
 import fasttext
-from typing import List, Union
+from typing import List, Union, Dict, List, Tuple
 
 
 def fasttext_predict(corpus: Union[List[str], List[List[str]]]):
@@ -15,26 +15,34 @@ def fasttext_predict(corpus: Union[List[str], List[List[str]]]):
 
     filepath = get_cached_file_path("fasttext", "lid.176.ftz", url)
 
-    # silence warning on loading model
     fasttext.FastText.eprint = lambda x: None
     classifier = fasttext.load_model(str(filepath))
 
+    # fasttext returns a tuple of 2 lists:
+    # the first list contains a list of predicted language labels
+    # of the form {__label__<lang_code>}
+    # and the second list contains the corresponding probabilities
+    prediction: Tuple[List[List[str]], List] = None
     if all([isinstance(ins, list) for ins in corpus]):
         prediction = classifier.predict(corpus[0])
 
     elif isinstance(corpus, list):
         prediction = classifier.predict(corpus)
 
+    # access the first (most likely) predicted language label
     label = prediction[0][0][0]
 
+    # remove prefix from label string to get language code
     label = label.replace("__label__", "")
 
     return label
 
-
 class MultilingualSummModel(SingleDocSummModel):
 
-    lang_tag_dict = None
+    # a dictionary of languages supported by the model.
+    # The key is the language code (ISO-639-1 format currently),
+    # and the value is the language code/token used by the model.
+    lang_tag_dict: Dict[str, str] = None
 
     def __init__(
         self,
@@ -49,10 +57,13 @@ class MultilingualSummModel(SingleDocSummModel):
         )
 
     @classmethod
-    def assert_summ_input_language(cls, corpus, query):
+    def assert_summ_input_type(cls, corpus, query):
+
+        super().assert_summ_input_type(corpus, query)
 
         label = fasttext_predict(corpus)
 
+        # check if language code is in the supported language dictionary
         if label in cls.lang_tag_dict:
             print(f"Supported language '{label}' detected.")
             return cls.lang_tag_dict[label]

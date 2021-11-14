@@ -239,7 +239,7 @@ print(corpus)
 ```
 
 ### Loading a custom dataset
-You can usecustom data using the `CustomDataset` class that loads the data in the SummerTime dataset Class
+You can use custom data using the `CustomDataset` class that loads the data in the SummerTime dataset Class
 ```python
 from summertime.dataset import CustomDataset
 
