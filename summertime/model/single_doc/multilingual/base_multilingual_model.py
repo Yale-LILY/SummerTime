@@ -3,7 +3,7 @@ from summertime.util.download_utils import (
     get_cached_file_path,
 )
 import fasttext
-from typing import List, Union, Dict, List, Tuple
+from typing import List, Union, Dict, Tuple
 
 
 def fasttext_predict(corpus: Union[List[str], List[List[str]]]):
@@ -36,6 +36,7 @@ def fasttext_predict(corpus: Union[List[str], List[List[str]]]):
     label = label.replace("__label__", "")
 
     return label
+
 
 class MultilingualSummModel(SingleDocSummModel):
 
