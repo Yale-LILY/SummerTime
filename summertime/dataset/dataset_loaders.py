@@ -28,6 +28,7 @@ class CnndmDataset(SummDataset):
     is_query_based = False
     is_dialogue_based = False
     is_multi_document = False
+    is_multilingual = False
 
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/cnn_dailymail"
@@ -71,6 +72,7 @@ class MultinewsDataset(SummDataset):
     is_query_based = False
     is_dialogue_based = False
     is_multi_document = True
+    is_multilingual = False
 
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/multi_news"
@@ -115,6 +117,7 @@ class SamsumDataset(SummDataset):
     is_query_based = False
     is_dialogue_based = True
     is_multi_document = False
+    is_multilingual = False
 
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/samsum"
@@ -161,6 +164,7 @@ class XsumDataset(SummDataset):
     is_query_based = False
     is_dialogue_based = False
     is_multi_document = False
+    is_multilingual = False
 
     def __init__(self, cache_dir: Optional[str] = None):
         """Create dataset information from the huggingface Dataset class
@@ -252,6 +256,7 @@ class MlsumDataset(SummDataset):
     is_query_based = False
     is_dialogue_based = False
     is_multi_document = False
+    is_multilingual = True
 
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/mlsum"
@@ -360,6 +365,127 @@ class MlsumDataset(SummDataset):
             return True
 
 
+class XlsumDataset(SummDataset):
+    """
+    The XLSum dataset - A massively multilingual dataset including 45 languages
+    Contains 1.35 million article-summary pairs from BBC in the following languages:
+    
+    """
+
+    dataset_name = "XLSum"
+    description = "A massively multilingual dataset including 45 languages. Contains 1.35 million article-summary pairs from BBC."
+
+    is_query_based = False
+    is_dialogue_based = False
+    is_multi_document = False
+    is_multilingual = True
+
+    huggingface_dataset = True
+    huggingface_page = "https://huggingface.co/datasets/csebuetnlp/xlsum"
+    supported_languages = ['oromo', 'french', 'amharic', 'arabic', 'azerbaijani', 
+                'bengali', 'burmese', 'chinese_simplified', 'chinese_traditional', 'welsh', 
+                'english', 'kirundi', 'gujarati', 'hausa', 'hindi', 
+                'igbo', 'indonesian', 'japanese', 'korean', 'kyrgyz', 
+                'marathi', 'spanish', 'scottish_gaelic', 'nepali', 'pashto', 
+                'persian', 'pidgin', 'portuguese', 'punjabi', 'russian', 
+                'serbian_cyrillic', 'serbian_latin', 'sinhala', 'somali', 'swahili', 
+                'tamil', 'telugu', 'thai', 'tigrinya', 'turkish', 
+                'ukrainian', 'urdu', 'uzbek', 'vietnamese', 'yoruba']
+
+    instantiation_guide = """The languages supported for the XLSum dataset are:
+                ['oromo', 'french', 'amharic', 'arabic', 'azerbaijani', 
+                'bengali', 'burmese', 'chinese_simplified', 'chinese_traditional', 'welsh', 
+                'english', 'kirundi', 'gujarati', 'hausa', 'hindi', 
+                'igbo', 'indonesian', 'japanese', 'korean', 'kyrgyz', 
+                'marathi', 'spanish', 'scottish_gaelic', 'nepali', 'pashto', 
+                'persian', 'pidgin', 'portuguese', 'punjabi', 'russian', 
+                'serbian_cyrillic', 'serbian_latin', 'sinhala', 'somali', 'swahili', 
+                'tamil', 'telugu', 'thai', 'tigrinya', 'turkish', 
+                'ukrainian', 'urdu', 'uzbek', 'vietnamese', 'yoruba']
+
+                Examples to instantiate the dataset:
+                TODO: fill these in
+                """
+    def __init__(
+        self, languages: Union[str, List[str]], cache_dir: Optional[str] = None
+    ):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param languages: Optional, a str or a list[str] specifying languages to be included
+        :param cache_dir: Optional, a str specifying where to download/load the dataset to/from
+        """
+        dataset_args = ()
+        dataset_kwargs = {"cache_dir": cache_dir, "languages": languages}
+        super().__init__(dataset_args=dataset_args, dataset_kwargs=dataset_kwargs)
+
+    def _load_dataset_safe(self, args, kwargs):
+        """
+        Overrides the parent class method
+        Method loads multiple datasets of different languages provided in :param languages:
+            It then concatenates these datasets into one combined dataset
+        :rtype: datasetDict containing the combined dataset
+        :param languages: Optional, either a string or list of strings specifying the languages
+            to load
+        """
+        print(self.instantiation_guide)
+
+        languages = kwargs["languages"]
+        kwargs.pop("languages", None)
+
+        # Choose languages to load
+        if languages == "all":
+            selected_languages = self.supported_languages
+        elif isinstance(languages, list):
+            for language in languages:
+                assert self.is_supported(language)
+            selected_languages = languages
+        else:
+            assert self.is_supported(languages)
+            selected_languages = [languages]
+
+        # Concatenate selected languages into one dataset
+        language_datasets = []
+        for language in selected_languages:
+            dataset_args = ("csebuetnlp/xlsum", language)
+            dataset_kwargs = kwargs
+            dataset = super()._load_dataset_safe(dataset_args, dataset_kwargs)
+
+            language_datasets.append(dataset)
+
+        xlsum_dataset = self._concatenate_dataset_dicts(language_datasets)
+
+        return xlsum_dataset
+
+    def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
+        """
+        Overrides the SummDataset '_process_data()' method
+        This method processes the data contained in the dataset
+            and puts each data instance into a SummInstance object
+        :param dataset: a train/validation/test dataset
+        :rtype: a generator yielding SummInstance objects
+        """
+        for instance in tqdm(data):
+            article: List = instance["text"]
+            summary: str = instance["summary"]
+            summ_instance = SummInstance(source=article, summary=summary)
+
+            yield summ_instance
+
+    def is_supported(self, language: str):
+        """
+        Checks whether the requested language is supported
+        :param language: string containing the requested language
+        :rtype bool:
+        """
+        if language not in self.supported_languages:
+            print(self.instantiation_guide)
+            raise ValueError(
+                f"The language(s): '{language}' entered is not supported. See above message for usage info"
+            )
+        else:
+            return True
+
+
 # Non-huggingface datasets
 
 
@@ -377,6 +503,7 @@ class ScisummnetDataset(SummDataset):
     is_dialogue_based = False
     is_multi_document = False
     is_query_based = False
+    is_multilingual = False
 
     builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
@@ -423,6 +550,7 @@ class SummscreenDataset(SummDataset):
     is_dialogue_based = True
     is_multi_document = False
     is_query_based = False
+    is_multilingual = False
 
     builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
@@ -468,6 +596,7 @@ class QMsumDataset(SummDataset):
     is_dialogue_based = True
     is_multi_document = False
     is_query_based = True
+    is_multilingual = False
 
     builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
@@ -517,6 +646,7 @@ class ArxivDataset(SummDataset):
     is_dialogue_based = False
     is_multi_document = False
     is_query_based = False
+    is_multilingual = False
 
     builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
@@ -552,3 +682,85 @@ class ArxivDataset(SummDataset):
             summ_instance = SummInstance(source=article, summary=abstract)
 
             yield summ_instance
+
+
+class MassivesummDataset(SummDataset):
+    """
+    The Massivesumm Dataset
+    """
+
+    dataset_name = "Massivesumm"
+    description = "This dataset is composed of articles and their summaries crawled from over 300 news platforms online. Includes data from over 12 million articles spread across 92 languages."
+
+    is_dialogue_based = False
+    is_multi_document = False
+    is_query_based = False
+    is_multilingual = True
+
+    huggingface_dataset = False
+
+    builder_script_path = path.join(
+        BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
+    )
+
+    instantiation_guide = """The languages supported for the XLSum dataset are:
+                ["afrikaans", "amharic", "arabic", "assamese", "aymara",
+                "azerbaijani", "bambara", "bengali", "tibetan", "bosnian",
+                "bulgarian", "catalan", "czech", "welsh", "danish", "german",
+                "greek", "english", "esperanto", "persian", "filipino", "french",
+                "fulah", "irish", "gujarati", "haitian", "hausa", "hebrew",
+                "hindi", "croatian", "hungarian", "armenian","igbo", "indonesian",
+                "icelandic", "italian", "japanese", "kannada", "georgian", "khmer",
+                "kinyarwanda", "kyrgyz", "korean", "kurdish", "lao", "latvian",
+                "lingala", "lithuanian", "malayalam", "marathi", "macedonian",
+                "malagasy", "mongolian", "burmese", "south ndebele", "nepali",
+                "dutch", "oriya", "oromo", "punjabi", "polish", "portuguese",
+                "dari", "pashto", "romanian", "rundi", "russian", "sinhala",
+                "slovak", "slovenian", "shona", "somali", "spanish", "albanian",
+                "serbian", "swahili", "swedish", "tamil", "telugu", "tetum",
+                "tajik", "thai", "tigrinya", "turkish", "ukrainian", "urdu", 
+                "uzbek", "vietnamese", "xhosa", "yoruba", "yue chinese", 
+                "chinese", "bislama", "gaelic"]
+                """
+
+    def __init__(
+        self, languages: Union[str, List[str]], cache_dir: Optional[str] = None
+    ):
+        """Create dataset information from the huggingface Dataset class
+        :rtype: object
+        :param languages: Optional, a str or a list[str] specifying languages to be included
+        :param cache_dir: Optional, a str specifying where to download/load the dataset to/from
+        """
+        dataset_args = ()
+        dataset_kwargs = {"name": languages, "cache_dir": cache_dir, "path": self.builder_script_path}
+        super().__init__(dataset_args=dataset_args, dataset_kwargs=dataset_kwargs)
+
+    def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
+        """
+        Overrides the SummDataset '_process_data()' method
+        This method processes the data contained in the dataset
+            and puts each data instance into a SummInstance object
+        :param dataset: a train/validation/test dataset
+        :rtype: a generator yielding SummInstance objects
+        """
+        for instance in tqdm(data):
+            article: str = instance["article"]
+            summary: str = instance["summary"]
+            summ_instance = SummInstance(source=article, summary=summary)
+
+            yield summ_instance
+
+    def is_supported(self, language: str):
+        """
+        Checks whether the requested language is supported
+        :param language: string containing the requested language
+        :rtype bool:
+        """
+        if language not in self.supported_languages:
+            print(self.instantiation_guide)
+            raise ValueError(
+                f"The language(s): '{language}' entered is not supported. See above message for usage info"
+            )
+        else:
+            return True
+
