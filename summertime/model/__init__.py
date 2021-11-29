@@ -3,6 +3,7 @@ from .single_doc import (
     MBartModel,
     LexRankModel,
     LongformerModel,
+    T5Model,
     PegasusModel,
     TextRankModel,
 )
@@ -16,6 +17,7 @@ SUPPORTED_SUMM_MODELS = [
     MBartModel,
     LexRankModel,
     LongformerModel,
+    T5Model,
     PegasusModel,
     TextRankModel,
     MultiDocJointModel,

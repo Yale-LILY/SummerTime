@@ -6,5 +6,5 @@ class summarizer(PegasusModel):
         super(summarizer, self).__init__(device)
 
     def show_capability(self):
-        print("Pegasus is the default singe-document summarization model.")
+        print("Pegasus is the default single-document summarization model.")
         super(summarizer, self).show_capability()
