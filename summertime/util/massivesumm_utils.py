@@ -15,6 +15,16 @@ limitations under the License.
 
 This this file has been altered and adopted. Specifically, it is modified to accomodate
 the common crawl archive instead of the waybackmachine.
+
+
+
+--------------------------------------------------------------------------------
+
+This file contains utility functions for downloading and crawling the web for the massivesumm
+dataset. It was adapted from the code in the following repository: https://github.com/danielvarab/massive-summ
+made available by the authors of the Massivesumm paper, which was itself adapted from
+the Newsroom dataset's methodology (https://aclanthology.org/N18-1065.pdf) which was made available
+with the Apache 2.0 license.
 """
 
 import re
@@ -24,10 +34,8 @@ from bs4 import BeautifulSoup
 from readability import Document
 import requests
 
-import argparse
 import gzip
 import io
-import os
 import json
 import orjson
 import random
@@ -37,7 +45,8 @@ from tqdm import tqdm
 
 _whitespace = re.compile(r"\s+")
 
-class Article(object):
+
+class Article:
 
     """
     Reads in a {url: "", html: ""} archive entry from the downloader script.
@@ -224,7 +233,7 @@ class Article(object):
 
         try:
             return Article(url, html).serialize()
-        except:
+        except Exception:
             print("FAILING TO PROCESS HTML")
             return None
 
@@ -262,6 +271,7 @@ class Article(object):
 
         return parsed.geturl()
 
+
 def load_samples(filename: str) -> list:
     samples = []
     with gzip.open(filename) as fh_in:
@@ -292,7 +302,7 @@ def download_sample(sample: dict) -> dict:
         data = decompressed_file.read().decode()
         warc, header, response = data.strip().split("\r\n\r\n", 2)
         return {"html": response, **sample}
-    except:
+    except Exception:
         with open("error.log", "at") as err_log:
             err_log.write(json.dumps(sample) + "\n")
         return None
@@ -314,9 +324,7 @@ def run(url_file: str):
         samples = random.sample(samples, limit)
 
     downloaded = []
-    for sample in tqdm(
-        download_list(samples, n_processes=n_proc), total=len(samples)
-    ):
+    for sample in tqdm(download_list(samples, n_processes=n_proc), total=len(samples)):
         downloaded.append(json.dumps(sample))
 
     return downloaded
@@ -325,38 +333,20 @@ def run(url_file: str):
 def extract(archive):
     n_proc = cpu_count()
     batch_size = n_proc * 20
-    # previously = set()
+
     todo = set()
 
-    # if os.path.isfile(dataset):
-
-    #     print("Comparing archive and dataset files: ", end="")
-
-    #     with gzip.open(dataset) as dataset_file:
-
-    #         for article in dataset_file:
-    #             article = orjson.loads(article)
-    #             url = article.get("archive", article.get("url"))
-    #             previously.add(url)
-
-    #     print("found", len(previously), "finished summaries... ", end="")
-    # else:
     print("Loading downloaded summaries: ", end="")
 
-    # with gzip.open(archive) as archive_file:
     for article in archive:
         article = orjson.loads(article)
         url = article.get("archive", article.get("url"))
         todo.add(url)
 
-    # todo -= previously
-
     print("found", len(todo), "new summaries to extract.\n")
     dataset = []
 
     with tqdm(total=len(todo), desc="Extracting Summaries") as progress:
-        # with gzip.open(archive) as archive_file:
-            # with gzip.open(dataset, "at") as dataset_file:
 
         chunk = []
 
@@ -381,7 +371,7 @@ def extract(archive):
                 continue
 
             chunk.append(article)
-            
+
             if len(chunk) >= batch_size:
                 process_batch()
                 chunk = []
@@ -391,10 +381,10 @@ def extract(archive):
     print("\nExtraction complete.")
     return dataset
 
+
 def massivesumm_extract_from_url(urls):
 
-    archive = run(urls) #archive should be eliminated as a parameter (make this function return a list of dict objects instead of writing to a gzipped jsonl
-
-    dataset = extract(archive) #dataset arg should also be eliminated as a parameter (return a list of dict objects instead of writing to a gzipped jsonl)
+    archive = run(urls)
+    dataset = extract(archive)
 
     return dataset

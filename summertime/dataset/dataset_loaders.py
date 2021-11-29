@@ -369,7 +369,7 @@ class XlsumDataset(SummDataset):
     """
     The XLSum dataset - A massively multilingual dataset including 45 languages
     Contains 1.35 million article-summary pairs from BBC in the following languages:
-    
+
     """
 
     dataset_name = "XLSum"
@@ -382,30 +382,69 @@ class XlsumDataset(SummDataset):
 
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/csebuetnlp/xlsum"
-    supported_languages = ['oromo', 'french', 'amharic', 'arabic', 'azerbaijani', 
-                'bengali', 'burmese', 'chinese_simplified', 'chinese_traditional', 'welsh', 
-                'english', 'kirundi', 'gujarati', 'hausa', 'hindi', 
-                'igbo', 'indonesian', 'japanese', 'korean', 'kyrgyz', 
-                'marathi', 'spanish', 'scottish_gaelic', 'nepali', 'pashto', 
-                'persian', 'pidgin', 'portuguese', 'punjabi', 'russian', 
-                'serbian_cyrillic', 'serbian_latin', 'sinhala', 'somali', 'swahili', 
-                'tamil', 'telugu', 'thai', 'tigrinya', 'turkish', 
-                'ukrainian', 'urdu', 'uzbek', 'vietnamese', 'yoruba']
+    supported_languages = [
+        "oromo",
+        "french",
+        "amharic",
+        "arabic",
+        "azerbaijani",
+        "bengali",
+        "burmese",
+        "chinese_simplified",
+        "chinese_traditional",
+        "welsh",
+        "english",
+        "kirundi",
+        "gujarati",
+        "hausa",
+        "hindi",
+        "igbo",
+        "indonesian",
+        "japanese",
+        "korean",
+        "kyrgyz",
+        "marathi",
+        "spanish",
+        "scottish_gaelic",
+        "nepali",
+        "pashto",
+        "persian",
+        "pidgin",
+        "portuguese",
+        "punjabi",
+        "russian",
+        "serbian_cyrillic",
+        "serbian_latin",
+        "sinhala",
+        "somali",
+        "swahili",
+        "tamil",
+        "telugu",
+        "thai",
+        "tigrinya",
+        "turkish",
+        "ukrainian",
+        "urdu",
+        "uzbek",
+        "vietnamese",
+        "yoruba",
+    ]
 
     instantiation_guide = """The languages supported for the XLSum dataset are:
-                ['oromo', 'french', 'amharic', 'arabic', 'azerbaijani', 
-                'bengali', 'burmese', 'chinese_simplified', 'chinese_traditional', 'welsh', 
-                'english', 'kirundi', 'gujarati', 'hausa', 'hindi', 
-                'igbo', 'indonesian', 'japanese', 'korean', 'kyrgyz', 
-                'marathi', 'spanish', 'scottish_gaelic', 'nepali', 'pashto', 
-                'persian', 'pidgin', 'portuguese', 'punjabi', 'russian', 
-                'serbian_cyrillic', 'serbian_latin', 'sinhala', 'somali', 'swahili', 
-                'tamil', 'telugu', 'thai', 'tigrinya', 'turkish', 
+                ['oromo', 'french', 'amharic', 'arabic', 'azerbaijani',
+                'bengali', 'burmese', 'chinese_simplified', 'chinese_traditional', 'welsh',
+                'english', 'kirundi', 'gujarati', 'hausa', 'hindi',
+                'igbo', 'indonesian', 'japanese', 'korean', 'kyrgyz',
+                'marathi', 'spanish', 'scottish_gaelic', 'nepali', 'pashto',
+                'persian', 'pidgin', 'portuguese', 'punjabi', 'russian',
+                'serbian_cyrillic', 'serbian_latin', 'sinhala', 'somali', 'swahili',
+                'tamil', 'telugu', 'thai', 'tigrinya', 'turkish',
                 'ukrainian', 'urdu', 'uzbek', 'vietnamese', 'yoruba']
 
                 Examples to instantiate the dataset:
                 TODO: fill these in
                 """
+
     def __init__(
         self, languages: Union[str, List[str]], cache_dir: Optional[str] = None
     ):
@@ -718,8 +757,8 @@ class MassivesummDataset(SummDataset):
                 "dari", "pashto", "romanian", "rundi", "russian", "sinhala",
                 "slovak", "slovenian", "shona", "somali", "spanish", "albanian",
                 "serbian", "swahili", "swedish", "tamil", "telugu", "tetum",
-                "tajik", "thai", "tigrinya", "turkish", "ukrainian", "urdu", 
-                "uzbek", "vietnamese", "xhosa", "yoruba", "yue chinese", 
+                "tajik", "thai", "tigrinya", "turkish", "ukrainian", "urdu",
+                "uzbek", "vietnamese", "xhosa", "yoruba", "yue chinese",
                 "chinese", "bislama", "gaelic"]
                 """
 
@@ -732,7 +771,11 @@ class MassivesummDataset(SummDataset):
         :param cache_dir: Optional, a str specifying where to download/load the dataset to/from
         """
         dataset_args = ()
-        dataset_kwargs = {"name": languages, "cache_dir": cache_dir, "path": self.builder_script_path}
+        dataset_kwargs = {
+            "name": languages,
+            "cache_dir": cache_dir,
+            "path": self.builder_script_path,
+        }
         super().__init__(dataset_args=dataset_args, dataset_kwargs=dataset_kwargs)
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
@@ -763,4 +806,3 @@ class MassivesummDataset(SummDataset):
             )
         else:
             return True
-
