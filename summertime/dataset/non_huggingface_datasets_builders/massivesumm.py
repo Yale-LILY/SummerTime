@@ -176,7 +176,8 @@ class SummertimeMassivesumm(datasets.GeneratorBasedBuilder):
         # download webpages and scrape summaries into json format
         data = massivesumm_extract_from_url(path)
 
-        data_dir = "/home/lily/nos6/.cache/huggingface/datasets/downloads"
+        data_dir = os.environ['TRANSFORMERS_CACHE']
+        
         # save the extracted data to the data_dir
         with open(data_dir + "/train.jsonl", "w", encoding="utf-8") as f:
             for line in data:
