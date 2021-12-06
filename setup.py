@@ -37,6 +37,9 @@ setuptools.setup(
         "summ_eval==0.70",
         "jupyter",
         "gdown",
+        "readability",
+        "bs4",
+        "orjson"
         "gensim~=3.8.3",
         "sklearn",
         "py7zr~=0.16.1",
