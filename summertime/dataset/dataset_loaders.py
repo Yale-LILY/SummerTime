@@ -441,8 +441,12 @@ class XlsumDataset(SummDataset):
                 'tamil', 'telugu', 'thai', 'tigrinya', 'turkish',
                 'ukrainian', 'urdu', 'uzbek', 'vietnamese', 'yoruba']
 
-                Examples to instantiate the dataset:
-                TODO: fill these in
+                Instantiate either with "all" to use all languages or a list of languages to use.
+                Examples: 
+                
+                    xlsum_dataset = XlsumDataset("all")
+                    xlsum_dataset = XlsumDataset(["english", "french"])
+                    xlsum_dataset = XlsumDataset("english")
                 """
 
     def __init__(
