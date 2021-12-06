@@ -170,18 +170,18 @@ class SummertimeMassivesumm(datasets.GeneratorBasedBuilder):
         drive_id = _URL_IDs[self.config.name]
         # get download url for the file
         url = f"https://drive.google.com/uc?id={drive_id}&export=download"
-        
+
         path = gdown.cached_download(url)
-        
+
         # download webpages and scrape summaries into json format
         data = massivesumm_extract_from_url(path)
-        
+
         data_dir = "/home/lily/nos6/.cache/huggingface/datasets/downloads"
         # save the extracted data to the data_dir
         with open(data_dir + "/train.jsonl", "w", encoding="utf-8") as f:
             for line in data:
                 f.write(line + "\n")
-        
+
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
