@@ -345,7 +345,7 @@ corpus = itertools.islice(mlsum.train_set, 5)
 corpus = [instance.source for instance in train_set]
 
 # mt5 model will automatically detect Spanish as the language and indicate that this is supported!
-mt5_model.summarize()
+mt5_model.summarize(corpus)
 ```
 
 Soon to come: a simple pipeline model to first translate input text to English and then use monolingual models!
