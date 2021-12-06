@@ -39,7 +39,7 @@ setuptools.setup(
         "gdown",
         "readability",
         "bs4",
-        "orjson"
+        "orjson",
         "gensim~=3.8.3",
         "sklearn",
         "py7zr~=0.16.1",

@@ -442,8 +442,8 @@ class XlsumDataset(SummDataset):
                 'ukrainian', 'urdu', 'uzbek', 'vietnamese', 'yoruba']
 
                 Instantiate either with "all" to use all languages or a list of languages to use.
-                Examples: 
-                
+                Examples:
+
                     xlsum_dataset = XlsumDataset("all")
                     xlsum_dataset = XlsumDataset(["english", "french"])
                     xlsum_dataset = XlsumDataset("english")
