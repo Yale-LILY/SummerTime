@@ -90,7 +90,7 @@ class TestModels(unittest.TestCase):
         Test all supported models on instances from datasets.
         """
 
-        # single_doc_dataset = CnndmDataset()
+        single_doc_dataset = CnndmDataset()
         multiling_dataset = MlsumDataset(["es"])
         multi_doc_dataset = MultinewsDataset()
         query_based_dataset = PubmedqaDataset()
@@ -109,11 +109,10 @@ class TestModels(unittest.TestCase):
 
             if model_class == LexRankModel:
                 # current LexRankModel requires a training set
-                # training_src, training_tgt = get_summarization_set(
-                #     single_doc_dataset, 100
-                # )
-                # model = model_class(training_src)
-                pass
+                training_src, training_tgt = get_summarization_set(
+                    single_doc_dataset, 100
+                )
+                model = model_class(training_src)
             else:
                 model = model_class()
 
@@ -130,26 +129,26 @@ class TestModels(unittest.TestCase):
                 prediction = model.summarize(test_src)
                 print(f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
                 self.validate_prediction(prediction, test_src)
-            # elif model.is_dialogue_based:
-            #     test_src, test_tgt = get_summarization_set(dialogue_based_dataset, 1)
-            #     prediction = model.summarize(test_src)
-            #     print(f"Gold summary: {test_tgt}\nPredicted summary: {prediction}")
-            #     self.validate_prediction(prediction, test_src)
+            elif model.is_dialogue_based:
+                test_src, test_tgt = get_summarization_set(dialogue_based_dataset, 1)
+                prediction = model.summarize(test_src)
+                print(f"Gold summary: {test_tgt}\nPredicted summary: {prediction}")
+                self.validate_prediction(prediction, test_src)
             elif model.is_multilingual:
                 test_src, test_tgt = get_summarization_set(multiling_dataset, 1)
                 prediction = model.summarize(test_src)
                 print(f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
                 self.validate_prediction(prediction, test_src)
-            # else:
-            #     test_src, test_tgt = get_summarization_set(single_doc_dataset, 1)
-            #     prediction = model.summarize(
-            #         [test_src[0] * 5] if model_class == LongformerModel else test_src
-            #     )
-            #     print(f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
-            #     self.validate_prediction(
-            #         prediction,
-            #         [test_src[0] * 5] if model_class == LongformerModel else test_src,
-            #     )
+            else:
+                test_src, test_tgt = get_summarization_set(single_doc_dataset, 1)
+                prediction = model.summarize(
+                    [test_src[0] * 5] if model_class == LongformerModel else test_src
+                )
+                print(f"Gold summary: {test_tgt} \nPredicted summary: {prediction}")
+                self.validate_prediction(
+                    prediction,
+                    [test_src[0] * 5] if model_class == LongformerModel else test_src,
+                )
 
             print_with_color(f"{model_class.model_name} model test complete\n", "32")
             num_models += 1

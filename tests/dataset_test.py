@@ -116,11 +116,10 @@ class TestDatasets(unittest.TestCase):
             elif ds_cls in [XlsumDataset]:
                 ds = ds_cls(["yoruba", "vietnamese"])
             else:
-                # print_with_color(f"Testing {ds_cls} dataset...", "35")
-                # ds: SummDataset = ds_cls()
+                print_with_color(f"Testing {ds_cls} dataset...", "35")
+                ds: SummDataset = ds_cls()
 
-                # ds.show_description()
-                continue
+                ds.show_description()
 
             # must have at least one of train/dev/test set
             assert ds.train_set or ds.validation_set or ds.test_set
