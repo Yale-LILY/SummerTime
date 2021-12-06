@@ -18,7 +18,7 @@ gdown
 gensim==3.8.3
 sklearn
 gdown
-readability
+readability-lxml
 bs4
 orjson
 py7zr==0.16.1

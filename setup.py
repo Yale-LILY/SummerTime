@@ -37,7 +37,7 @@ setuptools.setup(
         "summ_eval==0.70",
         "jupyter",
         "gdown",
-        "readability",
+        "readability-lxml",
         "bs4",
         "orjson",
         "gensim~=3.8.3",
