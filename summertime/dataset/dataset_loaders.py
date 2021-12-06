@@ -760,7 +760,29 @@ class MassivesummDataset(SummDataset):
                 "tajik", "thai", "tigrinya", "turkish", "ukrainian", "urdu",
                 "uzbek", "vietnamese", "xhosa", "yoruba", "yue chinese",
                 "chinese", "bislama", "gaelic"]
+
+                Currently only supports initialization for a single language. 
+                The following languages are not currently working, but will be ready soon:
+                ["afrikaans", "assamese", "aymara", "catalan", "esperanto", "filipino", "hebrew", 
+                "croatian", "kinyarwanda", "dutch", "romanian", "swedish", "tetum", "tajik"]
                 """
+    supported_languages = ["afrikaans", "amharic", "arabic", "assamese", "aymara",
+                "azerbaijani", "bambara", "bengali", "tibetan", "bosnian",
+                "bulgarian", "catalan", "czech", "welsh", "danish", "german",
+                "greek", "english", "esperanto", "persian", "filipino", "french",
+                "fulah", "irish", "gujarati", "haitian", "hausa", "hebrew",
+                "hindi", "croatian", "hungarian", "armenian","igbo", "indonesian",
+                "icelandic", "italian", "japanese", "kannada", "georgian", "khmer",
+                "kinyarwanda", "kyrgyz", "korean", "kurdish", "lao", "latvian",
+                "lingala", "lithuanian", "malayalam", "marathi", "macedonian",
+                "malagasy", "mongolian", "burmese", "south ndebele", "nepali",
+                "dutch", "oriya", "oromo", "punjabi", "polish", "portuguese",
+                "dari", "pashto", "romanian", "rundi", "russian", "sinhala",
+                "slovak", "slovenian", "shona", "somali", "spanish", "albanian",
+                "serbian", "swahili", "swedish", "tamil", "telugu", "tetum",
+                "tajik", "thai", "tigrinya", "turkish", "ukrainian", "urdu",
+                "uzbek", "vietnamese", "xhosa", "yoruba", "yue chinese",
+                "chinese", "bislama", "gaelic"]
 
     def __init__(
         self, languages: Union[str, List[str]], cache_dir: Optional[str] = None
@@ -793,16 +815,3 @@ class MassivesummDataset(SummDataset):
 
             yield summ_instance
 
-    def is_supported(self, language: str):
-        """
-        Checks whether the requested language is supported
-        :param language: string containing the requested language
-        :rtype bool:
-        """
-        if language not in self.supported_languages:
-            print(self.instantiation_guide)
-            raise ValueError(
-                f"The language(s): '{language}' entered is not supported. See above message for usage info"
-            )
-        else:
-            return True

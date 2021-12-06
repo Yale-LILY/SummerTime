@@ -2,9 +2,9 @@ import unittest
 
 from summertime.dataset import SUPPORTED_SUMM_DATASETS, list_all_datasets
 from summertime.dataset.st_dataset import SummDataset, SummInstance, CustomDataset
-from summertime.dataset.dataset_loaders import ArxivDataset
+from summertime.dataset.dataset_loaders import ArxivDataset, MassivesummDataset
 
-from helpers import print_with_color
+from .helpers import print_with_color
 
 
 NUM_DUMMY_DATA_INSTANCES = 10
@@ -103,6 +103,10 @@ class TestDatasets(unittest.TestCase):
             # TODO: Temporarily skipping Arxiv (size/time), > 30min download time for Travis-CI
             if ds_cls in [ArxivDataset]:
                 continue
+            elif ds_cls in [MassivesummDataset]:
+                print_with_color(f"Testing {ds_cls} dataset...", "35")
+                ds = ds_cls("danish")
+                
             elif isinstance(ds_cls, CustomDataset):
                 ds = ds_cls
             else:
