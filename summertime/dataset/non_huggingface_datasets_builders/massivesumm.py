@@ -1,4 +1,3 @@
-import os
 import json
 import gdown
 import datasets
@@ -176,13 +175,11 @@ class SummertimeMassivesumm(datasets.GeneratorBasedBuilder):
         # download webpages and scrape summaries into json format
         data = massivesumm_extract_from_url(path)
 
-        # get huggingface's cache dir by using download manager to attempt download from url
+        # get a modifiable cached file by attempting a download
         data_dir = dl_manager.download(url)
-        data_dir = os.path.dirname(data_dir)
+        print(data_dir)
         # save the extracted data to the data_dir
-        if not os.path.exists(data_dir + "train.jsonl"):
-            os.makedirs(data_dir + "train.jsonl")
-        with open(data_dir + "train.jsonl", "w+", encoding="utf-8") as f:
+        with open(data_dir, "w", encoding="utf-8") as f:
             for line in data:
                 f.write(line + "\n")
 
@@ -191,7 +188,7 @@ class SummertimeMassivesumm(datasets.GeneratorBasedBuilder):
                 name=datasets.Split.TRAIN,
                 # These kwargs will be passed to _generate_examples
                 gen_kwargs={
-                    "filepath": os.path.join(data_dir, "train.jsonl"),
+                    "filepath": data_dir,
                     "split": "train",
                 },
             ),
