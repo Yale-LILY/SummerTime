@@ -180,7 +180,7 @@ class SummertimeMassivesumm(datasets.GeneratorBasedBuilder):
         data_dir = dl_manager.download(url)
         data_dir = os.path.dirname(data_dir)
         # save the extracted data to the data_dir
-        if not os.path.exists(data_dir+"train.jsonl"):
+        if not os.path.exists(data_dir + "train.jsonl"):
             os.makedirs(data_dir + "train.jsonl")
         with open(data_dir + "train.jsonl", "w+", encoding="utf-8") as f:
             for line in data:
