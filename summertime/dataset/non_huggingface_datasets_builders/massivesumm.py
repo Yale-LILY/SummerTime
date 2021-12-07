@@ -179,9 +179,10 @@ class SummertimeMassivesumm(datasets.GeneratorBasedBuilder):
         # get huggingface's cache dir by using download manager to attempt download from url
         data_dir = dl_manager.download(url)
         data_dir = os.path.dirname(data_dir)
-
         # save the extracted data to the data_dir
-        with open(data_dir + "train.jsonl", "w", encoding="utf-8") as f:
+        if not os.path.exists(data_dir+"train.jsonl"):
+            os.makedirs(data_dir + "train.jsonl")
+        with open(data_dir + "train.jsonl", "w+", encoding="utf-8") as f:
             for line in data:
                 f.write(line + "\n")
 
