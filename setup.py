@@ -36,7 +36,7 @@ setuptools.setup(
         "sentencepiece~=0.1.95",
         "summ_eval==0.70",
         "jupyter",
-        "gdown",
+        "gdown~=4.2.0",
         "readability-lxml",
         "bs4",
         "orjson",

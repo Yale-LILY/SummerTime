@@ -150,7 +150,7 @@ class SummertimeMassivesumm(datasets.GeneratorBasedBuilder):
         features = datasets.Features(
             {
                 "article_url": datasets.Value("string"),
-                "article": datasets.Value("string"),
+                "article": datasets.features.Sequence(datasets.Value("string")),
                 "summary": datasets.Value("string"),
             }
         )
@@ -177,7 +177,7 @@ class SummertimeMassivesumm(datasets.GeneratorBasedBuilder):
 
         # get a modifiable cached file by attempting a download
         data_dir = dl_manager.download(url)
-        print(data_dir)
+        
         # save the extracted data to the data_dir
         with open(data_dir, "w", encoding="utf-8") as f:
             for line in data:
@@ -203,7 +203,8 @@ class SummertimeMassivesumm(datasets.GeneratorBasedBuilder):
 
                 entry = {
                     "article_url": data["url"],
-                    "article": data["text"],
+                    # split article by newlines
+                    "article": [sent for sent in data["text"].split("\n") if sent != ""],
                     "summary": data["summary"],
                 }
                 yield entry["article_url"], entry
