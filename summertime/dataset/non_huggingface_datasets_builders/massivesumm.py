@@ -150,7 +150,7 @@ class SummertimeMassivesumm(datasets.GeneratorBasedBuilder):
         features = datasets.Features(
             {
                 "article_url": datasets.Value("string"),
-                "article": datasets.features.Sequence(datasets.Value("string")),
+                "article": datasets.Value("string"),
                 "summary": datasets.Value("string"),
             }
         )
@@ -204,7 +204,7 @@ class SummertimeMassivesumm(datasets.GeneratorBasedBuilder):
                 entry = {
                     "article_url": data["url"],
                     # split article by newlines
-                    "article": [sent for sent in data["text"].split("\n") if sent != ""],
+                    "article": data["text"].replace("\n", " "),
                     "summary": data["summary"],
                 }
                 yield entry["article_url"], entry
