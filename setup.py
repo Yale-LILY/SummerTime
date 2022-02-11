@@ -48,7 +48,7 @@ setuptools.setup(
         "fasttext~=0.9.2",
         "black",
         "flake8",
-        "progressbar",
+        "progressbar33",
         "prettytable",
     ],
 )
