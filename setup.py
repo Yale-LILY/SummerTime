@@ -46,7 +46,7 @@ setuptools.setup(
         "tqdm~=4.49.0",
         "tensorboard~=2.4.1",
         "fasttext~=0.9.2",
-        "black",
+        "black~=21.12b0",
         "flake8",
         "progressbar",
         "prettytable",
