@@ -3,7 +3,39 @@ from summertime.util.download_utils import (
     get_cached_file_path,
 )
 import fasttext
-from typing import Dict, List, Tuple
+from typing import List, Union, Dict, Tuple
+
+
+def fasttext_predict(corpus: Union[List[str], List[List[str]]]):
+    """
+    Utility function to predict the language of input text
+    using fasttext classifier.
+    """
+    url = "https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz"
+
+    filepath = get_cached_file_path("fasttext", "lid.176.ftz", url)
+
+    fasttext.FastText.eprint = lambda x: None
+    classifier = fasttext.load_model(str(filepath))
+
+    # fasttext returns a tuple of 2 lists:
+    # the first list contains a list of predicted language labels
+    # of the form {__label__<lang_code>}
+    # and the second list contains the corresponding probabilities
+    prediction: Tuple[List[List[str]], List] = None
+    if all([isinstance(ins, list) for ins in corpus]):
+        prediction = classifier.predict(corpus[0])
+
+    elif isinstance(corpus, list):
+        prediction = classifier.predict(corpus)
+
+    # access the first (most likely) predicted language label
+    label = prediction[0][0][0]
+
+    # remove prefix from label string to get language code
+    label = label.replace("__label__", "")
+
+    return label
 
 
 class MultilingualSummModel(SingleDocSummModel):
@@ -30,29 +62,7 @@ class MultilingualSummModel(SingleDocSummModel):
 
         super().assert_summ_input_type(corpus, query)
 
-        url = "https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz"
-
-        filepath = get_cached_file_path("fasttext", "lid.176.ftz", url)
-
-        fasttext.FastText.eprint = lambda x: None
-        classifier = fasttext.load_model(str(filepath))
-
-        # fasttext returns a tuple of 2 lists:
-        # the first list contains a list of predicted language labels
-        # of the form {__label__<lang_code>}
-        # and the second list contains the corresponding probabilities
-        prediction: Tuple[List[List[str]], List] = None
-        if all([isinstance(ins, list) for ins in corpus]):
-            prediction = classifier.predict(corpus[0])
-
-        elif isinstance(corpus, list):
-            prediction = classifier.predict(corpus)
-
-        # access the first (most likely) predicted language label
-        label = prediction[0][0][0]
-
-        # remove prefix from label string to get language code
-        label = label.replace("__label__", "")
+        label = fasttext_predict(corpus)
 
         # check if language code is in the supported language dictionary
         if label in cls.lang_tag_dict:

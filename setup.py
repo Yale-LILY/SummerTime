@@ -47,6 +47,7 @@ setuptools.setup(
         "tensorboard~=2.4.1",
         "fasttext~=0.9.2",
         "black~=21.12b0",
+        "easynmt~=2.0.1",
         "flake8",
         "progressbar",
         "prettytable",
