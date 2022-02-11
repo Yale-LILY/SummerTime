@@ -19,7 +19,7 @@ gensim==3.8.3
 sklearn
 gdown
 readability-lxml
-bs4
+beautifulsoup4
 orjson
 py7zr==0.16.1
 prettytable==2.2.1

@@ -28,7 +28,7 @@ class CnndmDataset(SummDataset):
     is_query_based = False
     is_dialogue_based = False
     is_multi_document = False
-    is_multilingual = False
+    
 
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/cnn_dailymail"
@@ -72,7 +72,6 @@ class MultinewsDataset(SummDataset):
     is_query_based = False
     is_dialogue_based = False
     is_multi_document = True
-    is_multilingual = False
 
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/multi_news"
@@ -117,7 +116,6 @@ class SamsumDataset(SummDataset):
     is_query_based = False
     is_dialogue_based = True
     is_multi_document = False
-    is_multilingual = False
 
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/samsum"
@@ -164,7 +162,6 @@ class XsumDataset(SummDataset):
     is_query_based = False
     is_dialogue_based = False
     is_multi_document = False
-    is_multilingual = False
 
     def __init__(self, cache_dir: Optional[str] = None):
         """Create dataset information from the huggingface Dataset class
@@ -546,7 +543,6 @@ class ScisummnetDataset(SummDataset):
     is_dialogue_based = False
     is_multi_document = False
     is_query_based = False
-    is_multilingual = False
 
     builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
@@ -593,7 +589,6 @@ class SummscreenDataset(SummDataset):
     is_dialogue_based = True
     is_multi_document = False
     is_query_based = False
-    is_multilingual = False
 
     builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
@@ -639,7 +634,6 @@ class QMsumDataset(SummDataset):
     is_dialogue_based = True
     is_multi_document = False
     is_query_based = True
-    is_multilingual = False
 
     builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"
@@ -689,7 +683,6 @@ class ArxivDataset(SummDataset):
     is_dialogue_based = False
     is_multi_document = False
     is_query_based = False
-    is_multilingual = False
 
     builder_script_path = path.join(
         BASE_NONHUGGINGFACE_DATASETS_PATH, dataset_name.lower() + ".py"

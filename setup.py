@@ -38,7 +38,7 @@ setuptools.setup(
         "jupyter",
         "gdown~=4.2.0",
         "readability-lxml",
-        "bs4",
+        "beautifulsoup4",
         "orjson",
         "gensim~=3.8.3",
         "sklearn",
