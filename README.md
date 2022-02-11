@@ -85,8 +85,9 @@ SummerTime supports different models (e.g., TextRank, BART, Longformer) as well 
 | HMNetModel                |                      |                      | :heavy_check_mark:   |                      |                      |
 | LexRankModel              | :heavy_check_mark:   |                      |                      |                      |                      |
 | LongformerModel           | :heavy_check_mark:   |                      |                      |                      |                      |
-| MBartModel                | :heavy_check_mark:   |                      |                      |                      | 50 languages (Arabic, Czech, German, English, Spanish, Estonian, Finnish, French, Gujarati, Hindi, Italian, Japanese, Kazakh, Korean, Lithuanian, Latvian, Burmese, Nepali, Dutch, Romanian, Russian, Sinhala, Turkish, Vietnamese, Chinese, Afrikaans, Azerbaijani, Bengali, Persian, Hebrew, Croatian, Indonesian, Georgian, Khmer, Macedonian, Malayalam, Mongolian, Marathi, Polish, Pashto, Portuguese, Swedish, Tamil, Telugu, Thai, Tagalog, Ukrainian, Urdu, Xhosa, Slovenian) |
+| MBartModel                | :heavy_check_mark:   |                      |                      |                      | 50 languages (full list [here](https://huggingface.co/facebook/mbart-large-50)) |
 | MT5Model                  | :heavy_check_mark:   |                      |                      |                      | 101 languages (full list [here](https://github.com/google-research/multilingual-t5#readme)) |
+| TranslationPipelineModel  | :heavy_check_mark:   |                      |                      |                      | ~70 languages |
 | MultiDocJointModel        |                      | :heavy_check_mark:   |                      |                      |
 | MultiDocSeparateModel     |                      | :heavy_check_mark:   |                      |                      |
 | PegasusModel              | :heavy_check_mark:   |                      |                      |                      |

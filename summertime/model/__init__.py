@@ -3,9 +3,11 @@ from .single_doc import (
     MBartModel,
     LexRankModel,
     LongformerModel,
+    T5Model,
     PegasusModel,
     TextRankModel,
     MT5Model,
+    TranslationPipelineModel,
 )
 from .multi_doc import MultiDocJointModel, MultiDocSeparateModel
 from .dialogue import HMNetModel, FlattenDialogueModel
@@ -16,8 +18,10 @@ SUPPORTED_SUMM_MODELS = [
     BartModel,
     MBartModel,
     MT5Model,
+    TranslationPipelineModel,
     LexRankModel,
     LongformerModel,
+    T5Model,
     PegasusModel,
     TextRankModel,
     MultiDocJointModel,
