@@ -177,7 +177,7 @@ class SummertimeMassivesumm(datasets.GeneratorBasedBuilder):
 
         # get a modifiable cached file by attempting a download
         data_dir = dl_manager.download(url)
-        
+
         # save the extracted data to the data_dir
         with open(data_dir, "w", encoding="utf-8") as f:
             for line in data:

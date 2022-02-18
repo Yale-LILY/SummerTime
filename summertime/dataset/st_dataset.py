@@ -75,7 +75,7 @@ class SummDataset:
         * Multi-document/Dialogue summarization
         * Query-based summarization
     """
-    
+
     is_multilingual = False
 
     def __init__(

@@ -28,7 +28,6 @@ class CnndmDataset(SummDataset):
     is_query_based = False
     is_dialogue_based = False
     is_multi_document = False
-    
 
     huggingface_dataset = True
     huggingface_page = "https://huggingface.co/datasets/cnn_dailymail"
