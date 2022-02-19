@@ -873,6 +873,7 @@ class MassivesummDataset(SummDataset):
             "cache_dir": cache_dir,
             "path": self.builder_script_path,
         }
+
         super().__init__(dataset_args=dataset_args, dataset_kwargs=dataset_kwargs)
 
     def _process_data(self, data: Dataset) -> Generator[SummInstance, None, None]:
