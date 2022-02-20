@@ -5,10 +5,12 @@ from summertime.dataset.dataset_loaders import (
     XsumDataset,
     PubmedqaDataset,
     MlsumDataset,
+    XlsumDataset,
     ScisummnetDataset,
     SummscreenDataset,
     QMsumDataset,
     ArxivDataset,
+    MassivesummDataset,
 )
 
 from summertime.dataset.st_dataset import CustomDataset
@@ -20,10 +22,12 @@ SUPPORTED_SUMM_DATASETS = [
     XsumDataset,
     PubmedqaDataset,
     MlsumDataset,
+    XlsumDataset,
     ScisummnetDataset,
     SummscreenDataset,
     QMsumDataset,
     ArxivDataset,
+    MassivesummDataset,
 ]
 
 

@@ -18,6 +18,9 @@ gdown
 gensim==3.8.3
 sklearn
 gdown
+readability-lxml
+beautifulsoup4
+orjson
 py7zr==0.16.1
 prettytable==2.2.1
 mpi4py==3.0.3
@@ -28,3 +31,4 @@ easynmt==2.0.1
 black
 flake8
 progressbar
+

@@ -173,6 +173,9 @@ SummerTime supports different summarization datasets across different domains (e
 | ScisummNet      | Scientific articles | 1k          | 4.7k        | 150         |                    |                    |                    |                                           |
 | SummScreen      | TV shows            | 26.9k       | 6.6k        | 337.4       |                    |                    | :heavy_check_mark: |                                           |
 | XSum            | News                | 226k        | 431         | 23.3        |                    |                    |                    |                                           |
+| XLSum            | News                | 1.35m        | ???         | ???        |                    |                    |                    |   45 languages ([see documentation](https://huggingface.co/datasets/csebuetnlp/xlsum)) |
+| MassiveSumm            | News                | 12m+        | ???         | ???        |                    |                    |                    |  78 languages (see Multilingual Summarization section of README for details) |
+
 
 To see all supported datasets, run:
 
@@ -346,10 +349,27 @@ corpus = itertools.islice(mlsum.train_set, 5)
 corpus = [instance.source for instance in train_set]
 
 # mt5 model will automatically detect Spanish as the language and indicate that this is supported!
-mt5_model.summarize()
+mt5_model.summarize(corpus)
 ```
 
-Soon to come: a simple pipeline model to first translate input text to English and then use monolingual models!
+The following languages are currently supported in our implementation of the MassiveSumm dataset: 
+Afrikaans, Amharic, Arabic, Assamese, Aymara,
+Azerbaijani, Bambara, Bengali, Tibetan, Bosnian,
+Bulgarian, Catalan, Czech, Welsh, Danish, German,
+Greek, English, Esperanto, Persian, Filipino, French,
+Fulah, Irish, Gujarati, Haitian, Hausa, Hebrew,
+Hindi, Croatian, Hungarian, Armenian,Igbo, Indonesian,
+Icelandic, Italian, Japanese, Kannada, Georgian, Khmer,
+Kinyarwanda, Kyrgyz, Korean, Kurdish, Lao, Latvian,
+Lingala, Lithuanian, Malayalam, Marathi, Macedonian,
+Malagasy, Mongolian, Burmese, South Ndebele, Nepali,
+Dutch, Oriya, Oromo, Punjabi, Polish, Portuguese,
+Dari, Pashto, Romanian, Rundi, Russian, Sinhala,
+Slovak, Slovenian, Shona, Somali, Spanish, Albanian,
+Serbian, Swahili, Swedish, Tamil, Telugu, Tetum,
+Tajik, Thai, Tigrinya, Turkish, Ukrainian, Urdu,
+Uzbek, Vietnamese, Xhosa, Yoruba, Yue Chinese,
+Chinese, Bislama, and Gaelic.
 
 ## Evaluation
 SummerTime supports different evaluation metrics including: BertScore, Bleu, Meteor, Rouge, RougeWe

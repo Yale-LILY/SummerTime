@@ -76,6 +76,8 @@ class SummDataset:
         * Query-based summarization
     """
 
+    is_multilingual = False
+
     def __init__(
         self,
         dataset_args: Optional[Tuple[str]] = (),
