@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="summertime",
-    version="1.1.0",
+    version="1.2.0",
     author="Ansong Ni, Murori Mutuma, Troy Feng, Zhangir Azerbayev, Nick Schoelkopf, Yusen Zhang, Tao Yu, Dragomir Radev",
     author_email="ansong.ni@yale.edu, dragomir.radev@yale.edu",
     description="Text summarization toolkit for non-experts",
